@@ -1,8 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
-import Layout from "./layout/layout"
-import 'bootstrap/dist/css/bootstrap.min.css'
+import Layout from "./layout/layout";
 
 function App() {
   return (

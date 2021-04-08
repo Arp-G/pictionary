@@ -1,1 +1,2 @@
 export const TOGGLE_SOUND = 'TOGGLE_SOUND';
+export const  TOGGLE_DARK_MODE = 'TOGGLE_DARK_MODE';
