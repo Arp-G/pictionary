@@ -1,6 +1,6 @@
 import React from 'react';
 import Avatar from 'avataaars';
-import { AVATAR_STYLES } from '@constants/avatarStyles';
+import { AVATAR_STYLES } from './../../constants/avatarStyles';
 
 const RandomAvatar = () => {
     const getRandomStyle = (styles) => styles[Math.floor(Math.random() * styles.length)];
