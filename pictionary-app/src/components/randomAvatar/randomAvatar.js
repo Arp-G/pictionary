@@ -6,7 +6,6 @@ const RandomAvatar = () => {
     const getRandomStyle = (styles) => styles[Math.floor(Math.random() * styles.length)];
     const randomisedStyles = {};
     Object.keys(AVATAR_STYLES).forEach(key => randomisedStyles[key] = getRandomStyle(AVATAR_STYLES[key]));
-    console.log(randomisedStyles)
 
     return (
         <div>
@@ -29,4 +28,4 @@ const RandomAvatar = () => {
     );
 }
 
-export default RandomAvatar;
+export default React.memo(RandomAvatar);
