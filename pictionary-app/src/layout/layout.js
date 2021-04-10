@@ -8,7 +8,6 @@ import useSound from 'use-sound';
 import soundToggleSfx from '../sounds/sound.mp3'
 import "./layout.css";
 import { CSSTransition } from 'react-transition-group';
-
 import { useSelector, useDispatch } from 'react-redux';
 
 const Layout = ({ children }) => {

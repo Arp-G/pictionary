@@ -3,17 +3,22 @@
     left: 50px;
     top: 35px;
     transition: all .3s ease;
-  
 }
 
-.randomAvatarIcon {
+.userAvatarIcon {
     position: relative;
     left: 50px;
     top: 20px;
     transition: all .3s ease;
 }
 
-.randomAvatarIcon:hover, .avatarSettingsIcon:hover {
+.userAvatarIcon:hover, .avatarSettingsIcon:hover {
     transform: scale(1.3);
     color: red;
+}
+
+.avatarChooserModal {
+    display: 'flex';
+    align-items: 'center'; 
+    justify-content: 'center';
 }

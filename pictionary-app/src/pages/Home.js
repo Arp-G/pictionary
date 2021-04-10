@@ -9,7 +9,9 @@ import './home.css';
 const Home = () => {
     return (
         <Container maxWidth={'sm'} alignContent={'center'}>
-            <Header />
+            <Paper className={'wrapped-paper header'}>
+                <Header />
+            </Paper>
             <Paper className={'wrapped-paper'}>
                 <UserInfo />
             </Paper>
