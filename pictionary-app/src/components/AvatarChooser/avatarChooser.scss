@@ -45,3 +45,42 @@
     min-width: 170px;
   }
 }
+
+@media only screen and (max-device-width: 480px) {
+  .avatarChooserHeader {
+    font-size: larger;
+  }
+
+  .avatarChooserWrapper {
+    min-width: 100px;
+    max-width: 350px;
+    max-height: 100%;
+    overflow: auto;
+  }
+
+  .avatarChooserFormItem {
+    max-width: 150px;
+
+    .MuiFormControlLabel-label {
+      min-width: 20px;
+      width: 60px;
+      font-size: 0.8em;
+      font-weight: bold;
+    }
+
+    .MuiSelect-select {
+      margin: 0;
+      padding: 0;
+      text-overflow: clip;
+    }
+
+    .MuiSelect-icon {
+      display: none;
+    }
+
+    .MuiSelect-selectMenu {
+      max-width: 25px;
+      font-size: 0.6em !important;
+    }
+  }
+}

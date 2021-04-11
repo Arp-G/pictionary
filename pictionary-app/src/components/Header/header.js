@@ -19,8 +19,8 @@ const Header = () => {
           <Grid item xs={12}>
             <div className="headerText">Pictionary</div>
           </Grid>
-          <Grid item xs={12}>
-            {[...Array(8).keys()].map(key => (
+          <Grid item xs={12} className="headerAvatars">
+            {[...Array(6).keys()].map(key => (
               <Avatar width="50px" height="50px" key={key} avatarStyles={getRandomAvatarStyles()} />
             ))}
           </Grid>

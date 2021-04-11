@@ -23,3 +23,9 @@
   align-items: "center";
   justify-content: "center";
 }
+
+@media only screen and (max-device-width: 480px) {
+  .MuiButton-label {
+    font-size: 0.6em;
+  }
+}

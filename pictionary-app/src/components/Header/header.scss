@@ -1,9 +1,26 @@
 .headerText {
   font-size: 3em;
   padding-bottom: 10px;
-  background-image: linear-gradient(45deg, #d4145a, #fbb03b);
+  background-image: linear-gradient(45deg, #090979, #00d4ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -moz-background-clip: text;
   -moz-text-fill-color: transparent;
+}
+
+.darkMode {
+  .headerText {
+    background-color: #ef5734;
+    background-image: linear-gradient(315deg, #ef5734 0%, #ffcc2f 74%);
+  }
+}
+
+@media only screen and (max-device-width: 480px) {
+  .headerAvatars {
+    display: none;
+  }
+
+  .headerText {
+    font-size: 2em;
+  }
 }

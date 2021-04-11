@@ -4,14 +4,6 @@
   margin: 20px;
 }
 
-.homeContainer {
-  :not(.darkMode) {
-    .wrapped-paper {
-      background-color: bisque !important;
-    }
-  }
-}
-
 .header {
   transition: all 0.3s ease;
 }

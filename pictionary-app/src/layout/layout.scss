@@ -6,6 +6,10 @@
   color: white;
 }
 
+.moonIcon {
+  color: blue;
+}
+
 .darkMode .sunIcon {
   color: orange;
 }
@@ -33,8 +37,30 @@
   transition: all 0.5s;
 }
 
+@media only screen and (max-device-width: 480px) {
+  .bg {
+    animation: animatBackground 300s alternate infinite;
+  }
+}
+
 .dark-mode-bg {
-  filter: invert(1);
+  background-image: none;
+  background-color: #ca7968;
+  background-image: linear-gradient(315deg, #ca7968 0%, #0c0c0c 74%);
+  background-size: 200% 200%;
+  animation: gradient 6s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .main-wrapper-container {

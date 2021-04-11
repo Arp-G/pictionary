@@ -42,7 +42,7 @@ const Layout = ({ children }) => {
               {darkMode ? (
                 <BsSun onClick={toggleDarkMode} size="2em" className="toggleIcon sunIcon" />
               ) : (
-                <BsMoon onClick={toggleDarkMode} size="2em" className="toggleIcon" />
+                <BsMoon onClick={toggleDarkMode} size="2em" className="toggleIcon moonIcon" />
               )}
             </Grid>
           </Grid>
