@@ -1,0 +1,43 @@
+.toggleIcon {
+  color: black;
+}
+
+.darkMode .toggleIcon{
+ color: white;
+}
+
+.darkMode .sunIcon {
+  color: orange;
+}
+
+@keyframes animatBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+.bg {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: block;
+  z-index: 1;
+  background-image: url("./../images/main_background-2.jpg");
+  background-repeat: repeat;
+  animation: animatBackground 30s alternate infinite;
+  height: 500vh;
+  transition: all 0.5s;
+}
+
+.dark-mode-bg {
+  filter: invert(1);
+}
+
+.main-wrapper-container {
+  position: fixed;
+  z-index: 999;
+}

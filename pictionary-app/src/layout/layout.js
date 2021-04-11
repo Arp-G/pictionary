@@ -6,8 +6,7 @@ import { TOGGLE_SOUND, TOGGLE_DARK_MODE } from '../constants/actionTypes';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useSound from 'use-sound';
 import soundToggleSfx from '../sounds/sound.mp3'
-import "./layout.css";
-import { CSSTransition } from 'react-transition-group';
+import "./layout.scss";
 import { useSelector, useDispatch } from 'react-redux';
 
 const Layout = ({ children }) => {
@@ -32,24 +31,20 @@ const Layout = ({ children }) => {
 
     return (
         <ThemeProvider theme={theme}>
-            <Grid container>
+            <div class={`${darkMode ? 'bg dark-mode-bg' : 'bg'}`}></div>
+            <Grid container className={`main-wrapper-container ${darkMode && 'darkMode'}`}>
                 <Grid item xs={1}>
                     <Grid item xs={12}>
                         {
                             sound
-                                ? <CSSTransition in={true} timeout={200} classNames="toggle-icon">
-                                    <BsFillVolumeUpFill onClick={toggleSound} size={'2em'} />
-                                </CSSTransition>
-                                : <CSSTransition in={true} timeout={200} classNames="toggle-icon">
-                                    <BsFillVolumeMuteFill onClick={toggleSound} size={'2em'} />
-                                </CSSTransition>
+                                ? <BsFillVolumeUpFill onClick={toggleSound} size={'2em'} className={'toggleIcon'} />
+                                : <BsFillVolumeMuteFill onClick={toggleSound} size={'2em'} className={'toggleIcon'} />
                         }
                     </Grid>
-
                     <Grid item xs={12}>
                         {
                             darkMode
-                                ? <BsSun onClick={toggleDarkMode} size={'2em'} className={'toggleIcon'} />
+                                ? <BsSun onClick={toggleDarkMode} size={'2em'} className={'toggleIcon sunIcon'} />
                                 : <BsMoon onClick={toggleDarkMode} size={'2em'} className={'toggleIcon'} />
                         }
                     </Grid>

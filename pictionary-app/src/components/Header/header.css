@@ -1,0 +1,9 @@
+.headerText { 
+        font-size: 3em;
+        padding-bottom: 10px ;
+        background-image: linear-gradient(45deg, #D4145A , #FBB03B);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; 
+        -moz-background-clip: text;
+        -moz-text-fill-color: transparent;
+}

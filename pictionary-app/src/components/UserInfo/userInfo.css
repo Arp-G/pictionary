@@ -1,13 +1,13 @@
 .avatarSettingsIcon {
     position: relative;
-    left: 50px;
+    left: 80px;
     top: 35px;
     transition: all .3s ease;
 }
 
 .userAvatarIcon {
     position: relative;
-    left: 50px;
+    left: 80px;
     top: 20px;
     transition: all .3s ease;
 }

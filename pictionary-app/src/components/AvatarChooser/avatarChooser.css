@@ -1,3 +1,45 @@
 .avatarChooserWrapper {
-    min-width: 600px;
+    min-width: 1000px;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.avatarChooserHeader {
+    font-weight: bold;
+    font-size: 2em;
+    text-align: center;
+    background-image: linear-gradient(45deg, #B721FF , #21D4FD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; 
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+}
+
+.closeButton {
+    font-size: larger;
+    margin-top: 10px;
+    margin-right: 10px;
+    text-align: end;
+}
+
+.closeButton:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.avatarChooserFormItem {
+    background-color:darksalmon;
+}
+
+.darkMode .avatarChooserFormItem,  .darkMode .MuiInput-input{
+    color: black;
+}
+
+.avatarChooserFormItem {
+    background-color:darksalmon;
+}
+
+.avatarChooserFormItem .MuiFormControlLabel-label{
+    min-width: 170px;
 }
