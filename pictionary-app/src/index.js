@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import configureStore from './stores/configureStore.js';
-import './fonts/Laffayette_Comic_Pro.ttf'; 
+import reportWebVitals from './reportWebVitals';
+import configureStore from './stores/configureStore';
+import App from './App';
+import './fonts/Laffayette_Comic_Pro.ttf';
+import './index.css';
 
 const store = configureStore();
 

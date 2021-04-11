@@ -2,8 +2,8 @@
   color: black;
 }
 
-.darkMode .toggleIcon{
- color: white;
+.darkMode .toggleIcon {
+  color: white;
 }
 
 .darkMode .sunIcon {
@@ -26,7 +26,7 @@
   z-index: 1;
   display: block;
   z-index: 1;
-  background-image: url("./../images/main_background-2.jpg");
+  background-image: url("./../images/main-background.jpg");
   background-repeat: repeat;
   animation: animatBackground 30s alternate infinite;
   height: 500vh;
