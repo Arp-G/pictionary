@@ -8,15 +8,14 @@ defmodule Pictionary.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      Pictionary.Repo,
+      # Pictionary.Repo,
       # Start the Telemetry supervisor
       PictionaryWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Pictionary.PubSub},
       # Start the Endpoint (http/https)
-      PictionaryWeb.Endpoint
-      # Start a worker by calling: Pictionary.Worker.start_link(arg)
-      # {Pictionary.Worker, arg}
+      PictionaryWeb.Endpoint,
+      Pictionary.StoreSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

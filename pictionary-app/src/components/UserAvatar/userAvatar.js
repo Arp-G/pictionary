@@ -18,7 +18,7 @@ const UserAvatar = ({ random }) => {
 
   return (
     <div>
-      <Avatar avatarStyles={avatarStyles} width="150px" height="150px" />
+      <Avatar avatarStyles={avatarStyles} transparent={false} width="150px" height="150px" />
     </div>
   );
 };

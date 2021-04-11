@@ -38,12 +38,21 @@ defmodule Pictionary.MixProject do
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+
+      # dev, test
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:excoveralls, "~> 0.10", only: :test},
+      # {:mox, "~> 1.0", only: :test},
+
+      # Static code analysis
+      {:sobelow, "~> 0.10.4", only: :dev},
+      {:credo, "~> 1.5.0-rc.2", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 
@@ -58,7 +67,8 @@ defmodule Pictionary.MixProject do
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      quality: ["format", "sobelow --verbose --skip", "dialyzer", "credo --strict"]
     ]
   end
 end

@@ -1,10 +1,10 @@
 import React from 'react';
 import Avataaars from 'avataaars';
 
-const Avatar = ({ avatarStyles, width, height }) => (
+const Avatar = ({ avatarStyles, width, height }, transparent = true) => (
   <Avataaars
     style={{ width: width || '100%', height: height || '100%', transition: 'all .3s ease' }}
-    avatarStyle="transparent"
+    avatarStyle={transparent ? 'transparent' : 'Circle'}
     topType={avatarStyles.top}
     accessoriesType={avatarStyles.accessories}
     hairColor={avatarStyles.hairColor}
