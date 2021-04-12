@@ -17,8 +17,8 @@ defmodule Pictionary.Stores.UserStore do
   end
 
   # GenServer callbacks
-  def start_link(opts \\ []) do
-    GenServer.start_link(__MODULE__, nil, opts)
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def init(_args) do
