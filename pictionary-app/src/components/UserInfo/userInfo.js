@@ -8,7 +8,7 @@ import { FaUserEdit, FaPlay } from 'react-icons/fa';
 import { BsHouseFill } from 'react-icons/bs';
 import UserAvatar from '../UserAvatar/userAvatar';
 import AvatarChooser from '../AvatarChooser/AvatarChooser';
-import { CHANGE_NAME } from '../../constants/actionTypes';
+import { CHANGE_NAME, SAVE_TOKEN } from '../../constants/actionTypes';
 import './userInfo.scss';
 
 const useStyles = makeStyles(() => ({
@@ -26,6 +26,8 @@ const UserInfo = () => {
   const closeModal = () => setModal(false);
   const dispatch = useDispatch();
   const name = useSelector(state => state.userInfo.name);
+  const avatar = useSelector(state => state.userInfo.avatar);
+  const createUserSession = () => dispatch({ type: SAVE_TOKEN, payload: { name, avatar } });
 
   return (
     <Container>
@@ -42,10 +44,18 @@ const UserInfo = () => {
         <FaUserEdit size="1.2em" className="avatarSettingsIcon" onClick={() => setModal(true)} />
         <UserAvatar random={random} />
         <ButtonGroup variant="contained" fullWidth={true} style={{ marginTop: '15px' }}>
-          <Button startIcon={<FaPlay />} style={{ backgroundColor: '#228b22', color: 'white' }}>
+          <Button
+            startIcon={<FaPlay />}
+            style={{ backgroundColor: '#228b22', color: 'white' }}
+            onClick={createUserSession}
+          >
             Play !
           </Button>
-          <Button startIcon={<BsHouseFill />} color="primary">
+          <Button
+            startIcon={<BsHouseFill />}
+            color="primary"
+            onClick={createUserSession}
+          >
             Create Private Room
           </Button>
         </ButtonGroup>

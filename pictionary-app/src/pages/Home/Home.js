@@ -1,9 +1,9 @@
 import React from 'react';
 import { Container, Paper } from '@material-ui/core';
-import Header from '../components/Header/header';
-import UserInfo from '../components/UserInfo/userInfo';
-import HowToPlay from '../components/HowToPlay/howToPlay';
-import About from '../components/About/about';
+import Header from '../../components/Header/header';
+import UserInfo from '../../components/UserInfo/userInfo';
+import HowToPlay from '../../components/HowToPlay/howToPlay';
+import About from '../../components/About/about';
 import './home.scss';
 
 const Home = () => (

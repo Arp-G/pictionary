@@ -1,4 +1,4 @@
-import { CHANGE_AVATAR, CHANGE_NAME } from '../constants/actionTypes';
+import { CHANGE_AVATAR, CHANGE_NAME, SAVE_TOKEN } from '../constants/actionTypes';
 
 const initialState = { avatar: {}, name: '' };
 const userInfoReducer = (state = initialState, action) => {
@@ -7,7 +7,8 @@ const userInfoReducer = (state = initialState, action) => {
       return { ...state, name: action.payload };
     case CHANGE_AVATAR:
       return { ...state, avatar: { ...state.avatar, ...action.payload } };
-
+    case SAVE_TOKEN:
+      return { ...state, token: action.payload };
     default:
       return state;
   }
