@@ -5,9 +5,9 @@ const axiosInstance = axios.create({ baseURL: API });
 
 const getDefaultHeaders = () => ({
   headers: {
-    'Content-type': 'application/json;',
+    // 'Content-type': 'application/json;'
     // TODO: Fix how to store token
-    'X-AUTH-TOKEN': ''
+    // 'X-AUTH-TOKEN': ''
   }
 });
 
