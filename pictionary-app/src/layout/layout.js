@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BsFillVolumeUpFill, BsFillVolumeMuteFill, BsSun, BsMoon } from 'react-icons/bs';
 import useSound from 'use-sound';
-import { TOGGLE_SOUND, TOGGLE_DARK_MODE } from '../constants/actionTypes';
+import { TOGGLE_SOUND, TOGGLE_DARK_MODE, CLEAR_ERROR } from '../constants/actionTypes';
 import soundToggleSfx from '../sounds/sound.mp3';
 import ErrorBoundary from '../misc/errorBoundary';
 import './layout.scss';
@@ -13,6 +13,7 @@ import './layout.scss';
 const Layout = ({ children }) => {
   const sound = useSelector(state => state.settings.sound);
   const darkMode = useSelector(state => state.settings.darkMode);
+  const error = useSelector(state => state.settings.error);
   const dispatch = useDispatch();
   const [playSoundSfx] = useSound(soundToggleSfx, { volume: 0.3 });
 
@@ -22,8 +23,13 @@ const Layout = ({ children }) => {
   };
 
   const toggleDarkMode = () => dispatch({ type: TOGGLE_DARK_MODE });
-
   const theme = createMuiTheme({ palette: { type: darkMode ? 'dark' : 'light' } });
+
+  useEffect(() => {
+    let timer;
+    if (error) timer = setTimeout(() => dispatch({ type: CLEAR_ERROR }), 5000);
+    return () => clearTimeout(timer);
+  }, [error]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -47,6 +53,11 @@ const Layout = ({ children }) => {
             </Grid>
           </Grid>
         </ErrorBoundary>
+        <Grid item xs={12} className={`errorContainer ${error ? 'errorContainerVisible' : ''}`}>
+          <h3>
+            {error}
+          </h3>
+        </Grid>
         <Grid item xs={12}>
           <ErrorBoundary>
             <Container maxWidth="xl">{children}</Container>

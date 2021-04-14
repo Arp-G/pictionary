@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { takeLatest } from 'redux-saga/effects';
-import { SAVE_TOKEN } from '../constants/actionTypes';
+import { CREATE_SESSION } from '../constants/actionTypes';
 import { saveUserSession } from './handlers/handlers';
 
 /*
@@ -9,5 +9,5 @@ import { saveUserSession } from './handlers/handlers';
   It will map them to handler functions that make API requests and store data in redux store
 */
 export function* watcherSaga() {
-  yield takeLatest(SAVE_TOKEN, saveUserSession);
+  yield takeLatest(CREATE_SESSION, saveUserSession);
 }

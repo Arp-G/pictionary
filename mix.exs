@@ -20,7 +20,7 @@ defmodule Pictionary.MixProject do
   def application do
     [
       mod: {Pictionary.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :corsica]
     ]
   end
 
@@ -43,7 +43,7 @@ defmodule Pictionary.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:cors_plug, "~> 2.0"},
+      {:corsica, "~> 1.0"},
 
       # dev, test
       {:phoenix_live_reload, "~> 1.2", only: :dev},

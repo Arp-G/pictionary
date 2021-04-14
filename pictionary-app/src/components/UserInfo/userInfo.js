@@ -8,7 +8,7 @@ import { FaUserEdit, FaPlay } from 'react-icons/fa';
 import { BsHouseFill } from 'react-icons/bs';
 import UserAvatar from '../UserAvatar/userAvatar';
 import AvatarChooser from '../AvatarChooser/AvatarChooser';
-import { CHANGE_NAME, SAVE_TOKEN } from '../../constants/actionTypes';
+import { CHANGE_NAME, CREATE_SESSION } from '../../constants/actionTypes';
 import './userInfo.scss';
 
 const useStyles = makeStyles(() => ({
@@ -22,22 +22,36 @@ const useStyles = makeStyles(() => ({
 const UserInfo = () => {
   const classes = useStyles();
   const [random, setRandom] = useState(1);
+  const [error, setError] = useState(false);
   const [showModal, setModal] = useState(false);
   const closeModal = () => setModal(false);
   const dispatch = useDispatch();
   const name = useSelector(state => state.userInfo.name);
   const avatar = useSelector(state => state.userInfo.avatar);
-  const createUserSession = () => dispatch({ type: SAVE_TOKEN, payload: { name, avatar } });
+  const createUserSession = () => {
+    if (name === '') {
+      setError(true);
+      return;
+    }
+
+    dispatch({ type: CREATE_SESSION, payload: { name, avatar } });
+  };
 
   return (
     <Container>
       <TextField
+        required
         label="Name"
         placeholder="Your name here"
         fullWidth={true}
         variant="outlined"
         value={name}
-        onChange={event => dispatch({ type: CHANGE_NAME, payload: event.target.value })}
+        error={error}
+        helperText={error ? 'Name is required!' : ''}
+        onChange={(event) => {
+          if (event.target.value !== '') setError(false);
+          dispatch({ type: CHANGE_NAME, payload: event.target.value });
+        }}
       />
       <Box>
         <GiPerspectiveDiceSixFacesRandom size="1.5em" className="userAvatarIcon" onClick={() => setRandom(Math.random())} />

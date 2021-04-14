@@ -67,3 +67,20 @@
   position: fixed;
   z-index: 999;
 }
+
+.errorContainer {
+  // visibility: hidden;
+  background-color: red;
+  animation: errorFade 10s;
+  height: 50px;
+  animation-fill-mode: forwards;
+}
+
+.errorContainerVisible {
+  visibility: visible;
+}
+
+@keyframes errorFade {
+  0% { opacity: 1 }
+  100% { opacity: 0 }
+}
