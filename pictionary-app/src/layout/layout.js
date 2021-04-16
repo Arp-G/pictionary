@@ -4,25 +4,17 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BsFillVolumeUpFill, BsFillVolumeMuteFill, BsSun, BsMoon } from 'react-icons/bs';
-import useSound from 'use-sound';
-import { TOGGLE_SOUND, TOGGLE_DARK_MODE, CLEAR_ERROR } from '../constants/actionTypes';
-import soundToggleSfx from '../sounds/sound.mp3';
+import { CLEAR_ERROR } from '../constants/actionTypes';
 import ErrorBoundary from '../misc/errorBoundary';
+import useDarkMode from '../hooks/useDarkMode';
+import useSfx from '../hooks/useSfx';
 import './layout.scss';
 
 const Layout = ({ children }) => {
-  const sound = useSelector(state => state.settings.sound);
-  const darkMode = useSelector(state => state.settings.darkMode);
-  const error = useSelector(state => state.settings.error);
   const dispatch = useDispatch();
-  const [playSoundSfx] = useSound(soundToggleSfx, { volume: 0.3 });
-
-  const toggleSound = () => {
-    playSoundSfx();
-    return dispatch({ type: TOGGLE_SOUND });
-  };
-
-  const toggleDarkMode = () => dispatch({ type: TOGGLE_DARK_MODE });
+  const error = useSelector(state => state.settings.error);
+  const [darkMode, toggleDarkMode] = useDarkMode();
+  const [sound, toggleSound] = useSfx();
   const theme = createMuiTheme({ palette: { type: darkMode ? 'dark' : 'light' } });
 
   useEffect(() => {

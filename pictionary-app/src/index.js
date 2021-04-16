@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
-import reportWebVitals from './reportWebVitals';
 import configureStore, { history } from './stores/configureStore';
 import App from './App';
 import './fonts/Laffayette_Comic_Pro.ttf';
 import './index.css';
+import reportWebVitals from './reportWebVitals';
 
 const store = configureStore();
 

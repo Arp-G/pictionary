@@ -1,6 +1,11 @@
 import { TOGGLE_SOUND, TOGGLE_DARK_MODE, ADD_ERROR, CLEAR_ERROR } from '../constants/actionTypes';
 
-const initialState = { sound: true, darkMode: false, error: null };
+const initialState = {
+  sound: window.localStorage.getItem('userSound') !== 'false',
+  darkMode: window.localStorage.getItem('userTheme') === 'true',
+  error: null
+};
+
 const userInfoReducer = (state = initialState, action) => {
   switch (action.type) {
     case TOGGLE_SOUND:
