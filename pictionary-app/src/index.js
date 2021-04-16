@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import reportWebVitals from './reportWebVitals';
-import configureStore from './stores/configureStore';
+import configureStore, { history } from './stores/configureStore';
 import App from './App';
 import './fonts/Laffayette_Comic_Pro.ttf';
 import './index.css';
@@ -11,9 +12,11 @@ const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <ConnectedRouter history={history}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </ConnectedRouter>
   </Provider>,
   document.getElementById('root')
 );

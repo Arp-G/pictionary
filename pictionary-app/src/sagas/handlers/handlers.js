@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { call, put } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 import { createUserSession } from '../requests/requests';
 import { SAVE_TOKEN, ADD_ERROR } from '../../constants/actionTypes';
 
@@ -9,6 +10,7 @@ export function* saveUserSession(action) {
     const response = yield call(createUserSession, action.payload);
     // put creates the dispatch Effect, its like dispatch({ type: SAVE_TOKEN, payload: token })
     yield put({ type: SAVE_TOKEN, payload: response.data.token });
+    if (action.path) yield put(push(action.path));
   } catch (error) {
     yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating user session!' });
   }

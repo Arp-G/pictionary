@@ -31,10 +31,9 @@ const UserInfo = () => {
   const createUserSession = () => {
     if (name === '') {
       setError(true);
-      return;
     }
 
-    dispatch({ type: CREATE_SESSION, payload: { name, avatar } });
+    dispatch({ type: CREATE_SESSION, payload: { name, avatar }, path: 'lobby' });
   };
 
   return (
