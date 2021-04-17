@@ -1,7 +1,7 @@
 import React from 'react';
 import Avataaars from 'avataaars';
 
-const Avatar = ({ avatarStyles, width, height }, transparent = true) => (
+const Avatar = ({ avatarStyles, width, height, transparent = true }) => (
   <Avataaars
     style={{ width: width || '100%', height: height || '100%', transition: 'all .3s ease' }}
     avatarStyle={transparent ? 'transparent' : 'Circle'}

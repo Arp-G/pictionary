@@ -9,7 +9,12 @@ defmodule PictionaryWeb.Router do
   #   plug :put_secure_browser_headers
   # end
 
+  pipeline :current_user do
+    plug PictionaryWeb.CurrentUser
+  end
+
   pipeline :token_auth do
+    plug PictionaryWeb.CurrentUser
     plug PictionaryWeb.TokenAuth
   end
 
@@ -18,7 +23,7 @@ defmodule PictionaryWeb.Router do
   end
 
   scope "/api", PictionaryWeb do
-    pipe_through :api
+    pipe_through [:api, :current_user]
 
     post "/sessions", SessionController, :create
   end
@@ -26,6 +31,7 @@ defmodule PictionaryWeb.Router do
   scope "/api", PictionaryWeb do
     pipe_through [:api, :token_auth]
 
+    post "/games", GamesController, :create
     patch "/users", UserController, :update
     get "/users", UserController, :show
   end

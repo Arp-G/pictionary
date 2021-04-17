@@ -1,13 +1,12 @@
 /* eslint-disable quote-props */
 import axios from 'axios';
 import { API } from '../../helpers/api';
+import { getTokenFromLocalStorage } from '../../helpers/helpers';
 
 const axiosInstance = axios.create({ baseURL: API });
-const token = window.localStorage.getItem('token');
-
 const getDefaultHeaders = () => ({
   'Content-type': 'application/json;',
-  'Authorization': token ? `Bearer ${token}` : ''
+  'Authorization': getTokenFromLocalStorage() ? `Bearer ${getTokenFromLocalStorage()}` : ''
 });
 
 axiosInstance.interceptors.request.use((config) => {

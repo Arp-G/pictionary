@@ -12,3 +12,5 @@ export const getInputlabel = (input) => {
   const label = input.split(/(?=[A-Z])/).join(' ');
   return label[0].toUpperCase() + label.slice(1);
 };
+
+export const getTokenFromLocalStorage = () => window.localStorage.getItem('token');

@@ -1,0 +1,36 @@
+.playerListContainer {
+  height: 635px;
+  overflow: auto;
+}
+
+#playerListHeader {
+  text-align: center;
+  font-weight: bolder;
+  font-size: 1.5rem;
+  border-bottom: 1px solid grey;
+  padding: 1.3rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#playersList {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+#playersList > .MuiListItem-root {
+  width: 8rem !important;
+}
+
+.playerName,
+.playerAdmin {
+  max-width: 5rem;
+  overflow: hidden;
+  text-align: center;
+  font-size: 0.7rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.playerAdmin {
+  color: red;
+}

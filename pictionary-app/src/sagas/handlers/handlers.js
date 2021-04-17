@@ -1,18 +1,40 @@
 /* eslint-disable no-console */
 /* eslint-disable import/prefer-default-export */
-import { call, put, select } from 'redux-saga/effects';
+import { call, put, select, take } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
-import { createUserSession, getUserData } from '../requests/requests';
-import { SAVE_TOKEN, ADD_ERROR, LOAD_SESSION } from '../../constants/actionTypes';
+import { createUserSession, getUserData, createGame } from '../requests/requests';
+import { SAVE_TOKEN, ADD_ERROR, LOAD_SESSION, SAVE_GAME, CREATE_GAME, UPDATE_GAME_STATE } from '../../constants/actionTypes';
+
+/*
+  === Notes on various Redux SAGA effects ===
+
+ * call executes a function(api call) will some arguments and blocks or suspends generator until function is done
+ * put creates the dispatch Effect, its like dispatch({ type: SAVE_TOKEN, payload: token })
+   (call and put are both blocking and generate is suspend untill specified action is complete)
+
+ * fork is like call but used to create a non-blocking call generator will not wait for forked action to complete
+ * join instructs the middleware to wait for the result of a previously forked task.
+ * spwan is like fork but cretes detached tasks
+*/
 
 // This SAGA fetches users token and saves in store
 export function* saveUserSession(action) {
   try {
-    const response = yield call(createUserSession, action.payload);
-    // put creates the dispatch Effect, its like dispatch({ type: SAVE_TOKEN, payload: token })
-    yield put({ type: SAVE_TOKEN, payload: response.data.token });
-    if (action.path) yield put(push(action.path));
+    const response = yield call(createUserSession, action.payload); // This is always required to save the updated user avatar
+    yield put({ type: SAVE_TOKEN, payload: response.data });
     window.localStorage.setItem('token', response.data.token);
+
+    // Create game session
+    if (action.path === 'lobby') {
+      yield put({ type: CREATE_GAME });
+      // Action CREATE_GAME will execute further sagas and we want to navigate
+      // to the lobby only after action SAVE_GAME is done and game data is loaded in store
+      // the "take" effect waits for a certain action on the store
+      yield take(SAVE_GAME);
+    }
+
+    // Navigate to lobby
+    if (action.path) yield put(push(action.path));
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating user session!' });
@@ -29,5 +51,25 @@ export function* loadUserSession() {
   } catch (error) {
     window.localStorage.clear('token');
     console.log('Failed to fetch user data');
+  }
+}
+
+export function* saveGameSession() {
+  try {
+    const response = yield call(createGame);
+    yield put({ type: SAVE_GAME, payload: response.data });
+  } catch (error) {
+    yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating the game session!' });
+    console.log('Failed to save game data');
+  }
+}
+
+export function* updateGameSession(action) {
+  try {
+    // Update game states but dont make too many websocket calls using something like throttle
+    // yield throttle(1000, UPDATE_GAME, updateGameSession);
+    yield put({ type: UPDATE_GAME_STATE, payload: action.payload });
+  } catch (error) {
+    console.log('Failed to update game data');
   }
 }

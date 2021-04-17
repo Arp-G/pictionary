@@ -2,8 +2,12 @@ defmodule PictionaryWeb.SessionController do
   use PictionaryWeb, :controller
   alias Pictionary.{Stores.UserStore, User}
 
-  def create(conn, %{"name" => name, "avatar" => avatar}) do
-    user = %User{name: name, avatar: avatar}
+  def create(%{assigns: %{current_user: user}} = conn, %{"name" => name, "avatar" => avatar}) do
+    user =
+      if user,
+        do: %User{user | name: name, avatar: avatar},
+        else: %User{name: name, avatar: avatar}
+
     UserStore.add_user(user)
 
     conn

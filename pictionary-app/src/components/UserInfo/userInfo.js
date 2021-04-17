@@ -49,7 +49,7 @@ const UserInfo = () => {
         helperText={error ? 'Name is required!' : ''}
         onChange={(event) => {
           if (event.target.value !== '') setError(false);
-          dispatch({ type: CHANGE_NAME, payload: event.target.value });
+          dispatch({ type: CHANGE_NAME, payload: event.target.value?.substr(0, 30) });
         }}
       />
       <Box>

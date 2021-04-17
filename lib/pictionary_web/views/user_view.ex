@@ -3,6 +3,7 @@ defmodule PictionaryWeb.UserView do
 
   def render("show.json", %{user: user}) do
     %{
+      id: user.id,
       name: user.name,
       avatar: user.avatar
     }
