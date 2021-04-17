@@ -9,7 +9,15 @@ defmodule PictionaryWeb.TokenAuth do
     |> case do
       {:ok, user_id} ->
         user = Pictionary.Stores.UserStore.get_user(user_id)
-        assign(conn, :current_user, user)
+
+        if(user) do
+          assign(conn, :current_user, user)
+        else
+          conn
+          |> put_status(:not_found)
+          |> json(%{error: "User not found"})
+          |> halt()
+        end
 
       {:error, _} ->
         conn

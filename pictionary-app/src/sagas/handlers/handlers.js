@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable import/prefer-default-export */
 import { call, put, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
@@ -24,10 +25,9 @@ export function* loadUserSession() {
     const token = yield select(state => state.userInfo.token);
     if (!token) return;
     const response = yield call(getUserData);
-    console.log(response);
     yield put({ type: LOAD_SESSION, payload: response.data });
   } catch (error) {
-    // eslint-disable-next-line no-console
+    window.localStorage.clear('token');
     console.log('Failed to fetch user data');
   }
 }

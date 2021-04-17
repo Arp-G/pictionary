@@ -1,0 +1,37 @@
+#lobbyHeader {
+  text-align: center;
+  font-weight: bolder;
+  font-size: 1.5rem;
+  border-bottom: 1px solid grey;
+  padding: 1.3rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.lobbyFormContainer {
+  padding: 15px;
+
+  .customLabel {
+    font-size: 0.9rem;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    padding-bottom: 10px;
+  }
+
+  .customWordSlider {
+    width: 95% !important;
+  
+    .MuiSlider-track {
+      height: 7px;
+      border-radius: 7px;
+    }
+  
+    .MuiSlider-thumb {
+      margin-top: -3px;
+    }
+  
+    .MuiSlider-rail {
+      height: 6px;
+    }
+  }
+}
+
