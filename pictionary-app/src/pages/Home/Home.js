@@ -7,7 +7,7 @@ import About from '../../components/About/about';
 import './home.scss';
 
 const Home = () => (
-  <Container maxWidth="sm" alignContent="center" className="homeContainer">
+  <Container maxWidth="sm" className="homeContainer">
     <Paper className="wrapped-paper header">
       <Header />
     </Paper>
