@@ -14,3 +14,5 @@ export const getInputlabel = (input) => {
 };
 
 export const getTokenFromLocalStorage = () => window.localStorage.getItem('token');
+
+export const getRandomItem = list => list[Math.floor(Math.random() * list.length)];

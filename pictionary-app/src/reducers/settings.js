@@ -1,9 +1,10 @@
-import { TOGGLE_SOUND, TOGGLE_DARK_MODE, ADD_ERROR, CLEAR_ERROR } from '../constants/actionTypes';
+import { TOGGLE_SOUND, TOGGLE_DARK_MODE, ADD_ERROR, CLEAR_ERROR, SET_LOADING, CLEAR_LOADING } from '../constants/actionTypes';
 
 const initialState = {
   sound: window.localStorage.getItem('userSound') !== 'false',
   darkMode: window.localStorage.getItem('userTheme') === 'true',
-  error: null
+  error: null,
+  loading: false
 };
 
 const userInfoReducer = (state = initialState, action) => {
@@ -16,6 +17,10 @@ const userInfoReducer = (state = initialState, action) => {
       return { ...state, error: action.payload };
     case CLEAR_ERROR:
       return { ...state, error: null };
+    case SET_LOADING:
+      return { ...state, loading: true };
+    case CLEAR_LOADING:
+      return { ...state, loading: false };
     default:
       return state;
   }

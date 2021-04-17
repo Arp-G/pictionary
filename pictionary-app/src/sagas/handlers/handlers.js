@@ -3,7 +3,16 @@
 import { call, put, select, take } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { createUserSession, getUserData, createGame } from '../requests/requests';
-import { SAVE_TOKEN, ADD_ERROR, LOAD_SESSION, SAVE_GAME, CREATE_GAME, UPDATE_GAME_STATE } from '../../constants/actionTypes';
+import {
+  SAVE_TOKEN,
+  ADD_ERROR,
+  LOAD_SESSION,
+  SAVE_GAME,
+  CREATE_GAME,
+  UPDATE_GAME_STATE,
+  SET_LOADING,
+  CLEAR_LOADING
+} from '../../constants/actionTypes';
 
 /*
   === Notes on various Redux SAGA effects ===
@@ -20,6 +29,7 @@ import { SAVE_TOKEN, ADD_ERROR, LOAD_SESSION, SAVE_GAME, CREATE_GAME, UPDATE_GAM
 // This SAGA fetches users token and saves in store
 export function* saveUserSession(action) {
   try {
+    yield put({ type: SET_LOADING });
     const response = yield call(createUserSession, action.payload); // This is always required to save the updated user avatar
     yield put({ type: SAVE_TOKEN, payload: response.data });
     window.localStorage.setItem('token', response.data.token);
@@ -38,6 +48,8 @@ export function* saveUserSession(action) {
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating user session!' });
+  } finally {
+    yield put({ type: CLEAR_LOADING });
   }
 }
 

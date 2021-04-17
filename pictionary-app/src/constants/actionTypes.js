@@ -12,3 +12,5 @@ export const CREATE_GAME = 'CREATE_GAME';
 export const SAVE_GAME = 'SAVE_GAME';
 export const UPDATE_GAME = 'UPDATE_GAME';
 export const UPDATE_GAME_STATE = 'UPDATE_GAME_STATE';
+export const SET_LOADING = 'SET_LOADING';
+export const CLEAR_LOADING = 'CLEAR_LOADING';

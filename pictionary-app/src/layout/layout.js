@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BsFillVolumeUpFill, BsFillVolumeMuteFill, BsSun, BsMoon } from 'react-icons/bs';
+import LoadingScreen from '../pages/loading/loading';
 import { CLEAR_ERROR } from '../constants/actionTypes';
 import ErrorBoundary from '../misc/errorBoundary';
 import useDarkMode from '../hooks/useDarkMode';
@@ -13,6 +14,7 @@ import './layout.scss';
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const error = useSelector(state => state.settings.error);
+  const loading = useSelector(state => state.settings.loading);
   const [darkMode, toggleDarkMode] = useDarkMode();
   const [sound, toggleSound] = useSfx();
   const theme = createMuiTheme({ palette: { type: darkMode ? 'dark' : 'light' } });
@@ -25,7 +27,7 @@ const Layout = ({ children }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={`${darkMode ? 'bg dark-mode-bg' : 'bg'}`} />
+      <div className={`${darkMode || loading ? 'bg dark-mode-bg' : 'bg'}`} />
       <Grid container className={`main-wrapper-container ${darkMode && 'darkMode'}`}>
         <ErrorBoundary>
           <Grid item xs={1}>
@@ -52,7 +54,7 @@ const Layout = ({ children }) => {
         </Grid>
         <Grid item xs={12}>
           <ErrorBoundary>
-            <Container maxWidth="xl">{children}</Container>
+            {loading ? <LoadingScreen /> : <Container maxWidth="xl">{children}</Container>}
           </ErrorBoundary>
         </Grid>
       </Grid>
