@@ -1,7 +1,8 @@
+import generateName from 'sillyname';
 import { CHANGE_AVATAR, CHANGE_NAME, SAVE_TOKEN, LOAD_SESSION } from '../constants/actionTypes';
 import { getRandomAvatarStyles } from '../helpers/helpers';
 
-const initialState = { id: null, avatar: getRandomAvatarStyles(), name: '', token: window.localStorage.getItem('token') || null };
+const initialState = { id: null, avatar: getRandomAvatarStyles(), name: generateName(), token: window.localStorage.getItem('token') || null };
 const userInfoReducer = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_NAME:
