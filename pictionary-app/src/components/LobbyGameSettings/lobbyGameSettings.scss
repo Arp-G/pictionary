@@ -19,16 +19,16 @@
 
   .customWordSlider {
     width: 95% !important;
-  
+
     .MuiSlider-track {
       height: 7px;
       border-radius: 7px;
     }
-  
+
     .MuiSlider-thumb {
       margin-top: -3px;
     }
-  
+
     .MuiSlider-rail {
       height: 6px;
     }
@@ -39,8 +39,14 @@
   }
 }
 
-#copyLinkContainer {
+.copyLinkContainer {
   display: flex;
   justify-content: flex-end;
   padding: 0 10px 10px 0;
+}
+
+.copiedLinkContainer {
+  .MuiChip-root {
+    background-color: green;
+  }
 }

@@ -41,7 +41,7 @@ export function* saveUserSession(action) {
       // Action CREATE_GAME will execute further sagas and we want to navigate
       // to the lobby only after action SAVE_GAME is done and game data is loaded in store
       // the "take" effect waits for a certain action on the store
-      yield take(SAVE_GAME);
+      const { payload } = yield take(SAVE_GAME);
 
       // Init Socket Connection
       yield put({ type: INIT_SOCKET });
@@ -50,7 +50,7 @@ export function* saveUserSession(action) {
       yield put({ type: INIT_GAME_CHANNEL });
 
       // Navigate to lobby
-      yield put(push(action.path));
+      yield put(push(`lobby/${payload?.id}`));
     }
   } catch (error) {
     console.log(error);

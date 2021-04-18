@@ -143,11 +143,11 @@ const LobbyGameSettings = () => {
           />
         </FormGroup>
       </div>
-      <div id="copyLinkContainer">
+      <div className={`copyLinkContainer ${copied ? 'copiedLinkContainer' : ''}`}>
         <Chip
-          label="Invite your friends click here to copy link !"
+          label="Invite your friends !"
           clickable
-          color={copied ? '' : 'primary'}
+          color="primary"
           icon={copied ? <FaClipboardCheck /> : <FaClipboard />}
           onClick={() => {
             clipboardCopy(`${HOST_URL}${location.pathname}`);
