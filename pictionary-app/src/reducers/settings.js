@@ -1,11 +1,21 @@
-import { TOGGLE_SOUND, TOGGLE_DARK_MODE, ADD_ERROR, CLEAR_ERROR, SET_LOADING, CLEAR_LOADING, SAVE_SOCKET_OBJECT } from '../constants/actionTypes';
+import {
+  TOGGLE_SOUND,
+  TOGGLE_DARK_MODE,
+  ADD_ERROR,
+  CLEAR_ERROR,
+  SET_LOADING,
+  CLEAR_LOADING,
+  SAVE_SOCKET_OBJECT,
+  SAVE_GAME_CHANNEL
+} from '../constants/actionTypes';
 
 const initialState = {
   sound: window.localStorage.getItem('userSound') !== 'false',
   darkMode: window.localStorage.getItem('userTheme') === 'true',
   error: null,
   loading: false,
-  socket: null
+  socket: null,
+  gameChannel: null
 };
 
 const userInfoReducer = (state = initialState, action) => {
@@ -24,11 +34,13 @@ const userInfoReducer = (state = initialState, action) => {
       return { ...state, loading: false };
     case SAVE_SOCKET_OBJECT:
       return { ...state, socket: action.payload };
+    case SAVE_GAME_CHANNEL:
+      return { ...state, gameChannel: action.payload };
 
     // Debugging
     case 'PING':
       // eslint-disable-next-line no-console
-      console.log(`Got server ping with payload ${action.payload}`);
+      console.log('Got server ping with payload', action.payload);
       return { ...state };
 
     default:

@@ -69,7 +69,7 @@ const UserInfo = () => {
             color="primary"
             onClick={createUserSession}
           >
-            Create Private Room
+            Create Game
           </Button>
         </ButtonGroup>
         <Modal

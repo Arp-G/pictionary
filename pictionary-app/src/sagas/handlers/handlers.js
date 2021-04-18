@@ -9,7 +9,6 @@ import {
   LOAD_SESSION,
   SAVE_GAME,
   CREATE_GAME,
-  UPDATE_GAME_STATE,
   SET_LOADING,
   CLEAR_LOADING,
   INIT_SOCKET,
@@ -81,15 +80,5 @@ export function* saveGameSession() {
   } catch (error) {
     yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating the game session!' });
     console.log('Failed to save game data');
-  }
-}
-
-export function* updateGameSession(action) {
-  try {
-    // Update game states but dont make too many websocket calls using something like throttle
-    // yield throttle(1000, UPDATE_GAME, updateGameSession);
-    yield put({ type: UPDATE_GAME_STATE, payload: action.payload });
-  } catch (error) {
-    console.log('Failed to update game data');
   }
 }

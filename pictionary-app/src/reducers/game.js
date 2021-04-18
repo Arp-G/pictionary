@@ -5,13 +5,13 @@ const initialState = {
   id: null,
   rounds: 3,
   time: 60,
-  maxPlayers: 10,
-  customWords: '',
-  customWordsProbability: 50,
-  publicGame: true,
-  voteKickEnabled: true,
+  max_players: 10,
+  custom_words: '',
+  custom_words_probability: 50,
+  public_game: true,
+  vote_kick_enabled: true,
   players: [],
-  creatorId: null
+  creator_id: null
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -27,20 +27,20 @@ const gameReducer = (state = initialState, action) => {
         public_game,
         vote_kick_enabled,
         players,
-        creator_id: creatorId
+        creator_id
       } = action.payload;
       return {
         ...state,
         id,
         rounds,
         time,
-        maxPlayers: max_players,
-        customWords: custom_words,
-        customWordsProbability: custom_words_probability,
-        publicGame: public_game,
-        voteKickEnabled: vote_kick_enabled,
+        max_players,
+        custom_words,
+        custom_words_probability,
+        public_game,
+        vote_kick_enabled,
         players,
-        creatorId
+        creator_id
       };
     case UPDATE_GAME_STATE:
       return { ...state, ...action.payload };

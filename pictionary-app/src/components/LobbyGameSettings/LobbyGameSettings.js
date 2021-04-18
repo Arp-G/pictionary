@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -20,11 +21,11 @@ const LobbyGameSettings = () => {
   const {
     rounds,
     time,
-    maxPlayers,
-    customWords,
-    customWordsProbability,
-    publicGame,
-    voteKickEnabled
+    max_players,
+    custom_words,
+    custom_words_probability,
+    public_game,
+    vote_kick_enabled
   } = useSelector(state => state.game);
 
   return (
@@ -67,13 +68,13 @@ const LobbyGameSettings = () => {
           <FormControl variant="outlined" fullWidth margin="dense">
             <span className="customLabel"> Maximum Players </span>
             <Select
-              value={maxPlayers}
-              onChange={e => dispatch({ type: UPDATE_GAME, payload: { maxPlayers: e.target.value } })}
+              value={max_players}
+              onChange={e => dispatch({ type: UPDATE_GAME, payload: { max_players: e.target.value } })}
             >
               {
-                [...Array(24).keys()].map(key => (
-                  <MenuItem value={key + 1} key={key}>
-                    {key + 1}
+                [...Array(23).keys()].map(key => (
+                  <MenuItem value={key + 2} key={key}>
+                    {key + 2}
                   </MenuItem>
                 ))
               }
@@ -88,8 +89,8 @@ const LobbyGameSettings = () => {
               rows={5}
               rowsMax={4}
               variant="filled"
-              value={customWords}
-              onChange={e => dispatch({ type: UPDATE_GAME, payload: { customWords: e.target.value } })}
+              value={custom_words}
+              onChange={e => dispatch({ type: UPDATE_GAME, payload: { custom_words: e.target.value } })}
             />
           </FormControl>
 
@@ -100,16 +101,16 @@ const LobbyGameSettings = () => {
               max={100}
               valueLabelDisplay="auto"
               className="customWordSlider"
-              value={customWordsProbability}
-              onChange={(_event, value) => dispatch({ type: UPDATE_GAME, payload: { customWordsProbability: value } })}
+              value={custom_words_probability}
+              onChange={(_event, value) => dispatch({ type: UPDATE_GAME, payload: { custom_words_probability: value } })}
             />
           </FormControl>
 
           <FormControlLabel
             control={(
               <Checkbox
-                checked={publicGame}
-                onChange={e => dispatch({ type: UPDATE_GAME, payload: { publicGame: e.target.checked } })}
+                checked={public_game}
+                onChange={e => dispatch({ type: UPDATE_GAME, payload: { public_game: e.target.checked } })}
                 name="Public"
                 color="primary"
               />
@@ -120,8 +121,8 @@ const LobbyGameSettings = () => {
           <FormControlLabel
             control={(
               <Checkbox
-                checked={voteKickEnabled}
-                onChange={e => dispatch({ type: UPDATE_GAME, payload: { voteKickEnabled: e.target.checked } })}
+                checked={vote_kick_enabled}
+                onChange={e => dispatch({ type: UPDATE_GAME, payload: { vote_kick_enabled: e.target.checked } })}
                 name="Allow vote kick"
                 color="secondary"
               />

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Paper, List, ListItem } from '@material-ui/core';
@@ -5,7 +6,7 @@ import Avatar from '../Avatar/Avatar';
 import './lobbyUsersList.scss';
 
 const LobbyUsersList = () => {
-  const [players, creatorId] = useSelector(state => [state.game.players, state.game.creatorId]);
+  const [players, creator_id] = useSelector(state => [state.game.players, state.game.creator_id]);
   return (
     <Paper className="playerListContainer">
       <header id="playerListHeader"> Players </header>
@@ -14,12 +15,12 @@ const LobbyUsersList = () => {
           <ListItem key={player.id}>
             <div className="playerData">
               <div className="playerAvatar">
-                <Avatar avatarStyles={player.avatar} width="80px" height="80px" transparent={player.id !== creatorId} />
+                <Avatar avatarStyles={player.avatar} width="80px" height="80px" transparent={player.id !== creator_id} />
               </div>
               <div className="playerName">
                 {player.name}
               </div>
-              {player.id === creatorId ? <div className="playerAdmin">Admin</div> : ''}
+              {player.id === creator_id ? <div className="playerAdmin">Admin</div> : ''}
             </div>
           </ListItem>
         ))}
