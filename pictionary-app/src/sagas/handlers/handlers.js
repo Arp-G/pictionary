@@ -11,7 +11,9 @@ import {
   CREATE_GAME,
   UPDATE_GAME_STATE,
   SET_LOADING,
-  CLEAR_LOADING
+  CLEAR_LOADING,
+  INIT_SOCKET,
+  INIT_GAME_CHANNEL
 } from '../../constants/actionTypes';
 
 /*
@@ -41,10 +43,16 @@ export function* saveUserSession(action) {
       // to the lobby only after action SAVE_GAME is done and game data is loaded in store
       // the "take" effect waits for a certain action on the store
       yield take(SAVE_GAME);
-    }
 
-    // Navigate to lobby
-    if (action.path) yield put(push(action.path));
+      // Init Socket Connection
+      yield put({ type: INIT_SOCKET });
+
+      // Init Game channel
+      yield put({ type: INIT_GAME_CHANNEL });
+
+      // Navigate to lobby
+      yield put(push(action.path));
+    }
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating user session!' });

@@ -4,7 +4,7 @@ import logger from 'redux-logger';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { watcherSaga } from '../sagas/rootSaga';
-import watcherWebsocketSaga from '../sagas/handlers/wsHandlers';
+import wsSaga from '../sagas/wsSaga';
 import createRootReducer from '../reducers/reducers';
 
 export const history = createBrowserHistory();
@@ -20,6 +20,6 @@ if (devMode) middlewares.push(logger);
 export default () => {
   const store = createStore(createRootReducer(history), compose(applyMiddleware(...middlewares)));
   sagaMiddleware.run(watcherSaga);
-  wsMiddleware.run(watcherWebsocketSaga);
+  wsMiddleware.run(wsSaga);
   return store;
 };

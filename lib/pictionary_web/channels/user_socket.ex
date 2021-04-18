@@ -1,6 +1,5 @@
 defmodule PictionaryWeb.UserSocket do
   use Phoenix.Socket
-  require Logger
 
   ## Channels
   channel "game:*", PictionaryWeb.GameChannel
@@ -16,20 +15,15 @@ defmodule PictionaryWeb.UserSocket do
     |> case do
       {:ok, user_id} ->
         user = Pictionary.Stores.UserStore.get_user(user_id)
-        Logger.info("Connecting to user socket using token #{token} for user #{user.name}")
         if user, do: {:ok, assign(socket, :current_user, user)}, else: :error
 
       _ ->
-        Logger.warn("Could not connect to user socket using token #{token}")
         :error
     end
   end
 
   @impl true
-  def connect(_params, _socket, _connect_info) do
-    Logger.warn("Could not connect to user socket due to missing auth token")
-    :error
-  end
+  def connect(_params, _socket, _connect_info), do: :error
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
