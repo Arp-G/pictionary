@@ -1,23 +1,34 @@
 defmodule PictionaryWeb.UserSocket do
   use Phoenix.Socket
+  require Logger
 
   ## Channels
   channel "game:*", PictionaryWeb.GameChannel
 
-  # Socket params are passed from the client and can
-  # be used to verify and authenticate a user. After
-  # verification, you can put default assigns into
-  # the socket that will be set for all channels, ie
-  #
-  #     {:ok, assign(socket, :user_id, verified_user_id)}
-  #
-  # To deny connection, return `:error`.
-  #
-  # See `Phoenix.Token` documentation for examples in
-  # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket, _connect_info) do
+    Phoenix.Token.verify(
+      Application.get_env(:pictionary, Pictionary)[:secret_key],
+      Application.get_env(:pictionary, Pictionary)[:salt],
+      token,
+      max_age: :infinity
+    )
+    |> case do
+      {:ok, user_id} ->
+        user = Pictionary.Stores.UserStore.get_user(user_id)
+        Logger.info("Connecting to user socket using token #{token} for user #{user.name}")
+        if user, do: {:ok, assign(socket, :current_user, user)}, else: :error
+
+      _ ->
+        Logger.warn("Could not connect to user socket using token #{token}")
+        :error
+    end
+  end
+
+  @impl true
+  def connect(_params, _socket, _connect_info) do
+    Logger.warn("Could not connect to user socket due to missing auth token")
+    :error
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
