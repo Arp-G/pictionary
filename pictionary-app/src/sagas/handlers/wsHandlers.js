@@ -5,6 +5,7 @@ import { call, put, select, take } from 'redux-saga/effects';
 import { ADD_ERROR, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL } from '../../constants/actionTypes';
 import createWebSocketConnection from '../websocket';
 
+// Initialize websocket and save socket object in store
 export function* initWebsocket() {
   try {
     const token = yield select(state => state.userInfo.token);
@@ -16,6 +17,8 @@ export function* initWebsocket() {
   }
 }
 
+// Initialize game channel and save channel object in store
+// Then watch for events in game event channel and dispatch store actions on event channel updates
 export function* initGameChannel() {
   const [token, gameId, socket] = yield select(state => [state.userInfo.token, state.game.id, state.settings.socket]);
 
@@ -44,32 +47,36 @@ export function* initGameChannel() {
   }
 }
 
-export function* updateGameSession(action) {
+// Update game settings in store
+export function* updateGameSettings(action) {
   try {
-    // Update game states but dont make too many websocket calls using something like throttle
-    // yield throttle(1000, UPDATE_GAME, updateGameSession);
-
-    // eslint-disable-next-line camelcase
-    const [gameChannel, gameId, creator_id] = yield select(state => [state.settings.gameChannel, state.game.id, state.game.creator_id]);
-
-    if (!gameChannel) throw new Error('Game channel not initialized');
-
-    gameChannel.push('update_game', { ...action.payload, id: gameId, creator_id });
-
     yield put({ type: UPDATE_GAME_STATE, payload: action.payload });
   } catch (error) {
-    console.log('Failed to update game data', error);
+    console.log('Failed to update game data in store', error);
   }
 }
 
+// Update game settings in server by pushing messages on gamechannel webscoket
+export function* updateGameSession(action) {
+  try {
+    // eslint-disable-next-line camelcase
+    const [gameChannel, gameId, creator_id] = yield select(state => [state.settings.gameChannel, state.game.id, state.game.creator_id]);
+    if (!gameChannel) throw new Error('Game channel not initialized');
+    gameChannel.push('update_game', { ...action.payload, id: gameId, creator_id });
+  } catch (error) {
+    console.log('Failed to push updates to game data', error);
+  }
+}
+
+/*
+  Here the event channels takes subscriber function that subscribes to an event source(subscribes to the game channel)
+  Incoming events from the event source(messages from game channel) will be queued in the event
+  channel until interested takers(while loop in initGameChannel) are registered.
+  The subscriber function must return an unsubscribe function to terminate the subscription.
+  (here we use this to unsubscribe from the game channel)
+*/
 function createGameChannel(socket, gameId) {
   const gameChannel = socket.channel(`game:${gameId}`, {});
-  /*
-    Here the event channels takes subscriber function that subscribes to an event source
-    Incoming events from the event source will be queued in the channel until interested takers are registered.
-    The subscriber function must return an unsubscribe function to terminate the subscription, here we use it to
-    unsubscribe from the websocket channel
-  */
   return [
     gameChannel,
     eventChannel((emitter) => {
@@ -85,14 +92,14 @@ function createGameChannel(socket, gameId) {
         emitter({ type: ADD_ERROR });
       });
 
-      // TODO: Handle retry on socket disconnection(phoenix automatically does that)
       gameChannel.onClose((e) => {
         if (e.code === 1005) {
           console.log('WebSocket: closed');
           // Terminate watcher saga watcher saga by sending END
           emitter(END);
         } else {
-          console.log('Socket is closed Unexpectedly. Reconnect will be attempted in 4 second.', e);
+          console.log('Socket is closed Unexpectedly', e);
+          // TODO: Handle retry on socket disconnection(phoenix automatically does that)
           // setTimeout(() => {}, 4000);
         }
       });

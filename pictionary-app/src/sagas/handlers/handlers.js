@@ -20,7 +20,7 @@ import {
 
  * call executes a function(api call) will some arguments and blocks or suspends generator until function is done
  * put creates the dispatch Effect, its like dispatch({ type: SAVE_TOKEN, payload: token })
-   (call and put are both blocking and generate is suspend untill specified action is complete)
+   (call and put are both blocking and generate is suspend until specified action is complete)
 
  * fork is like call but used to create a non-blocking call generator will not wait for forked action to complete
  * join instructs the middleware to wait for the result of a previously forked task.
