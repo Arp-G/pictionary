@@ -16,3 +16,12 @@ export const getInputlabel = (input) => {
 export const getTokenFromLocalStorage = () => window.localStorage.getItem('token');
 
 export const getRandomItem = list => list[Math.floor(Math.random() * list.length)];
+
+export const clipboardCopy = (text) => {
+  const el = document.createElement('textarea');
+  el.value = text;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};

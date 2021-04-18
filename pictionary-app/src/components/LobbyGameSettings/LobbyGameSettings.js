@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { FaClipboard, FaClipboardCheck } from 'react-icons/fa';
 import {
   Paper,
   FormGroup,
@@ -10,11 +12,14 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  Slider
+  Slider,
+  Chip
 } from '@material-ui/core';
 import './lobbyGameSettings.scss';
 import { UPDATE_GAME } from '../../constants/actionTypes';
 import NUMBERS from '../../constants/numbers';
+import { HOST_URL } from '../../helpers/api';
+import { clipboardCopy } from '../../helpers/helpers';
 
 const LobbyGameSettings = () => {
   const dispatch = useDispatch();
@@ -27,6 +32,12 @@ const LobbyGameSettings = () => {
     public_game,
     vote_kick_enabled
   } = useSelector(state => state.game);
+  const location = useLocation();
+
+  const [copied, setCopied] = useState(false);
+  const [copyTimer, setCopyTimer] = useState(null);
+
+  useEffect(() => () => { clearTimeout(copyTimer); }, []);
 
   return (
     <Paper>
@@ -131,6 +142,20 @@ const LobbyGameSettings = () => {
             label="Allow vote kick"
           />
         </FormGroup>
+      </div>
+      <div id="copyLinkContainer">
+        <Chip
+          label="Invite your friends click here to copy link !"
+          clickable
+          color={copied ? '' : 'primary'}
+          icon={copied ? <FaClipboardCheck /> : <FaClipboard />}
+          onClick={() => {
+            clipboardCopy(`${HOST_URL}${location.pathname}`);
+            setCopied(true);
+            const timer = setTimeout(() => setCopied(false), 3000);
+            setCopyTimer(timer);
+          }}
+        />
       </div>
     </Paper>
   );
