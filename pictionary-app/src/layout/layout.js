@@ -17,7 +17,14 @@ const Layout = ({ children }) => {
   const loading = useSelector(state => state.settings.loading);
   const [darkMode, toggleDarkMode] = useDarkMode();
   const [sound, toggleSound] = useSfx();
-  const theme = createMuiTheme({ palette: { type: darkMode ? 'dark' : 'light' } });
+  const theme = createMuiTheme(
+    {
+      palette: {
+        primary: { main: '#0080FF' },
+        type: darkMode ? 'dark' : 'light'
+      }
+    }
+  );
 
   useEffect(() => {
     let timer;
