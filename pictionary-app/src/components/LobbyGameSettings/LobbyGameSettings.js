@@ -84,10 +84,11 @@ const LobbyGameSettings = () => {
           <FormControl fullWidth margin="dense">
             <span className="customLabel"> Custom words </span>
             <TextField
-              placeholder="Type you custom words separated by comma, minimum 4 words and maximum 30 characters per word"
+              placeholder="Type your custom words separated by comma, maximum 30 characters per word and maximum 10000 words"
               multiline
               rows={5}
               rowsMax={4}
+              inputProps={{ maxLength: 35000 }}
               variant="filled"
               value={custom_words}
               onChange={e => dispatch({ type: UPDATE_GAME, payload: { custom_words: e.target.value } })}

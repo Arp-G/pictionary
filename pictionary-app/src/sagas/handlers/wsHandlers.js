@@ -85,7 +85,7 @@ function createGameChannel(socket, gameId) {
       gameChannel.join();
 
       // Register listeners different types of events this channel can receive
-      gameChannel.on('ping', payload => emitter({ type: 'PING', payload }));
+      gameChannel.on('game_settings_updated', payload => emitter({ type: UPDATE_GAME_STATE, payload }));
 
       gameChannel.onError((e) => {
         console.log('An error occuered on game channel ', e);

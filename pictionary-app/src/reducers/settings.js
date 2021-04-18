@@ -36,13 +36,6 @@ const userInfoReducer = (state = initialState, action) => {
       return { ...state, socket: action.payload };
     case SAVE_GAME_CHANNEL:
       return { ...state, gameChannel: action.payload };
-
-    // Debugging
-    case 'PING':
-      // eslint-disable-next-line no-console
-      console.log('Got server ping with payload', action.payload);
-      return { ...state };
-
     default:
       return state;
   }

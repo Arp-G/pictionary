@@ -3,7 +3,7 @@ defmodule Pictionary.Stores.GameStore do
   alias Pictionary.Game
 
   @table_name :game_table
-  @custom_word_limit 1000
+  @custom_word_limit 10000
 
   @permitted_update_params [
     "id",
@@ -61,7 +61,7 @@ defmodule Pictionary.Stores.GameStore do
   end
 
   def handle_call({:update, %{"id" => id} = game_params}, _from, state) do
-    # For somereason :ets is returning two types of values, this case block handles both
+    # For some reason :ets is returning two types of values, this case block handles both
     game =
       case :ets.lookup(@table_name, id) do
         [{_id, {:set, game}}] -> game
@@ -77,9 +77,7 @@ defmodule Pictionary.Stores.GameStore do
           |> Enum.into(%{})
           |> handle_custom_words()
 
-        IO.puts("Updated game: #{inspect(struct(game, filtered_params))}")
-
-        updated_game = struct(game, filtered_params)
+        updated_game = struct(game, Map.put(filtered_params, :updated_at, DateTime.utc_now()))
 
         true = :ets.insert(@table_name, {id, updated_game})
 
@@ -98,6 +96,7 @@ defmodule Pictionary.Stores.GameStore do
         |> String.downcase()
         |> String.trim()
       end)
+      |> Stream.filter(&(String.length(&1) < 30 || String.length(&1) > 2))
       |> Stream.uniq()
       |> Enum.take(@custom_word_limit)
 

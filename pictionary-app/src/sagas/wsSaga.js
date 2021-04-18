@@ -12,5 +12,6 @@ export default function* watchsocketSagas() {
   yield takeLatest(UPDATE_GAME, updateGameSettings);
 
   // Throttle websocket calls to update game server state
+  // Take latest UPDATE_GAME action in every 500ms window
   yield throttle(500, UPDATE_GAME, updateGameSession);
 }
