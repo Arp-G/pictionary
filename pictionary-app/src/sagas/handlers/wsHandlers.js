@@ -2,7 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import { eventChannel, END } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
-import { ADD_ERROR, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL } from '../../constants/actionTypes';
+import { ADD_ALERT, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL } from '../../constants/actionTypes';
 import createWebSocketConnection from '../websocket';
 
 // Initialize websocket and save socket object in store
@@ -14,6 +14,7 @@ export function* initWebsocket() {
     yield put({ type: SAVE_SOCKET_OBJECT, payload: socket });
   } catch (error) {
     console.log('Failed to establish websocket connection', error);
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Failed to establish websocket connection' });
   }
 }
 
@@ -65,6 +66,7 @@ export function* updateGameSession(action) {
     gameChannel.push('update_game', { ...action.payload, id: gameId, creator_id });
   } catch (error) {
     console.log('Failed to push updates to game data', error);
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Failed to push updates to game data' });
   }
 }
 
@@ -89,7 +91,7 @@ function createGameChannel(socket, gameId) {
 
       gameChannel.onError((e) => {
         console.log('An error occuered on game channel ', e);
-        emitter({ type: ADD_ERROR });
+        emitter({ type: ADD_ALERT, alertType: 'error', msg: 'An error occuered on game channel' });
       });
 
       gameChannel.onClose((e) => {
@@ -99,6 +101,7 @@ function createGameChannel(socket, gameId) {
           emitter(END);
         } else {
           console.log('Socket is closed Unexpectedly', e);
+          emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Socket is closed Unexpectedly' });
           // TODO: Handle retry on socket disconnection(phoenix automatically does that)
           // setTimeout(() => {}, 4000);
         }

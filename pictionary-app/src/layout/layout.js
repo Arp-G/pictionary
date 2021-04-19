@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import { Grid, Container, Snackbar, Slide } from '@material-ui/core';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BsFillVolumeUpFill, BsFillVolumeMuteFill, BsSun, BsMoon } from 'react-icons/bs';
+import { AiFillCloseCircle } from 'react-icons/ai';
 import LoadingScreen from '../pages/loading/loading';
-import { CLEAR_ERROR } from '../constants/actionTypes';
+import { CLEAR_ALERT } from '../constants/actionTypes';
 import ErrorBoundary from '../misc/errorBoundary';
 import useDarkMode from '../hooks/useDarkMode';
 import useSfx from '../hooks/useSfx';
@@ -13,7 +13,7 @@ import './layout.scss';
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
-  const error = useSelector(state => state.settings.error);
+  const { alertType, msg } = useSelector(state => state.settings.alert);
   const loading = useSelector(state => state.settings.loading);
   const [darkMode, toggleDarkMode] = useDarkMode();
   const [sound, toggleSound] = useSfx();
@@ -26,11 +26,20 @@ const Layout = ({ children }) => {
     }
   );
 
-  useEffect(() => {
-    let timer;
-    if (error) timer = setTimeout(() => dispatch({ type: CLEAR_ERROR }), 5000);
-    return () => clearTimeout(timer);
-  }, [error]);
+  let alertColor;
+  switch (alertType) {
+    case 'error':
+      alertColor = '#f44336';
+      break;
+    case 'success':
+      alertColor = '#4caf50';
+      break;
+    case 'info':
+      alertColor = '#2196f3';
+      break;
+    default:
+      alertColor = '#2196f3';
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -54,17 +63,26 @@ const Layout = ({ children }) => {
             </Grid>
           </Grid>
         </ErrorBoundary>
-        <Grid item xs={12} className={`errorContainer ${error ? 'errorContainerVisible' : ''}`}>
-          <h3>
-            {error}
-          </h3>
-        </Grid>
         <Grid item xs={12}>
           <ErrorBoundary>
             {loading ? <LoadingScreen /> : <Container maxWidth="xl">{children}</Container>}
           </ErrorBoundary>
         </Grid>
       </Grid>
+      {msg
+        && (
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            open={true}
+            autoHideDuration={2000}
+            onClose={() => dispatch({ type: CLEAR_ALERT })}
+            message={msg}
+            action={<AiFillCloseCircle onClick={() => dispatch({ type: CLEAR_ALERT })} />}
+            ContentProps={{ style: { backgroundColor: alertColor } }}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            TransitionComponent={props => <Slide {...props} direction="up" />}
+          />
+        )}
     </ThemeProvider>
   );
 };

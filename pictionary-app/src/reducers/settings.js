@@ -1,8 +1,8 @@
 import {
   TOGGLE_SOUND,
   TOGGLE_DARK_MODE,
-  ADD_ERROR,
-  CLEAR_ERROR,
+  ADD_ALERT,
+  CLEAR_ALERT,
   SET_LOADING,
   CLEAR_LOADING,
   SAVE_SOCKET_OBJECT,
@@ -12,7 +12,7 @@ import {
 const initialState = {
   sound: window.localStorage.getItem('userSound') !== 'false',
   darkMode: window.localStorage.getItem('userTheme') === 'true',
-  error: null,
+  alert: { alertType: null, msg: null },
   loading: false,
   socket: null,
   gameChannel: null
@@ -24,10 +24,10 @@ const userInfoReducer = (state = initialState, action) => {
       return { ...state, sound: !state.sound };
     case TOGGLE_DARK_MODE:
       return { ...state, darkMode: !state.darkMode };
-    case ADD_ERROR:
-      return { ...state, error: action.payload };
-    case CLEAR_ERROR:
-      return { ...state, error: null };
+    case ADD_ALERT:
+      return { ...state, alert: { alertType: action.alertType, msg: action.msg } };
+    case CLEAR_ALERT:
+      return { ...state, alert: { alertType: null, msg: null } };
     case SET_LOADING:
       return { ...state, loading: true };
     case CLEAR_LOADING:

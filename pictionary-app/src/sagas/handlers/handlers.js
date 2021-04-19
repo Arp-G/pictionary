@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { createUserSession, getUserData, createGame } from '../requests/requests';
 import {
   SAVE_TOKEN,
-  ADD_ERROR,
+  ADD_ALERT,
   LOAD_SESSION,
   SAVE_GAME,
   CREATE_GAME,
@@ -54,7 +54,7 @@ export function* saveUserSession(action) {
     }
   } catch (error) {
     console.log(error);
-    yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating user session!' });
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when creating user session!' });
   } finally {
     yield put({ type: CLEAR_LOADING });
   }
@@ -78,7 +78,7 @@ export function* saveGameSession() {
     const response = yield call(createGame);
     yield put({ type: SAVE_GAME, payload: response.data });
   } catch (error) {
-    yield put({ type: ADD_ERROR, payload: 'Something went wrong when creating the game session!' });
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when creating the game session!' });
     console.log('Failed to save game data');
   }
 }
