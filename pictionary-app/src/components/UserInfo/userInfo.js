@@ -8,7 +8,7 @@ import { FaUserEdit, FaPlay } from 'react-icons/fa';
 import { BsHouseFill } from 'react-icons/bs';
 import UserAvatar from '../UserAvatar/userAvatar';
 import AvatarChooser from '../AvatarChooser/AvatarChooser';
-import { CHANGE_NAME, CREATE_SESSION } from '../../constants/actionTypes';
+import { CHANGE_NAME, CREATE_USER_SESSION, CREATE_GAME_FLOW, JOIN_GAME_FLOW } from '../../constants/actionTypes';
 import './userInfo.scss';
 
 const useStyles = makeStyles(() => ({
@@ -29,12 +29,14 @@ const UserInfo = () => {
   const name = useSelector(state => state.userInfo.name);
   const avatar = useSelector(state => state.userInfo.avatar);
   const gameToJoinId = useSelector(state => state.settings.gameToJoinId);
-  const createUserSession = () => {
-    if (name === '') {
-      setError(true);
-    }
+  const createAndJoinGmae = () => {
+    if (name === '') setError(true);
+    dispatch({ type: CREATE_USER_SESSION, payload: { name, avatar }, flowType: CREATE_GAME_FLOW });
+  };
 
-    dispatch({ type: CREATE_SESSION, payload: { name, avatar }, path: 'lobby' });
+  const joinExistingGmae = () => {
+    if (name === '') setError(true);
+    dispatch({ type: CREATE_USER_SESSION, payload: { name, avatar }, flowType: CREATE_GAME_FLOW });
   };
 
   return (
@@ -61,14 +63,14 @@ const UserInfo = () => {
           <Button
             startIcon={<FaPlay />}
             style={{ backgroundColor: '#228b22', color: 'white' }}
-            onClick={createUserSession}
+            onClick={joinExistingGmae}
           >
             {gameToJoinId ? 'Join Game !' : 'Play !'}
           </Button>
           <Button
             startIcon={<BsHouseFill />}
             color="primary"
-            onClick={createUserSession}
+            onClick={createAndJoinGmae}
           >
             Create Game
           </Button>
