@@ -19,8 +19,9 @@ defmodule Pictionary.Stores.GameStore do
   # Public API
   def get_game(game_id) do
     case GenServer.call(__MODULE__, {:get, game_id}) do
-      [] -> nil
+      [{_id, {:set, game}}] -> game
       [{_game_id, game_data}] -> game_data
+      _ -> nil
     end
   end
 

@@ -19,7 +19,9 @@ defmodule PictionaryWeb.UserController do
         render(conn, "show.json", user: user)
 
       nil ->
-        json(conn, %{message: "User not found !"})
+        conn
+        |> Plug.Conn.put_status(:not_found)
+        |> json(%{message: "User not found !"})
     end
   end
 

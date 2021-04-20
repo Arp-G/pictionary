@@ -31,9 +31,10 @@ defmodule PictionaryWeb.Router do
   scope "/api", PictionaryWeb do
     pipe_through [:api, :token_auth]
 
-    post "/games", GamesController, :create
     patch "/users", UserController, :update
     get "/users", UserController, :show
+    post "/games", GamesController, :create
+    get "/games/:game_id", GamesController, :show
   end
 
   # Other scopes may use custom stacks.
