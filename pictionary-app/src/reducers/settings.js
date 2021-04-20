@@ -6,7 +6,8 @@ import {
   SET_LOADING,
   CLEAR_LOADING,
   SAVE_SOCKET_OBJECT,
-  SAVE_GAME_CHANNEL
+  SAVE_GAME_CHANNEL,
+  SAVE_GAME_TO_JOIN_ID
 } from '../constants/actionTypes';
 
 const initialState = {
@@ -15,7 +16,8 @@ const initialState = {
   alert: { alertType: null, msg: null },
   loading: false,
   socket: null,
-  gameChannel: null
+  gameChannel: null,
+  gameToJoinId: null
 };
 
 const userInfoReducer = (state = initialState, action) => {
@@ -36,6 +38,8 @@ const userInfoReducer = (state = initialState, action) => {
       return { ...state, socket: action.payload };
     case SAVE_GAME_CHANNEL:
       return { ...state, gameChannel: action.payload };
+    case SAVE_GAME_TO_JOIN_ID:
+      return { ...state, gameToJoinId: action.payload };
     default:
       return state;
   }

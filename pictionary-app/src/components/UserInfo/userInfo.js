@@ -28,6 +28,7 @@ const UserInfo = () => {
   const dispatch = useDispatch();
   const name = useSelector(state => state.userInfo.name);
   const avatar = useSelector(state => state.userInfo.avatar);
+  const gameToJoinId = useSelector(state => state.settings.gameToJoinId);
   const createUserSession = () => {
     if (name === '') {
       setError(true);
@@ -62,7 +63,7 @@ const UserInfo = () => {
             style={{ backgroundColor: '#228b22', color: 'white' }}
             onClick={createUserSession}
           >
-            Play !
+            {gameToJoinId ? 'Join Game !' : 'Play !'}
           </Button>
           <Button
             startIcon={<BsHouseFill />}
