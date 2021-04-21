@@ -2,6 +2,7 @@ defmodule PictionaryWeb.GameChannel do
   use Phoenix.Channel
   alias Pictionary.Stores.GameStore
   alias PictionaryWeb.GamesView
+  alias PictionaryWeb.Presence
 
   def join("game:" <> game_id, _payload, socket) do
     case GameStore.get_game(game_id) do
@@ -25,5 +26,14 @@ defmodule PictionaryWeb.GameChannel do
     # use broadcast_from to avoid sending broadcast to socket owner
     broadcast_from(socket, "game_settings_updated", GamesView.render("show.json", %{game: game}))
     {:reply, :ok, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    {:ok, _} =
+      Presence.track(socket, socket.assigns.current_user.id, %{
+        online_at: inspect(System.system_time(:second))
+      })
+    push(socket, "presence_state", Presence.list(socket))
+    {:noreply, socket}
   end
 end

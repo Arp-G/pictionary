@@ -13,6 +13,7 @@ defmodule Pictionary.Application do
       PictionaryWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Pictionary.PubSub},
+      PictionaryWeb.Presence,
       # Start the Endpoint (http/https)
       PictionaryWeb.Endpoint,
       Pictionary.StoreSupervisor
