@@ -44,18 +44,22 @@ defmodule PictionaryWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug Corsica, max_age: 600, origins: "*"
+
+  plug Corsica,
+    max_age: 600,
+    origins: "http://localhost:3000",
+    allow_headers: ["content-type", "accept", "authorization"]
+
   plug PictionaryWeb.Router
 end
 
-
 defmodule Pictionary.CORS do
   use Corsica.Router,
-    origins: ["http://localhost:3000", ~r{^https?://(.*\.)?foo\.com$}],
+    origins: ["*"],
     allow_credentials: true,
     max_age: 600,
     allow_headers: :all,
     allow_methods: :all
 
-  resource "/*", origins: "*"
+  resource("/*", origins: "*")
 end
