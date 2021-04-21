@@ -42,7 +42,7 @@ export function* saveUserSession(action) {
     window.localStorage.setItem('token', response.data.token);
 
     if (action.flowType === CREATE_GAME_FLOW) yield put({ type: CREATE_AND_ENTER_GAME_SESSION });
-    if (action.flowType === JOIN_GAME_FLOW) yield put({ type: JOIN_EXISTING_GAME_SESSION });
+    if (action.flowType === JOIN_GAME_FLOW) yield put({ type: JOIN_EXISTING_GAME_SESSION, payload: action.gameToJoinId });
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when creating user session!' });
@@ -71,8 +71,8 @@ export function* creatAndEnterGameSession() {
 }
 
 // This saga will join an existing game session
-export function* joinGameSession() {
-  yield put({ type: GET_GAME_DATA });
+export function* joinGameSession(action) {
+  yield put({ type: GET_GAME_DATA, payload: action.payload });
 
   const { payload } = yield take(SAVE_GAME);
 
@@ -80,7 +80,7 @@ export function* joinGameSession() {
   yield put({ type: INIT_SOCKET });
 
   // Init Game channel
-  yield put({ type: INIT_GAME_CHANNEL });
+  yield put({ type: INIT_GAME_CHANNEL, payload: payload?.id });
 
   // Navigate to lobby
   yield put(push(`lobby/${payload?.id}`));
@@ -111,9 +111,9 @@ export function* createGameSession() {
 }
 
 // This saga will fetch exisitng game data by sending api request and save game data in store
-export function* getGameData() {
+export function* getGameData(action) {
   try {
-    const response = yield call(getGame);
+    const response = yield call(getGame, action.payload);
     yield put({ type: SAVE_GAME, payload: response.data });
   } catch (error) {
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when fetching the game session!' });

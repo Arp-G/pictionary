@@ -4,7 +4,12 @@ defmodule PictionaryWeb.GamesController do
   alias Pictionary.Stores.GameStore
 
   def create(%{assigns: %{current_user: current_user}} = conn, _params) do
-    game = %Game{players: [current_user], creator_id: current_user.id}
+    game = %Game{
+      id: Ecto.UUID.generate(),
+      players: MapSet.new([current_user.id]),
+      creator_id: current_user.id
+    }
+
     GameStore.add_game(game)
     render(conn, "show.json", game: game)
   end

@@ -5,6 +5,10 @@ defmodule PictionaryWeb.GameChannel do
   alias PictionaryWeb.Presence
 
   def join("game:" <> game_id, _payload, socket) do
+    send(self(), :after_join)
+
+    :ok = Pictionary.GameChannelWatcher.monitor(:games, self(), {__MODULE__, :leave, [game_id, socket.assigns.current_user.id]})
+
     case GameStore.get_game(game_id) do
       [] -> {:error, %{reason: "game not found"}}
       _ -> {:ok, assign(socket, :game_id, game_id)}
@@ -33,6 +37,9 @@ defmodule PictionaryWeb.GameChannel do
       Presence.track(socket, socket.assigns.current_user.id, %{
         online_at: inspect(System.system_time(:second))
       })
+
+    require IEx; IEx.pry
+
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end

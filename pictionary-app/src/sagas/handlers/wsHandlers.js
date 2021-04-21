@@ -2,6 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import { eventChannel, END } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
+import { Presence } from 'phoenix';
 import { ADD_ALERT, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL } from '../../constants/actionTypes';
 import createWebSocketConnection from '../websocket';
 
@@ -20,8 +21,9 @@ export function* initWebsocket() {
 
 // Initialize game channel and save channel object in store
 // Then watch for events in game event channel and dispatch store actions on event channel updates
-export function* initGameChannel() {
+export function* initGameChannel(action, x) {
   const [token, gameId, socket] = yield select(state => [state.userInfo.token, state.game.id, state.settings.socket]);
+  console.log(`Got a game id ${gameId} in store and action is `, action, x);
 
   if (!token || !gameId || !socket) {
     console.log('Could not initialize game channel');
@@ -84,7 +86,21 @@ function createGameChannel(socket, gameId) {
     eventChannel((emitter) => {
       console.log('Trying to initialize game channel');
 
-      gameChannel.join();
+      const presence = new Presence(gameChannel);
+
+      gameChannel.join()
+        .receive('error', (resp) => {
+          emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Could not join game channel' });
+          console.log('Unable to join', resp);
+        });
+
+      const test = (p) => {
+        p.list((u_id, { metas: [first, ...rest] }) => {
+          console.log(u_id, first, rest);
+        });
+      };
+
+      presence.onSync(() => test(presence));
 
       // Register listeners different types of events this channel can receive
       gameChannel.on('game_settings_updated', payload => emitter({ type: UPDATE_GAME_STATE, payload }));

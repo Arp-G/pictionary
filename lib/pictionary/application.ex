@@ -17,6 +17,7 @@ defmodule Pictionary.Application do
       # Start the Endpoint (http/https)
       PictionaryWeb.Endpoint,
       Pictionary.StoreSupervisor
+     # Pictionary.GameChannelWatcher
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

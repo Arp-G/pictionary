@@ -8,7 +8,7 @@ defmodule Pictionary.Game do
     custom_words_probability: 50,
     public_game: true,
     vote_kick_enabled: true,
-    players: [],
+    players: MapSet.new(),
     creator_id: nil,
     created_at: DateTime.utc_now(),
     updated_at: DateTime.utc_now()
@@ -23,7 +23,7 @@ defmodule Pictionary.Game do
           custom_words_probability: number(),
           public_game: boolean(),
           vote_kick_enabled: boolean(),
-          players: list(Pictionary.User.t()),
+          players: MapSet.t(),
           creator_id: String.t(),
           created_at: t(),
           updated_at: t()

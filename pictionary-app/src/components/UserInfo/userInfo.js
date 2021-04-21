@@ -36,7 +36,7 @@ const UserInfo = () => {
 
   const joinExistingGmae = () => {
     if (name === '') setError(true);
-    dispatch({ type: CREATE_USER_SESSION, payload: { name, avatar }, flowType: CREATE_GAME_FLOW });
+    dispatch({ type: CREATE_USER_SESSION, payload: { name, avatar }, flowType: JOIN_GAME_FLOW, gameToJoinId });
   };
 
   return (

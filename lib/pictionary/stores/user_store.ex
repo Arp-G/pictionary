@@ -12,6 +12,10 @@ defmodule Pictionary.Stores.UserStore do
     end
   end
 
+  def get_users(user_ids) do
+    GenServer.call(__MODULE__, {:bulk_get, user_ids})
+  end
+
   def add_user(user) do
     GenServer.call(__MODULE__, {:set, user})
   end
@@ -32,6 +36,15 @@ defmodule Pictionary.Stores.UserStore do
   def handle_call({:get, user_id}, _from, state) do
     user = :ets.lookup(@table_name, user_id)
     {:reply, user, state}
+  end
+
+  def handle_call({:bulk_get, user_ids}, _from, state) do
+    # Reference: https://elixirforum.com/t/best-way-to-get-multiple-keys-from-static-ets-table/23692/9
+    users =
+      :ets.select(@table_name, for(user_id <- user_ids, do: {{user_id, :_}, [], [:"$_"]}))
+      |> Enum.map(fn {_user_id, user_data} -> user_data end)
+
+    {:reply, users, state}
   end
 
   def handle_call({:set, user_data = %User{id: user_id}}, _from, state) do

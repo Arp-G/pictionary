@@ -11,8 +11,14 @@ defmodule PictionaryWeb.GamesView do
       custom_words_probability: game.custom_words_probability,
       public_game: game.public_game,
       vote_kick_enabled: game.vote_kick_enabled,
-      players: render_many(game.players, PictionaryWeb.UserView, "show.json"),
+      players: game |> get_game_players() |> render_many(PictionaryWeb.UserView, "show.json"),
       creator_id: game.creator_id
     }
+  end
+
+  defp get_game_players(game) do
+    game.players
+    |> MapSet.to_list()
+    |> Pictionary.Stores.UserStore.get_users()
   end
 end
