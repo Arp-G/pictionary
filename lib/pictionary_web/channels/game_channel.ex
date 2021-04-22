@@ -14,8 +14,13 @@ defmodule PictionaryWeb.GameChannel do
       )
 
     case GameStore.get_game(game_id) do
-      nil -> {:error, %{reason: "game not found"}}
-      _ -> {:ok, assign(socket, :game_id, game_id)}
+      nil ->
+        {:error, %{reason: "Game not found"}}
+
+      game ->
+        if MapSet.size(game.players) >= game.max_players,
+          do: {:error, %{reason: "Game Full!"}},
+          else: {:ok, assign(socket, :game_id, game_id)}
     end
   end
 
@@ -36,11 +41,8 @@ defmodule PictionaryWeb.GameChannel do
     {:reply, :ok, socket}
   end
 
-  def handle_info(:after_join, socket) do
-    {:ok, _} =
-      Presence.track(socket, socket.assigns.current_user.id, %{
-        online_at: inspect(System.system_time(:second))
-      })
+  def handle_info(:after_join, %{assigns: %{current_user: user}} = socket) do
+    {:ok, _} = Presence.track(socket, user.id, %{user_data: user})
 
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}

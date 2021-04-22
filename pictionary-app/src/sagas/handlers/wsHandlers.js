@@ -3,7 +3,7 @@
 import { eventChannel, END } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 import { Presence } from 'phoenix';
-import { ADD_ALERT, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL } from '../../constants/actionTypes';
+import { ADD_ALERT, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL, UPDATE_GAME_PLAYERS } from '../../constants/actionTypes';
 import createWebSocketConnection from '../websocket';
 
 // Initialize websocket and save socket object in store
@@ -94,13 +94,7 @@ function createGameChannel(socket, gameId) {
           console.log('Unable to join', resp);
         });
 
-      const test = (p) => {
-        p.list((u_id, { metas: [first, ...rest] }) => {
-          console.log(u_id, first, rest);
-        });
-      };
-
-      presence.onSync(() => test(presence));
+      presence.onSync(() => presenceObj => presenceObj.list((_userId, { metas: players }) => emitter({ type: UPDATE_GAME_PLAYERS, payload: players })));
 
       // Register listeners different types of events this channel can receive
       gameChannel.on('game_settings_updated', payload => emitter({ type: UPDATE_GAME_STATE, payload }));

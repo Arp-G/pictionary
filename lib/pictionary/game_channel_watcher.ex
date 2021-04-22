@@ -23,7 +23,7 @@ defmodule Pictionary.GameChannelWatcher do
   ## Server API
 
   def start_link(_) do
-    GenServer.start_link(__MODULE__, [], name: :game_channel_watcher)
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def init(_) do

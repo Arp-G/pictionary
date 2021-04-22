@@ -20,11 +20,7 @@ defmodule Pictionary.Stores.GameStore do
   ## Public API
 
   def get_game(game_id) do
-    case GenServer.call(__MODULE__, {:get, game_id}) do
-      [{_id, {:set, game}}] -> game
-      [{_game_id, game_data}] -> game_data
-      _ -> nil
-    end
+    GenServer.call(__MODULE__, {:get, game_id})
   end
 
   def add_game(game) do
@@ -58,8 +54,7 @@ defmodule Pictionary.Stores.GameStore do
   end
 
   def handle_call({:get, game_id}, _from, state) do
-    game = :ets.lookup(@table_name, game_id)
-    {:reply, game, state}
+    {:reply, fetch_game(game_id), state}
   end
 
   def handle_call({:set, %Game{id: game_id}} = game_data, _from, state) do
@@ -100,7 +95,7 @@ defmodule Pictionary.Stores.GameStore do
   def handle_call({:add_player, game_id, player_id}, _from, state) do
     game = fetch_game(game_id)
 
-    if game do
+    if game && MapSet.size(game.players) <= game.max_players do
       game = %Pictionary.Game{game | players: MapSet.put(game.players, player_id)}
       true = :ets.insert(@table_name, {game_id, game})
       Logger.info("Add player #{player_id} to game #{game_id}")
@@ -110,7 +105,7 @@ defmodule Pictionary.Stores.GameStore do
     end
   end
 
-  def handle_call({:delete_player, game_id, player_id}, _from, state) do
+  def handle_call({:remove_player, game_id, player_id}, _from, state) do
     game = fetch_game(game_id)
 
     if game do
