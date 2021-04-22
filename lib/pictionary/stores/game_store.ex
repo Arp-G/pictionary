@@ -1,6 +1,7 @@
 defmodule Pictionary.Stores.GameStore do
   use GenServer
   alias Pictionary.Game
+  require Logger
 
   @table_name :game_table
   @custom_word_limit 10000
@@ -16,7 +17,8 @@ defmodule Pictionary.Stores.GameStore do
     "vote_kick_enabled"
   ]
 
-  # Public API
+  ## Public API
+
   def get_game(game_id) do
     case GenServer.call(__MODULE__, {:get, game_id}) do
       [{_id, {:set, game}}] -> game
@@ -33,7 +35,16 @@ defmodule Pictionary.Stores.GameStore do
     GenServer.call(__MODULE__, {:update, game_params})
   end
 
-  # GenServer callbacks
+  def add_player(game_id, player_id) do
+    GenServer.call(__MODULE__, {:add_player, game_id, player_id})
+  end
+
+  def remove_player(game_id, player_id) do
+    GenServer.call(__MODULE__, {:remove_player, game_id, player_id})
+  end
+
+  ## GenServer callbacks
+
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
@@ -56,18 +67,14 @@ defmodule Pictionary.Stores.GameStore do
     # of ETS insertion faliure
     true = :ets.insert(@table_name, {game_id, game_data})
 
-    IO.puts("Inserted game id: #{game_id}")
+    Logger.info("Create game #{game_id}")
 
     {:reply, game_data, state}
   end
 
   def handle_call({:update, %{"id" => id} = game_params}, _from, state) do
     # For some reason :ets is returning two types of values, this case block handles both
-    game =
-      case :ets.lookup(@table_name, id) do
-        [{_id, {:set, game}}] -> game
-        [{_id, game}] -> game
-      end
+    game = fetch_game(id)
 
     updated_game =
       if game do
@@ -82,11 +89,41 @@ defmodule Pictionary.Stores.GameStore do
 
         true = :ets.insert(@table_name, {id, updated_game})
 
+        Logger.info("Update game #{id}")
+
         updated_game
       end
 
     {:reply, updated_game || game, state}
   end
+
+  def handle_call({:add_player, game_id, player_id}, _from, state) do
+    game = fetch_game(game_id)
+
+    if game do
+      game = %Pictionary.Game{game | players: MapSet.put(game.players, player_id)}
+      true = :ets.insert(@table_name, {game_id, game})
+      Logger.info("Add player #{player_id} to game #{game_id}")
+      {:reply, game, state}
+    else
+      {:reply, :error, state}
+    end
+  end
+
+  def handle_call({:delete_player, game_id, player_id}, _from, state) do
+    game = fetch_game(game_id)
+
+    if game do
+      game = %Pictionary.Game{game | players: MapSet.delete(game.players, player_id)}
+      true = :ets.insert(@table_name, {game_id, game})
+      Logger.info("Removed player #{player_id} from game #{game_id}")
+      {:reply, game, state}
+    else
+      {:reply, :error, state}
+    end
+  end
+
+  ## Private helpers
 
   defp handle_custom_words(%{custom_words: custom_words} = filtered_params) do
     custom_word_list =
@@ -105,4 +142,12 @@ defmodule Pictionary.Stores.GameStore do
   end
 
   defp handle_custom_words(filtered_params), do: filtered_params
+
+  defp fetch_game(game_id) do
+    case :ets.lookup(@table_name, game_id) do
+      [{_id, {:set, game}}] -> game
+      [{_game_id, game}] -> game
+      _ -> nil
+    end
+  end
 end

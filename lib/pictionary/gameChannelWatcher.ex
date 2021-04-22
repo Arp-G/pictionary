@@ -1,5 +1,6 @@
-defmodule GameChannelWatcher do
+defmodule Pictionary.GameChannelWatcher do
   use GenServer
+  alias Pictionary.Stores.GameStore
 
   # Phoenix presence does not have any direct way to execute code when someone disconnects
   # from channel using terminate callback on channel genserver is not ideal instead the below watcher genserver helps to solve this
@@ -28,36 +29,41 @@ defmodule GameChannelWatcher do
   def init(_) do
     # When the linked process dies the caller process meaning this genserver process also dies
     # Here we set the flag :trap_exit to true to TRAP such exits in the handle_info({:EXIT...) block
+    # We avoid this genserver from dieing by trapping exists and then remove the user who left from ets game data
     Process.flag(:trap_exit, true)
     {:ok, %{}}
   end
 
-  def handle_call({:monitor, pid, data}, _from, state) do
+  def handle_call({:monitor, pid, {game_id, user_id}}, _from, state) do
     # Link the channel process with the current process
-    # When two processes are linked, each one receives exit signals from the other
+    # When two processes are linked, each one receives exit signals from the other when either of the process dies
     Process.link(pid)
-    {:reply, :ok, Map.put(state, pid, data)}
+    Task.start_link(fn -> GameStore.add_player(game_id, user_id) end)
+    {:reply, :ok, Map.put(state, pid, {game_id, user_id})}
   end
 
   def handle_call({:demonitor, pid}, _from, state) do
-    case Map.fetch(state.channels, pid) do
+    case Map.fetch(state, pid) do
       :error ->
         {:reply, :ok, state}
 
-      {:ok, _data} ->
+      {:ok, {game_id, user_id}} ->
         Process.unlink(pid)
+        # Update ets game player list to remove the user which left
+        Task.start_link(fn -> GameStore.remove_player(game_id, user_id) end)
         {:reply, :ok, Map.delete(state, pid)}
     end
   end
 
-  # def handle_info({:EXIT, pid, _reason}, state) do
-  #   case Map.fetch(state, pid) do
-  #     :error ->
-  #       {:noreply, state}
+  def handle_info({:EXIT, pid, _reason}, state) do
+    case Map.fetch(state, pid) do
+      :error ->
+        {:noreply, state}
 
-  #     {:ok, {mod, func, args}} ->
-  #       # TODO: Maybe do in separate taks, Update ets games list to remove the user which left
-  #       {:noreply, Map.put(state, pid, mfa)}
-  #   end
-  # end
+      {:ok, {game_id, user_id}} ->
+        # Update ets game player list to remove the user which left
+        Task.start_link(fn -> GameStore.remove_player(game_id, user_id) end)
+        {:noreply, Map.delete(state, pid)}
+    end
+  end
 end
