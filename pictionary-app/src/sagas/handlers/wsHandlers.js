@@ -95,10 +95,16 @@ function createGameChannel(socket, gameId) {
         });
 
       presence.onSync(() => {
-        presence.list((_userId, { metas: players }) => {
-          console.log('Presence update', players.map(player => player.user_data));
-          emitter({ type: UPDATE_GAME_PLAYERS, payload: players.map(player => player.user_data) });
+        // This callback passed to presence.list is called for each users presence, if 2 users it called twice
+        // For each call the callback recieves how many times that user has connected to the socket
+
+        const updatedPlayerList = [];
+        // eslint-disable-next-line no-unused-vars
+        presence.list((_userId, { metas: [firstPlayerInstance, ...rest] }) => {
+          updatedPlayerList.push(firstPlayerInstance);
         });
+
+        emitter({ type: UPDATE_GAME_PLAYERS, payload: updatedPlayerList.map(player => player.user_data) });
       });
 
       // Register listeners different types of events this channel can receive
