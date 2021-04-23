@@ -94,7 +94,12 @@ function createGameChannel(socket, gameId) {
           console.log('Unable to join', resp);
         });
 
-      presence.onSync(() => presenceObj => presenceObj.list((_userId, { metas: players }) => emitter({ type: UPDATE_GAME_PLAYERS, payload: players })));
+      presence.onSync(() => {
+        presence.list((_userId, { metas: players }) => {
+          console.log('Presence update', players.map(player => player.user_data));
+          emitter({ type: UPDATE_GAME_PLAYERS, payload: players.map(player => player.user_data) });
+        });
+      });
 
       // Register listeners different types of events this channel can receive
       gameChannel.on('game_settings_updated', payload => emitter({ type: UPDATE_GAME_STATE, payload }));
