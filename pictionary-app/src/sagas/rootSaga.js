@@ -6,7 +6,9 @@ import {
   CREATE_GAME_SESSION,
   CREATE_AND_ENTER_GAME_SESSION,
   JOIN_EXISTING_GAME_SESSION,
-  GET_GAME_DATA
+  GET_GAME_DATA,
+  HANDLE_KICK_PLAYER,
+  HANDLE_ADMIN_UPDATED
 } from '../constants/actionTypes';
 import {
   saveUserSession,
@@ -14,7 +16,9 @@ import {
   createGameSession,
   creatAndEnterGameSession,
   joinGameSession,
-  getGameData
+  getGameData,
+  handlePlayerRemove,
+  handleAdminUpdated
 } from './handlers/handlers';
 
 /*
@@ -34,4 +38,6 @@ export function* watcherSaga() {
 
   // Sagas for other stuff
   yield takeLatest(RESTORE_SESSION, loadUserSession);
+  yield takeLatest(HANDLE_KICK_PLAYER, handlePlayerRemove);
+  yield takeLatest(HANDLE_ADMIN_UPDATED, handleAdminUpdated);
 }

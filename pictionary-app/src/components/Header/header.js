@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import Avatar from '../Avatar/Avatar';
-import { getRandomAvatarStyles } from '../../helpers/helpers';
+import { getRandomAvatarStyles, range } from '../../helpers/helpers';
 import './header.scss';
 
 const Header = () => {
@@ -20,7 +20,7 @@ const Header = () => {
             <div className="headerText">Pictionary</div>
           </Grid>
           <Grid item xs={12} className="headerAvatars">
-            {[...Array(6).keys()].map(key => (
+            {range(1, 6).map(key => (
               <Avatar width="50px" height="50px" key={key} avatarStyles={getRandomAvatarStyles()} />
             ))}
           </Grid>

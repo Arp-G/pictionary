@@ -17,7 +17,12 @@ import {
   CREATE_GAME_FLOW,
   JOIN_GAME_FLOW,
   CREATE_AND_ENTER_GAME_SESSION,
-  JOIN_EXISTING_GAME_SESSION
+  JOIN_EXISTING_GAME_SESSION,
+  GAME_JOIN_SUCCESS,
+  GAME_JOIN_FAIL,
+  REMOVE_PLAYER,
+  ADMIN_UPDATED,
+  SAVE_GAME_TO_JOIN_ID
 } from '../../constants/actionTypes';
 
 /*
@@ -82,8 +87,14 @@ export function* joinGameSession(action) {
   // Init Game channel
   yield put({ type: INIT_GAME_CHANNEL, payload: payload?.id });
 
-  // Navigate to lobby
-  yield put(push(`lobby/${payload?.id}`));
+  const gameJoinResponse = yield take([GAME_JOIN_SUCCESS, GAME_JOIN_FAIL]);
+
+  if (gameJoinResponse.payload) {
+    yield put(push('/'));
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: `Could not join game: ${gameJoinResponse.payload}` });
+  } else {
+    yield put(push(`lobby/${payload?.id}`));
+  }
 }
 
 // This saga requests for userData using token from server and if present it loads data in store
@@ -119,4 +130,24 @@ export function* getGameData(action) {
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when fetching the game session!' });
     console.log('Failed to fetch game data');
   }
+}
+
+export function* handlePlayerRemove(action) {
+  const removedPlayerName = (yield select(state => state.game.players.find(player => player.id === action.payload)))?.name;
+  yield put({ type: REMOVE_PLAYER, payload: action.payload });
+  const selfRemoved = yield select(state => state.userInfo.id === action.payload);
+
+  if (selfRemoved) {
+    yield put({ type: SAVE_GAME_TO_JOIN_ID, payload: null });
+    yield put(push('/'));
+    yield put({ type: ADD_ALERT, alertType: 'info', msg: 'You have been removed from the game by admin!' });
+  } else {
+    yield put({ type: ADD_ALERT, alertType: 'info', msg: `${removedPlayerName} was removed from the game!` });
+  }
+}
+
+export function* handleAdminUpdated(action) {
+  yield put({ type: ADMIN_UPDATED, payload: action.payload });
+  const adminPlayerName = (yield select(state => state.game.players.find(player => player.id === action.payload)))?.name;
+  yield put({ type: ADD_ALERT, alertType: 'info', msg: `${adminPlayerName} is now the admin!` });
 }

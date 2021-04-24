@@ -31,6 +31,10 @@ defmodule Pictionary.Stores.GameStore do
     GenServer.call(__MODULE__, {:update, game_params})
   end
 
+  def change_admin(game_id, admin_id) do
+    GenServer.call(__MODULE__, {:update_admin, %{game_id: game_id, admin_id: admin_id}})
+  end
+
   def add_player(game_id, player_id) do
     GenServer.call(__MODULE__, {:add_player, game_id, player_id})
   end
@@ -92,6 +96,26 @@ defmodule Pictionary.Stores.GameStore do
     {:reply, updated_game || game, state}
   end
 
+  def handle_call({:update_admin, %{game_id: id, admin_id: admin_id}}, _from, state) do
+    game = fetch_game(id)
+
+    game.players
+    |> Enum.find(&(&1 == admin_id))
+    |> if do
+      updated_game = struct(game, %{creator_id: admin_id, updated_at: DateTime.utc_now()})
+
+      true = :ets.insert(@table_name, {id, updated_game})
+
+      Logger.info("Change admin for game #{id} to #{admin_id}")
+
+      {:reply, updated_game, state}
+    else
+      Logger.warn("Could not change game admin")
+
+      {:reply, game, state}
+    end
+  end
+
   def handle_call({:add_player, game_id, player_id}, _from, state) do
     game = fetch_game(game_id)
 
@@ -101,6 +125,8 @@ defmodule Pictionary.Stores.GameStore do
       Logger.info("Add player #{player_id} to game #{game_id}")
       {:reply, game, state}
     else
+      Logger.warn("Could not add player to game")
+
       {:reply, :error, state}
     end
   end
@@ -114,6 +140,8 @@ defmodule Pictionary.Stores.GameStore do
       Logger.info("Removed player #{player_id} from game #{game_id}")
       {:reply, game, state}
     else
+      Logger.warn("Could not remove player from game")
+
       {:reply, :error, state}
     end
   end

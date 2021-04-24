@@ -16,6 +16,18 @@ defmodule PictionaryWeb.GamesView do
     }
   end
 
+  def render("show_limited.json", %{game: game}) do
+    %{
+      id: game.id,
+      rounds: game.rounds,
+      time: game.time,
+      max_players: game.max_players,
+      public_game: game.public_game,
+      vote_kick_enabled: game.vote_kick_enabled,
+      creator_id: game.creator_id
+    }
+  end
+
   defp get_game_players(game) do
     game.players
     |> MapSet.to_list()

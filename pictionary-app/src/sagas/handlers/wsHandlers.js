@@ -3,7 +3,17 @@
 import { eventChannel, END } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 import { Presence } from 'phoenix';
-import { ADD_ALERT, SAVE_SOCKET_OBJECT, UPDATE_GAME_STATE, SAVE_GAME_CHANNEL, UPDATE_GAME_PLAYERS } from '../../constants/actionTypes';
+import {
+  ADD_ALERT,
+  SAVE_SOCKET_OBJECT,
+  UPDATE_GAME_STATE,
+  SAVE_GAME_CHANNEL,
+  UPDATE_GAME_PLAYERS,
+  GAME_JOIN_SUCCESS,
+  GAME_JOIN_FAIL,
+  HANDLE_KICK_PLAYER,
+  HANDLE_ADMIN_UPDATED
+} from '../../constants/actionTypes';
 import createWebSocketConnection from '../websocket';
 
 // Initialize websocket and save socket object in store
@@ -72,6 +82,32 @@ export function* updateGameSession(action) {
   }
 }
 
+// Update game admin in server by pushing messages on gamechannel webscoket
+export function* updateGameAdmin(action) {
+  try {
+    // eslint-disable-next-line camelcase
+    const gameChannel = yield select(state => state.settings.gameChannel);
+    if (!gameChannel) throw new Error('Game channel not initialized');
+    gameChannel.push('update_admin', { admin_id: action.payload });
+  } catch (error) {
+    console.log('Failed to push updates to game data', error);
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Failed to push updates to game data' });
+  }
+}
+
+// Admin kicking player
+export function* removeGamePlayer(action) {
+  try {
+    // eslint-disable-next-line camelcase
+    const gameChannel = yield select(state => state.settings.gameChannel);
+    if (!gameChannel) throw new Error('Game channel not initialized');
+    gameChannel.push('kick_player', { player_id: action.payload });
+  } catch (error) {
+    console.log('Failed to push updates to game data', error);
+    yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Failed to push updates to game data' });
+  }
+}
+
 /*
   Here the event channels takes subscriber function that subscribes to an event source(subscribes to the game channel)
   Incoming events from the event source(messages from game channel) will be queued in the event
@@ -89,10 +125,9 @@ function createGameChannel(socket, gameId) {
       const presence = new Presence(gameChannel);
 
       gameChannel.join()
-        .receive('error', (resp) => {
-          emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Could not join game channel' });
-          console.log('Unable to join', resp);
-        });
+        .receive('ok', () => emitter({ type: GAME_JOIN_SUCCESS }))
+        .receive('error', resp => emitter({ type: GAME_JOIN_FAIL, payload: resp.reason }))
+        .receive('timeout', () => emitter({ type: GAME_JOIN_FAIL, payload: 'Could not join game in time' }));
 
       presence.onSync(() => {
         // This callback passed to presence.list is called for each users presence, if 2 users it called twice
@@ -109,6 +144,12 @@ function createGameChannel(socket, gameId) {
 
       // Register listeners different types of events this channel can receive
       gameChannel.on('game_settings_updated', payload => emitter({ type: UPDATE_GAME_STATE, payload }));
+
+      // eslint-disable-next-line camelcase
+      gameChannel.on('player_removed', ({ player_id }) => emitter({ type: HANDLE_KICK_PLAYER, payload: player_id }));
+
+      // eslint-disable-next-line camelcase
+      gameChannel.on('game_admin_updated', ({ creator_id }) => emitter({ type: HANDLE_ADMIN_UPDATED, payload: creator_id }));
 
       gameChannel.onError((e) => {
         console.log('An error occuered on game channel ', e);

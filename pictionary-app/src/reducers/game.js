@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { SAVE_GAME, UPDATE_GAME_STATE, UPDATE_GAME_PLAYERS } from '../constants/actionTypes';
+import { SAVE_GAME, UPDATE_GAME_STATE, UPDATE_GAME_PLAYERS, ADMIN_UPDATED, REMOVE_PLAYER } from '../constants/actionTypes';
 
 const initialState = {
   id: null,
@@ -47,6 +47,12 @@ const gameReducer = (state = initialState, action) => {
 
     case UPDATE_GAME_PLAYERS:
       return { ...state, players: action.payload };
+
+    case ADMIN_UPDATED:
+      return { ...state, creator_id: action.payload };
+
+    case REMOVE_PLAYER:
+      return { ...state, players: state.players.filter(player => player.id !== action.payload) };
 
     default:
       return state;

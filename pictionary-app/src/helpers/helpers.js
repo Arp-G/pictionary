@@ -25,3 +25,12 @@ export const clipboardCopy = (text) => {
   document.execCommand('copy');
   document.body.removeChild(el);
 };
+
+export const range = (startAt = 1, size = 10, step = 1) => {
+  const arr = [];
+  for (let i = startAt; i <= size; i += step) {
+    arr.push(i);
+  }
+
+  return arr;
+};
