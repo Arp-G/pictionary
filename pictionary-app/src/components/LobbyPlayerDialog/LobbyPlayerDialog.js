@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Dialog } from '@material-ui/core';
+import { Button, Dialog, DialogTitle } from '@material-ui/core';
 import DialogActions from '@material-ui/core/DialogActions';
 import { GiWalkingBoot, GiChessKing } from 'react-icons/gi';
 import { AiFillCloseCircle } from 'react-icons/ai';
@@ -13,6 +13,7 @@ export default ({ open, player, closeDialog }) => {
   return (
     <Dialog open={open} onClose={closeDialog}>
       <AiFillCloseCircle className="closeButton" onClick={closeDialog} />
+      <DialogTitle>Player Actions</DialogTitle>
       <DialogActions>
         <Button
           variant="contained"

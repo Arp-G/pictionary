@@ -138,6 +138,26 @@ defmodule Pictionary.Stores.GameStore do
       game = %Pictionary.Game{game | players: MapSet.delete(game.players, player_id)}
       true = :ets.insert(@table_name, {game_id, game})
       Logger.info("Removed player #{player_id} from game #{game_id}")
+
+      # Remove game if everyone leaves
+      if MapSet.size(game.players) == 0 do
+        true = :ets.delete(@table_name, game.id)
+        Logger.info("Removed game #{game_id}")
+      end
+
+      # Change admin if admin leaves
+      if MapSet.size(game.players) > 0 && player_id == game.creator_id do
+        Task.start_link(fn ->
+          new_admin = get_random_player(game.players)
+          change_admin(game_id, new_admin)
+
+          # Broadcast on game channel about admin change
+          PictionaryWeb.Endpoint.broadcast!("game:#{game.id}", "game_admin_updated", %{
+            creator_id: new_admin
+          })
+        end)
+      end
+
       {:reply, game, state}
     else
       Logger.warn("Could not remove player from game")
@@ -172,5 +192,12 @@ defmodule Pictionary.Stores.GameStore do
       [{_game_id, game}] -> game
       _ -> nil
     end
+  end
+
+  defp get_random_player(players) do
+    players
+    |> MapSet.to_list()
+    |> Enum.shuffle()
+    |> List.first()
   end
 end

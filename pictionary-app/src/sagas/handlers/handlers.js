@@ -51,8 +51,6 @@ export function* saveUserSession(action) {
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when creating user session!' });
-  } finally {
-    yield put({ type: CLEAR_LOADING });
   }
 }
 
@@ -73,6 +71,8 @@ export function* creatAndEnterGameSession() {
 
   // Navigate to lobby
   yield put(push(`lobby/${payload?.id}`));
+
+  yield put({ type: CLEAR_LOADING });
 }
 
 // This saga will join an existing game session
@@ -87,6 +87,7 @@ export function* joinGameSession(action) {
   // Init Game channel
   yield put({ type: INIT_GAME_CHANNEL, payload: payload?.id });
 
+  // Wait for either game join success or failure
   const gameJoinResponse = yield take([GAME_JOIN_SUCCESS, GAME_JOIN_FAIL]);
 
   if (gameJoinResponse.payload) {
@@ -95,6 +96,8 @@ export function* joinGameSession(action) {
   } else {
     yield put(push(`lobby/${payload?.id}`));
   }
+
+  yield put({ type: CLEAR_LOADING });
 }
 
 // This saga requests for userData using token from server and if present it loads data in store
