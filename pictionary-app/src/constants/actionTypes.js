@@ -10,6 +10,7 @@ export const CLEAR_LOADING = 'CLEAR_LOADING';
 export const SAVE_SOCKET_OBJECT = 'SAVE_SOCKET_OBJECT';
 export const SAVE_GAME_CHANNEL = 'SAVE_GAME_CHANNEL';
 export const SAVE_GAME_TO_JOIN_ID = 'SAVE_GAME_TO_JOIN_ID';
+export const CLEAR_SOCKET = 'CLEAR_SOCKET';
 
 // userinfo:
 export const CHANGE_NAME = 'CHANGE_NAME';

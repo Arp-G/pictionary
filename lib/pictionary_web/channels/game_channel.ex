@@ -70,6 +70,7 @@ defmodule PictionaryWeb.GameChannel do
 
     if game.creator_id == current_user.id do
       game = GameStore.remove_player(game_id, player_id)
+
       if game != :error do
         broadcast(socket, "player_removed", %{player_id: player_id})
         # MyAppWeb.Endpoint.broadcast("users_socket:" <> user.id, "disconnect", %{})
