@@ -12,6 +12,14 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.adminHint {
+  padding-top: 10px;
+  font-size: .7rem;
+  color: grey;
+  font-weight: bold;
+  font-style: oblique;
+}
+
 #playersList {
   display: flex;
   flex-flow: row wrap;
@@ -23,7 +31,8 @@
 }
 
 .playerName,
-.playerAdmin {
+.playerAdmin,
+.playerSelf {
   max-width: 5rem;
   overflow: hidden;
   text-align: center;
@@ -33,4 +42,24 @@
 
 .playerAdmin {
   color: red;
+}
+
+.playerSelf {
+  color: green;
+  font-weight: bolder;
+}
+
+.playerData,
+.darkPlayerData {
+  transition: transform 0.2s;
+}
+
+.playerData:hover {
+  transform: scale(1.1);
+  background-color: beige;
+}
+
+.darkPlayerData:hover {
+  transform: scale(1.1);
+  background-color: hsl(50, 33%, 25%);
 }
