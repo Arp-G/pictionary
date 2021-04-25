@@ -8,21 +8,19 @@ import {
   ADD_ALERT,
   LOAD_SESSION,
   SAVE_GAME,
-  CREATE_GAME_SESSION,
-  GET_GAME_DATA,
+  FAILED_SAVE_GAME,
+  HANDLE_CREATE_GAME_SESSION,
+  HANDLE_GET_GAME_DATA,
   SET_LOADING,
   CLEAR_LOADING,
-  INIT_SOCKET,
-  INIT_GAME_CHANNEL,
-  CREATE_GAME_FLOW,
-  JOIN_GAME_FLOW,
-  CREATE_AND_ENTER_GAME_SESSION,
-  JOIN_EXISTING_GAME_SESSION,
-  GAME_JOIN_SUCCESS,
-  GAME_JOIN_FAIL,
-  REMOVE_PLAYER,
-  ADMIN_UPDATED,
-  SAVE_GAME_TO_JOIN_ID
+  HANDLE_INIT_SOCKET,
+  HANDLE_INIT_GAME_CHANNEL,
+  HANDLE_CREATE_GAME_FLOW,
+  HANDLE_JOIN_GAME_FLOW,
+  HANDLE_CREATE_AND_ENTER_GAME_SESSION,
+  HANDLE_JOIN_EXISTING_GAME_SESSION,
+  HANDLE_GAME_JOIN_SUCCESS,
+  HANDLE_GAME_JOIN_FAIL
 } from '../../constants/actionTypes';
 
 /*
@@ -46,8 +44,8 @@ export function* saveUserSession(action) {
     yield put({ type: SAVE_TOKEN, payload: response.data });
     window.localStorage.setItem('token', response.data.token);
 
-    if (action.flowType === CREATE_GAME_FLOW) yield put({ type: CREATE_AND_ENTER_GAME_SESSION });
-    if (action.flowType === JOIN_GAME_FLOW) yield put({ type: JOIN_EXISTING_GAME_SESSION, payload: action.gameToJoinId });
+    if (action.flowType === HANDLE_CREATE_GAME_FLOW) yield put({ type: HANDLE_CREATE_AND_ENTER_GAME_SESSION });
+    if (action.flowType === HANDLE_JOIN_GAME_FLOW) yield put({ type: HANDLE_JOIN_EXISTING_GAME_SESSION, payload: action.gameToJoinId });
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when creating user session!' });
@@ -57,17 +55,17 @@ export function* saveUserSession(action) {
 // This saga will create a new game session and join game session
 export function* creatAndEnterGameSession() {
   // Create game session
-  yield put({ type: CREATE_GAME_SESSION });
-  // Action CREATE_GAME_SESSION will execute further sagas and we want to navigate
+  yield put({ type: HANDLE_CREATE_GAME_SESSION });
+  // Action HANDLE_CREATE_GAME_SESSION will execute further sagas and we want to navigate
   // to the lobby only after action SAVE_GAME is done and game data is loaded in store
   // the "take" effect waits for a certain action on the store
   const { payload } = yield take(SAVE_GAME);
 
   // Init Socket Connection
-  yield put({ type: INIT_SOCKET });
+  yield put({ type: HANDLE_INIT_SOCKET });
 
   // Init Game channel
-  yield put({ type: INIT_GAME_CHANNEL });
+  yield put({ type: HANDLE_INIT_GAME_CHANNEL });
 
   // Navigate to lobby
   yield put(push(`lobby/${payload?.id}`));
@@ -77,18 +75,26 @@ export function* creatAndEnterGameSession() {
 
 // This saga will join an existing game session
 export function* joinGameSession(action) {
-  yield put({ type: GET_GAME_DATA, payload: action.payload });
+  yield put({ type: HANDLE_GET_GAME_DATA, payload: action.payload });
 
-  const { payload } = yield take(SAVE_GAME);
+  const { payload } = yield take([SAVE_GAME, FAILED_SAVE_GAME]);
+  console.log(payload);
+
+  // Bad game id
+  if (!payload) {
+    yield put(push('/'));
+    yield put({ type: CLEAR_LOADING });
+    return;
+  }
 
   // Init Socket Connection
-  yield put({ type: INIT_SOCKET });
+  yield put({ type: HANDLE_INIT_SOCKET });
 
   // Init Game channel
-  yield put({ type: INIT_GAME_CHANNEL, payload: payload?.id });
+  yield put({ type: HANDLE_INIT_GAME_CHANNEL, payload: payload?.id });
 
   // Wait for either game join success or failure
-  const gameJoinResponse = yield take([GAME_JOIN_SUCCESS, GAME_JOIN_FAIL]);
+  const gameJoinResponse = yield take([HANDLE_GAME_JOIN_SUCCESS, HANDLE_GAME_JOIN_FAIL]);
 
   if (gameJoinResponse.payload) {
     yield put(push('/'));
@@ -130,27 +136,8 @@ export function* getGameData(action) {
     const response = yield call(getGame, action.payload);
     yield put({ type: SAVE_GAME, payload: response.data });
   } catch (error) {
+    yield put({ type: FAILED_SAVE_GAME });
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when fetching the game session!' });
     console.log('Failed to fetch game data');
   }
-}
-
-export function* handlePlayerRemove(action) {
-  const removedPlayerName = (yield select(state => state.game.players.find(player => player.id === action.payload)))?.name;
-  yield put({ type: REMOVE_PLAYER, payload: action.payload });
-  const selfRemoved = yield select(state => state.userInfo.id === action.payload);
-
-  if (selfRemoved) {
-    yield put({ type: SAVE_GAME_TO_JOIN_ID, payload: null });
-    yield put(push('/'));
-    yield put({ type: ADD_ALERT, alertType: 'info', msg: 'You have been removed from the game by admin!' });
-  } else {
-    yield put({ type: ADD_ALERT, alertType: 'info', msg: `${removedPlayerName} was removed from the game!` });
-  }
-}
-
-export function* handleAdminUpdated(action) {
-  yield put({ type: ADMIN_UPDATED, payload: action.payload });
-  const adminPlayerName = (yield select(state => state.game.players.find(player => player.id === action.payload)))?.name;
-  yield put({ type: ADD_ALERT, alertType: 'info', msg: `${adminPlayerName} is now the admin!` });
 }

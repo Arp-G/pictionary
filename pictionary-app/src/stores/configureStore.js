@@ -3,8 +3,8 @@ import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
-import { watcherSaga } from '../sagas/rootSaga';
-import wsSaga from '../sagas/wsSaga';
+import { watcherSaga } from '../sagas/homeRootSaga';
+import wsSaga from '../sagas/lobbyRootSaga';
 import createRootReducer from '../reducers/reducers';
 
 export const history = createBrowserHistory();

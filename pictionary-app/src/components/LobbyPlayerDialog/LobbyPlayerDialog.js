@@ -4,7 +4,7 @@ import { Button, Dialog, DialogTitle } from '@material-ui/core';
 import DialogActions from '@material-ui/core/DialogActions';
 import { GiWalkingBoot, GiChessKing } from 'react-icons/gi';
 import { AiFillCloseCircle } from 'react-icons/ai';
-import { UPDATE_GAME_ADMIN, KICK_PLAYER } from '../../constants/actionTypes';
+import { HANDLE_UPDATE_ADMIN, HANDLE_KICK_PLAYER } from '../../constants/actionTypes';
 import './lobbyPlayerDialog.scss';
 
 export default ({ open, player, closeDialog }) => {
@@ -20,7 +20,7 @@ export default ({ open, player, closeDialog }) => {
           color="secondary"
           startIcon={<GiWalkingBoot />}
           onClick={() => {
-            dispatch({ type: KICK_PLAYER, payload: player?.id });
+            dispatch({ type: HANDLE_KICK_PLAYER, payload: player?.id });
             closeDialog();
           }}
         >
@@ -31,7 +31,7 @@ export default ({ open, player, closeDialog }) => {
           color="primary"
           startIcon={<GiChessKing />}
           onClick={() => {
-            dispatch({ type: UPDATE_GAME_ADMIN, payload: player?.id });
+            dispatch({ type: HANDLE_UPDATE_ADMIN, payload: player?.id });
             closeDialog();
           }}
         >

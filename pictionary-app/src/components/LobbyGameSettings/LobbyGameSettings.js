@@ -16,7 +16,7 @@ import {
   Chip
 } from '@material-ui/core';
 import './lobbyGameSettings.scss';
-import { UPDATE_GAME } from '../../constants/actionTypes';
+import { HANDLE_UPDATE_GAME } from '../../constants/actionTypes';
 import NUMBERS from '../../constants/numbers';
 import { HOST_URL } from '../../helpers/api';
 import { clipboardCopy, range } from '../../helpers/helpers';
@@ -50,7 +50,7 @@ const LobbyGameSettings = () => {
             <span className="customLabel"> Rounds </span>
             <Select
               value={rounds}
-              onChange={e => dispatch({ type: UPDATE_GAME, payload: { rounds: e.target.value } })}
+              onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { rounds: e.target.value } })}
             >
               {
                 range(1, 20).map(key => (
@@ -66,7 +66,7 @@ const LobbyGameSettings = () => {
             <span className="customLabel"> Seconds to Draw </span>
             <Select
               value={time}
-              onChange={e => dispatch({ type: UPDATE_GAME, payload: { time: e.target.value } })}
+              onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { time: e.target.value } })}
             >
               {
                 range(30, 200, 10).map(key => (
@@ -82,7 +82,7 @@ const LobbyGameSettings = () => {
             <span className="customLabel"> Maximum Players </span>
             <Select
               value={max_players}
-              onChange={e => dispatch({ type: UPDATE_GAME, payload: { max_players: e.target.value } })}
+              onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { max_players: e.target.value } })}
             >
               {
                 range(Math.max(players.length, 2), 25).map(key => (
@@ -106,7 +106,7 @@ const LobbyGameSettings = () => {
                   inputProps={{ maxLength: 35000 }}
                   variant="filled"
                   value={custom_words}
-                  onChange={e => dispatch({ type: UPDATE_GAME, payload: { custom_words: e.target.value } })}
+                  onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { custom_words: e.target.value } })}
                 />
               </FormControl>
 
@@ -118,7 +118,7 @@ const LobbyGameSettings = () => {
                   valueLabelDisplay="auto"
                   className="customWordSlider"
                   value={custom_words_probability}
-                  onChange={(_event, value) => dispatch({ type: UPDATE_GAME, payload: { custom_words_probability: value } })}
+                  onChange={(_event, value) => dispatch({ type: HANDLE_UPDATE_GAME, payload: { custom_words_probability: value } })}
                 />
               </FormControl>
             </>
@@ -128,7 +128,7 @@ const LobbyGameSettings = () => {
             control={(
               <Checkbox
                 checked={public_game}
-                onChange={e => dispatch({ type: UPDATE_GAME, payload: { public_game: e.target.checked } })}
+                onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { public_game: e.target.checked } })}
                 name="Public"
                 color="primary"
                 disabled={!isAdmin}
@@ -141,7 +141,7 @@ const LobbyGameSettings = () => {
             control={(
               <Checkbox
                 checked={vote_kick_enabled}
-                onChange={e => dispatch({ type: UPDATE_GAME, payload: { vote_kick_enabled: e.target.checked } })}
+                onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { vote_kick_enabled: e.target.checked } })}
                 name="Allow vote kick"
                 color="secondary"
                 disabled={!isAdmin}
