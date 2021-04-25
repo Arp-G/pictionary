@@ -1,10 +1,14 @@
 /* eslint-disable camelcase */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Paper, List, ListItem } from '@material-ui/core';
+import useSound from 'use-sound';
+import usePrevious from '../../hooks/usePrevious';
 import Avatar from '../Avatar/Avatar';
 import LobbyPlayerDialog from '../LobbyPlayerDialog/LobbyPlayerDialog';
 import './lobbyUsersList.scss';
+import playerEnterSfx from '../../sounds/player_enter.mp3';
+import playerLeaveSfx from '../../sounds/player_leave.mp3';
 
 const LobbyUsersList = () => {
   const [
@@ -17,6 +21,16 @@ const LobbyUsersList = () => {
   const [lobbyPlayerDialog, lobbyPlayerDialogToggle] = useState(false);
   const [lobbySelectedPlayer, lobbyChangeSelectedPlayer] = useState(null);
   const isAdmin = useSelector(state => state.game.creator_id === state.userInfo.id);
+  const [playPlayerEnterSfx] = useSound(playerEnterSfx, { volume: 0.3 });
+  const [playPlayerLeaverSfx] = useSound(playerLeaveSfx, { volume: 0.3 });
+
+  // Custom hook to store previous player count to detect new player join or leave
+  const previousUsersCount = usePrevious(players.length);
+
+  useEffect(() => {
+    if (previousUsersCount < players.length) playPlayerEnterSfx();
+    if (previousUsersCount > players.length) playPlayerLeaverSfx();
+  }, [players.length]);
 
   const handlePlayerClick = (player) => {
     lobbyPlayerDialogToggle(true);
