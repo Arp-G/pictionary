@@ -13,7 +13,8 @@ import {
   Checkbox,
   FormControlLabel,
   Slider,
-  Chip
+  Chip,
+  Button
 } from '@material-ui/core';
 import './lobbyGameSettings.scss';
 import { HANDLE_UPDATE_GAME } from '../../constants/actionTypes';
@@ -151,6 +152,16 @@ const LobbyGameSettings = () => {
           />
         </FormGroup>
       </div>
+      {
+        isAdmin && (
+          <div className="startGameButton">
+            <Button variant="contained">
+              Start Game !
+            </Button>
+          </div>
+        )
+      }
+
       <div className={`copyLinkContainer ${copied ? 'copiedLinkContainer' : ''}`}>
         <Chip
           label="Invite your friends !"

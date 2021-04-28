@@ -50,3 +50,18 @@
     background-color: green;
   }
 }
+
+.startGameButton {
+  display: flex;
+  justify-content: center;
+
+  .MuiButton-contained, .MuiButton-contained:hover {
+    background-color: green;
+    font-weight: bolder;
+    color: honeydew;
+  }
+
+  .MuiButton-contained:hover {
+    background-color: indigo;
+  }
+}
