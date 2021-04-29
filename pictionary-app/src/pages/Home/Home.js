@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Paper } from '@material-ui/core';
-import Header from '../../components/Header/header';
+import HomeHeader from '../../components/HomeHeader/HomeHeader';
 import UserInfo from '../../components/UserInfo/userInfo';
 import HowToPlay from '../../components/HowToPlay/howToPlay';
 import About from '../../components/About/about';
@@ -17,7 +17,7 @@ const Home = () => {
   return (
     <Container maxWidth="sm" className="homeContainer">
       <Paper className="wrapped-paper header">
-        <Header />
+        <HomeHeader />
       </Paper>
       <Paper className="wrapped-paper">
         <UserInfo />

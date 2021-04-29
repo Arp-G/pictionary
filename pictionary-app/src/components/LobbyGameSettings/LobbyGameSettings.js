@@ -39,6 +39,7 @@ const LobbyGameSettings = () => {
   const [copied, setCopied] = useState(false);
   const [copyTimer, setCopyTimer] = useState(null);
   const isAdmin = useSelector(state => state.game.creator_id === state.userInfo.id);
+  const canStartGame = useSelector(state => state.game.players.length > 1);
 
   useEffect(() => () => { clearTimeout(copyTimer); }, []);
 
@@ -155,7 +156,7 @@ const LobbyGameSettings = () => {
       {
         isAdmin && (
           <div className="startGameButton">
-            <Button variant="contained">
+            <Button variant="contained" disabled={!canStartGame}>
               Start Game !
             </Button>
           </div>

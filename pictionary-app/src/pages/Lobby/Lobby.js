@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import LobbyGameSettings from '../../components/LobbyGameSettings/LobbyGameSettings';
-import LobbyUsersList from '../../components/LobbyUsersList/LobbyUsersList';
+import LobbyPlayersList from '../../components/LobbyPlayersList/LobbyPlayersList';
 
 const Lobby = () => {
   const gameId = useSelector(state => state.game.id);
@@ -16,7 +16,7 @@ const Lobby = () => {
           <LobbyGameSettings />
         </Grid>
         <Grid item lg={5}>
-          <LobbyUsersList />
+          <LobbyPlayersList />
         </Grid>
       </Grid>
     );

@@ -6,11 +6,11 @@ import useSound from 'use-sound';
 import usePrevious from '../../hooks/usePrevious';
 import Avatar from '../Avatar/Avatar';
 import LobbyPlayerDialog from '../LobbyPlayerDialog/LobbyPlayerDialog';
-import './lobbyUsersList.scss';
+import './LobbyPlayersList.scss';
 import playerEnterSfx from '../../sounds/player_enter.mp3';
 import playerLeaveSfx from '../../sounds/player_leave.mp3';
 
-const LobbyUsersList = () => {
+const LobbyPlayersList = () => {
   const [
     selfId,
     players,
@@ -64,4 +64,4 @@ const LobbyUsersList = () => {
   );
 };
 
-export default LobbyUsersList;
+export default LobbyPlayersList;

@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import Avatar from '../Avatar/Avatar';
 import { getRandomAvatarStyles, range } from '../../helpers/helpers';
-import './header.scss';
+import './HomeHeader.scss';
 
-const Header = () => {
+const HomeHeader = () => {
   const [, setRandom] = useState(Math.random());
   useEffect(() => {
     const timer = setInterval(() => setRandom(Math.random), 5000);
@@ -30,4 +30,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HomeHeader;
