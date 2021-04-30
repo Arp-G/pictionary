@@ -12,22 +12,22 @@ const Game = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid item xs={12} component={Paper}>
         <GameHeader />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={2} component={Paper}>
         <GamePlayersList />
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={7} component={Paper}>
         <GameCanvas />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={3} component={Paper}>
         <GameChat />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={2} component={Paper}>
         <GameToolbar />
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={7} component={Paper}>
         <Paper>Paint Items</Paper>
       </Grid>
     </Grid>
