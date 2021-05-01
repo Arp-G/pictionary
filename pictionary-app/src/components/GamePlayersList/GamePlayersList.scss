@@ -1,0 +1,53 @@
+@mixin vertical-center {
+  height: 50px;
+  line-height: 50px;
+}
+
+.playerListContainer {
+  overflow-y: auto;
+}
+
+.playerListItem, .playerListItemGrey {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 5px;
+  margin: auto;
+}
+
+.playerListItemGrey {
+  background-color:	lightgray;
+}
+
+.darkMode .playerListItemGrey {
+  background-color:	#181818;
+}
+
+.playerDetails {
+  padding-left: 1.3rem;
+  padding-right: 1rem;
+}
+
+.drawIcon {
+  @include vertical-center;
+  font-size: 1.5rem;
+  width: 2.2rem;
+}
+
+.playerName {
+  font-size: 0.7em;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  padding: 7px;
+  text-align: center;
+}
+
+.playerScore {
+  font-size: 0.7em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.playerRank, .playerAvatar {
+  @include vertical-center;
+}

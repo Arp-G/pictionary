@@ -7,7 +7,7 @@ import './GameHeader.scss';
 
 const GameHeader = () => (
   <Grid container>
-    <Grid item xs={2} spacing={2} alignContent="center">
+    <Grid item xs={2} alignContent="center">
       <GameHeaderClock />
     </Grid>
     <Grid item xs={2} spacing={2}>

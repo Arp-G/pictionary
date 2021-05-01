@@ -13,7 +13,7 @@ const GameHeaderClock = () => (
         ['#F7B801', 0.33],
         ['#A30000', 0.33]
       ]}
-      size={65}
+      size={60}
       strokeWidth={7}
     >
       {

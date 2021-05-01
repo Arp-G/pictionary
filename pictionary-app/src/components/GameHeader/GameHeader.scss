@@ -1,27 +1,20 @@
-@mixin vertical-center {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
-  height: 100%;
-}
-
 .gameHeader {
-  min-height: 70px;
+  min-height: 60px;
   background-color: beige;
   width: 100%;
 }
 
 .gameRoundText{
-  @include vertical-center;
+  height: 50px;
+  line-height: 50px;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 1.2em;
   font-weight: bold;
 }
 
 .alphabetGuessContainer {
-  height: 100px;
-  line-height: 100px;
+  height: 80px;
+  line-height: 80px;
   text-align: right;
   padding-right: 100px;;
 }
