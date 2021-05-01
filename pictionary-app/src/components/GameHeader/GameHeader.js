@@ -1,8 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { GiAlarmClock } from 'react-icons/gi';
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import GameHeaderClock from '../GameHeaderClock/GameHeaderClock';
+import DeleteSvg from '../../images/save.svg';
 import './GameHeader.scss';
 
 const GameHeader = () => (
@@ -18,6 +17,11 @@ const GameHeader = () => (
     <Grid item xs={6}>
       <div className="alphabetGuessContainer">
         {'elephant'.split('').map(alphabet => (<div className="alphabetGuess">{alphabet}</div>))}
+      </div>
+    </Grid>
+    <Grid item>
+      <div className="saveSketch" >
+        <img src={DeleteSvg} alt="Save" title="Save Sketch" width={35} />
       </div>
     </Grid>
   </Grid>

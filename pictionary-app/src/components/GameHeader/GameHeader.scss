@@ -5,8 +5,8 @@
 }
 
 .gameRoundText{
-  height: 50px;
-  line-height: 50px;
+  height: 80px;
+  line-height: 80px;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 1.2em;
   font-weight: bold;
@@ -25,4 +25,13 @@
   font-weight: bolder;
   font-size: 1.5em;
   text-decoration: underline;
+}
+
+.saveSketch {
+  margin-top: 80%;
+}
+
+.saveSketch:hover {
+  transform: scale(1.1);
+  cursor: pointer;
 }

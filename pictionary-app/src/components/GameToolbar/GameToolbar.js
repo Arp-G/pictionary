@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Grid, Paper } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { CirclePicker } from 'react-color';
 import colors from '../../constants/gameToolbarColors';
