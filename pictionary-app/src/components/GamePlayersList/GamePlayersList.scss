@@ -3,28 +3,29 @@
   line-height: 50px;
 }
 
-.playerListContainer {
+.gamePlayerListContainer {
   overflow-y: auto;
   height: 62vh;
 }
 
-.playerListItem, .playerListItemGrey {
+.gamePlayerListItem, .gamePlayerListItemGrey {
   display: flex;
   justify-content: center;
   padding: 5px;
   border-radius: 5px;
   margin: auto;
+  width: 16rem;
 }
 
-.playerListItemGrey {
+.gamePlayerListItemGrey {
   background-color:	lightgray;
 }
 
-.darkMode .playerListItemGrey {
+.darkMode .gamePlayerListItemGrey {
   background-color:	#181818;
 }
 
-.playerDetails {
+.gamePlayerDetails {
   padding-left: 1.3rem;
   padding-right: 1rem;
 }
@@ -33,22 +34,40 @@
   @include vertical-center;
   font-size: 1.5rem;
   width: 2.2rem;
+  animation: shake 4s;
+  animation-iteration-count: infinite;
 }
 
-.playerName {
+.gamePlayerName {
   font-size: 0.7em;
   font-weight: bold;
   text-overflow: ellipsis;
+  overflow: hidden;
   padding: 7px;
   text-align: center;
+  width: 100px;
 }
 
-.playerScore {
+.gamePlayerScore {
   font-size: 0.7em;
   font-weight: bold;
   text-align: center;
 }
 
-.playerRank, .playerAvatar {
+.gamePlayerRank, .gamePlayerAvatar {
   @include vertical-center;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, 1px) rotate(-1deg); }
 }

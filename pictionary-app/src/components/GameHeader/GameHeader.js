@@ -16,7 +16,7 @@ const GameHeader = () => (
     </Grid>
     <Grid item xs={6}>
       <div className="alphabetGuessContainer">
-        {'elephant'.split('').map(alphabet => (<div className="alphabetGuess">{alphabet}</div>))}
+        {'elephant man'.split('').map(alphabet => (alphabet === '' ? <div className="alphabetGuessSpace" /> : <div className="alphabetGuess">{alphabet}</div>))}
       </div>
     </Grid>
     <Grid item>

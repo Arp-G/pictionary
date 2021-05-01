@@ -1,0 +1,44 @@
+.chatContainer {
+  height: 31rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0px 10px 0px 10px;
+}
+
+.chatItemContainer {
+  border-radius: 10px;
+  background-color: lightgray;
+}
+
+.darkMode .chatItemContainer { 
+  background-color: #181818; 
+}
+
+.chatItemName {
+  font-size: normal;
+  width: 14rem;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding: 5px;
+}
+
+.chatItemContent {
+  font-family:'Times New Roman', Times, serif;
+  padding: 5px;
+}
+
+.chatInput {
+  position: sticky;
+  bottom: 0;
+  z-index: 999;
+}
+
+.chatInput > input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}

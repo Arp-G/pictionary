@@ -19,12 +19,12 @@ const Game = () => (
         <GamePlayersList />
       </Paper>
     </Grid>
-    <Grid item xs={7}>
+    <Grid item xs={8}>
       <Paper>
         <GameCanvas />
       </Paper>
     </Grid>
-    <Grid item xs={3}>
+    <Grid item xs={2}>
       <Paper>
         <GameChat />
       </Paper>
@@ -34,7 +34,7 @@ const Game = () => (
         Vote to Kick
       </Paper>
     </Grid>
-    <Grid item xs={7}>
+    <Grid item xs={8}>
       <Paper>
         <GameToolbar />
       </Paper>

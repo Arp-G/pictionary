@@ -1,6 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Paper, List, ListItem } from '@material-ui/core';
+import { List, ListItem } from '@material-ui/core';
 import { FaPencilAlt } from 'react-icons/fa';
 import withPlayerCountChangeSfx from '../../hocs/withPlayerCountChangeSfx';
 import Avatar from '../Avatar/Avatar';
@@ -38,7 +37,7 @@ const GamePlayersList = () => {
 
   return (
     // eslint-disable-next-line react/self-closing-comp
-    <div className="playerListContainer">
+    <div className="gamePlayerListContainer">
       <List>
         {players.map((player, index) => (
           <ListItem
@@ -47,16 +46,16 @@ const GamePlayersList = () => {
             dense={true}
             component="div"
           >
-            <div className={index % 2 === 0 ? 'playerListItem' : 'playerListItemGrey'}>
-              <div className="playerRank">{`#${index + 1}`}</div>
-              <div className="playerDetails">
-                <div className="playerName">{player.name}</div>
-                <div className="playerScore">{`Points: ${100}`}</div>
+            <div className={index % 2 === 0 ? 'gamePlayerListItem' : 'gamePlayerListItemGrey'}>
+              <div className="gamePlayerRank">{`#${index + 1}`}</div>
+              <div className="gamePlayerDetails">
+                <div className="gamePlayerName">{player.name}</div>
+                <div className="gamePlayerScore">{`Points: ${100}`}</div>
               </div>
               <div className="drawIcon">
                 {index % 2 === 0 && <FaPencilAlt />}
               </div>
-              <div className="playerAvatar">
+              <div className="gamePlayerAvatar">
                 <Avatar avatarStyles={player.avatar} width="45px" height="45px" transparent={true} />
               </div>
             </div>
