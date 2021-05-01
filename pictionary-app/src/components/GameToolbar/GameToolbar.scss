@@ -1,0 +1,75 @@
+.color-picker-item {
+  padding: 5px;
+}
+
+.default-colors {
+  background-color: lightgray;
+}
+
+.darkMode .default-colors {
+  background-color: none;
+}
+
+.custom-color-picker {
+  height: 45px;
+  border: 0;
+}
+
+.color-picker-item img {
+  width: 40px;
+}
+
+.hoverable:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  background-color: lightgray;
+  border-radius: 5px;
+}
+
+.strokeContainer {
+  height: 50px;
+  width: 30px;
+  padding: 0 10px 0 10px;
+  border-radius: 5px;
+  background-color: lightgray;
+  position: relative;
+  top: 6%;
+}
+
+.strokeItem {
+  margin: auto;
+  background-color: black;
+  padding: 0;
+  border: 2px solid black;
+  border-radius: 50%;
+  position: relative;
+}
+
+.strokeItem:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.stroke-1 {
+  width: 5px;
+  height: 5px;
+  top: 40%;
+}
+
+.stroke-2 {
+  width: 10px;
+  height: 10px;
+  top: 35%;
+}
+
+.stroke-3 {
+  width: 15px;
+  height: 15px;
+  top: 30%;
+}
+
+.stroke-4 {
+  width: 20px;
+  height: 20px;
+  top: 25%;
+}

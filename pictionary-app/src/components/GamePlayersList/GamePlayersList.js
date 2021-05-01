@@ -16,7 +16,7 @@ const GamePlayersList = () => {
   // ] = useSelector(state => [state.userInfo.id, state.game.players, state.game.creator_id, state.game.max_players, state.settings.darkMode]);
 
   // Dummy Data
-  const players = new Array(25).fill(
+  const players = new Array(2).fill(
     {
       id: '7d28937a-a0c8-4edf-86fb-2fafc72f42a5',
       name: 'Daisyelf Bolaaaaaaaaaaaaaaaaaaaat',
@@ -37,6 +37,7 @@ const GamePlayersList = () => {
   );
 
   return (
+    // eslint-disable-next-line react/self-closing-comp
     <div className="playerListContainer">
       <List>
         {players.map((player, index) => (

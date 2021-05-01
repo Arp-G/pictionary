@@ -7,31 +7,39 @@ import GameChat from '../../components/GameChat/GameChat';
 import GameToolbar from '../../components/GameToolbar/GameToolbar';
 import './game.scss';
 
-const Game = () => {
-  // const dispatch = useDispatch();
-
-  return (
-    <Grid container>
-      <Grid item xs={12} component={Paper}>
+const Game = () => (
+  <Grid container spacing={1}>
+    <Grid item xs={12}>
+      <Paper>
         <GameHeader />
-      </Grid>
-      <Grid item xs={2} component={Paper}>
-        <GamePlayersList />
-      </Grid>
-      <Grid item xs={7} component={Paper}>
-        <GameCanvas />
-      </Grid>
-      <Grid item xs={3} component={Paper}>
-        <GameChat />
-      </Grid>
-      <Grid item xs={2} component={Paper}>
-        <GameToolbar />
-      </Grid>
-      <Grid item xs={7} component={Paper}>
-        <Paper>Paint Items</Paper>
-      </Grid>
+      </Paper>
     </Grid>
-  );
-};
+    <Grid item xs={2}>
+      <Paper>
+        <GamePlayersList />
+      </Paper>
+    </Grid>
+    <Grid item xs={7}>
+      <Paper>
+        <GameCanvas />
+      </Paper>
+    </Grid>
+    <Grid item xs={3}>
+      <Paper>
+        <GameChat />
+      </Paper>
+    </Grid>
+    <Grid item xs={2}>
+      <Paper>
+        Vote to Kick
+      </Paper>
+    </Grid>
+    <Grid item xs={7}>
+      <Paper>
+        <GameToolbar />
+      </Paper>
+    </Grid>
+  </Grid>
+);
 
 export default Game;
