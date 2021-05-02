@@ -17,7 +17,7 @@ import {
   Button
 } from '@material-ui/core';
 import './lobbyGameSettings.scss';
-import { HANDLE_UPDATE_GAME } from '../../constants/actionTypes';
+import { HANDLE_UPDATE_GAME, HANDLE_START_GAME } from '../../constants/actionTypes';
 import NUMBERS from '../../constants/numbers';
 import { HOST_URL } from '../../helpers/api';
 import { clipboardCopy, range } from '../../helpers/helpers';
@@ -84,7 +84,7 @@ const LobbyGameSettings = () => {
             <span className="customLabel"> Maximum Players </span>
             <Select
               value={max_players}
-              onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { max_players: e.target.value } })}
+              onChange={e => dispatch({ type: HANDLE_START_GAME })}
             >
               {
                 range(Math.max(players.length, 2), 25).map(key => (
@@ -156,7 +156,11 @@ const LobbyGameSettings = () => {
       {
         isAdmin && (
           <div className="startGameButton">
-            <Button variant="contained" disabled={!canStartGame}>
+            <Button
+              variant="contained"
+              disabled={!canStartGame}
+              onClick={() => dispatch({ type: HANDLE_START_GAME })}
+            >
               Start Game !
             </Button>
           </div>

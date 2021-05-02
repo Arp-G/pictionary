@@ -80,6 +80,34 @@ defmodule PictionaryWeb.GameChannel do
     {:reply, :ok, socket}
   end
 
+  def handle_in(
+        "start_game",
+        _args,
+        %Phoenix.Socket{assigns: %{current_user: current_user, game_id: game_id}} = socket
+      ) do
+    game = GameStore.get_game(game_id)
+
+    IO.puts("STARTING GAME")
+
+    if game.creator_id == current_user.id do
+      game_server_pid = Pictionary.GameSupervisor.add_game_server(game_id)
+      broadcast(socket, "game_started", %{})
+      {:reply, :ok, assign(socket, :server_pid, game_server_pid)}
+    else
+      {:reply, :ok, socket}
+    end
+  end
+
+  def handle_in(
+        "canvas_update",
+        %{"canvas_data" => canvas_data},
+        socket
+      ) do
+    IO.inspect("yes");
+    broadcast_from(socket, "canvas_updated", %{canvas_data: canvas_data})
+    {:reply, :ok, socket}
+  end
+
   def handle_info({:after_join, game_id}, %{assigns: %{current_user: user}} = socket) do
     :ok =
       Pictionary.GameChannelWatcher.monitor(

@@ -4,7 +4,8 @@ import logger from 'redux-logger';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { watcherSaga } from '../sagas/homeRootSaga';
-import wsSaga from '../sagas/lobbyRootSaga';
+import LobbyRootSaga from '../sagas/lobbyRootSaga';
+import GameRootSaga from '../sagas/gameRootSaga';
 import createRootReducer from '../reducers/reducers';
 
 export const history = createBrowserHistory();
@@ -20,6 +21,7 @@ if (devMode) middlewares.push(logger);
 export default () => {
   const store = createStore(createRootReducer(history), compose(applyMiddleware(...middlewares)));
   sagaMiddleware.run(watcherSaga);
-  wsMiddleware.run(wsSaga);
+  wsMiddleware.run(LobbyRootSaga);
+  wsMiddleware.run(GameRootSaga);
   return store;
 };

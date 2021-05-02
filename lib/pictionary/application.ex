@@ -14,10 +14,11 @@ defmodule Pictionary.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Pictionary.PubSub},
       PictionaryWeb.Presence,
-      # Start the Endpoint (http/https)
-      PictionaryWeb.Endpoint,
       Pictionary.StoreSupervisor,
-      Pictionary.GameChannelWatcher
+      Pictionary.GameChannelWatcher,
+      Pictionary.GameSupervisor,
+      # Start the Endpoint (http/https)
+      PictionaryWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

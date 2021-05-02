@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-console */
 import { eventChannel, END } from 'redux-saga';
 import { Presence } from 'phoenix';
@@ -8,24 +9,30 @@ import {
   HANDLE_GAME_JOIN_SUCCESS,
   HANDLE_GAME_JOIN_FAIL,
   HANDLE_PLAYER_KICKED,
-  HANDLE_ADMIN_UPDATED
+  HANDLE_ADMIN_UPDATED,
+  HANDLE_GAME_STARTED,
+  HANDLE_CANVAS_UPDATED
 } from '../../constants/actionTypes';
 
 import {
   WS_PLAYER_REMOVED,
   WS_GAME_ADMIN_UPDATED,
-  WS_GAME_SETTINGS_UPDATED
+  WS_GAME_SETTINGS_UPDATED,
+  WS_GAME_STARTED,
+  WS_CANVAS_UPDATED
 } from '../../constants/websocketEvents';
 
 const setupGameChannelEventHandlers = (gameChannel, emitter) => {
   // Register listeners different types of events this channel can receive
   gameChannel.on(WS_GAME_SETTINGS_UPDATED, payload => emitter({ type: UPDATE_GAME_STATE, payload }));
 
-  // eslint-disable-next-line camelcase
   gameChannel.on(WS_PLAYER_REMOVED, ({ player_id }) => emitter({ type: HANDLE_PLAYER_KICKED, payload: player_id }));
 
-  // eslint-disable-next-line camelcase
   gameChannel.on(WS_GAME_ADMIN_UPDATED, ({ creator_id }) => emitter({ type: HANDLE_ADMIN_UPDATED, payload: creator_id }));
+
+  gameChannel.on(WS_GAME_STARTED, () => emitter({ type: HANDLE_GAME_STARTED }));
+
+  gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => emitter({ type: HANDLE_CANVAS_UPDATED, payload: canvas_data }));
 };
 
 const setupGameChannelPresenceHandlers = (gameChannel, emitter) => {
