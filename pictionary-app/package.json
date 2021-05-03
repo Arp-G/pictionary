@@ -10,6 +10,7 @@
     "avataaars": "^1.2.2",
     "axios": "^0.21.1",
     "connected-react-router": "^6.9.1",
+    "lodash.debounce": "^4.0.8",
     "node-sass": "^5.0.0",
     "phoenix": "^1.5.8",
     "react": "^17.0.2",

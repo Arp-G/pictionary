@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+body {
+  cursor: url('cusrsors/pencil.cur'), pointer;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

@@ -31,9 +31,14 @@
   width: 30px;
   padding: 0 10px 0 10px;
   border-radius: 5px;
-  background-color: lightgray;
   position: relative;
   top: 6%;
+  border: 2px solid white;
+}
+
+.selected {
+  background-color: lightgray;
+  border-radius: 5px;
 }
 
 .strokeItem {
@@ -45,30 +50,30 @@
   position: relative;
 }
 
-.strokeItem:hover {
+.strokeContainer:hover {
   transform: scale(1.1);
   cursor: pointer;
 }
 
-.stroke-1 {
+.stroke-3 {
   width: 5px;
   height: 5px;
   top: 40%;
 }
 
-.stroke-2 {
+.stroke-4 {
   width: 10px;
   height: 10px;
   top: 35%;
 }
 
-.stroke-3 {
+.stroke-5 {
   width: 15px;
   height: 15px;
   top: 30%;
 }
 
-.stroke-4 {
+.stroke-6 {
   width: 20px;
   height: 20px;
   top: 25%;

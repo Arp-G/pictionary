@@ -26,6 +26,13 @@ export const UPDATE_GAME_PLAYERS = 'UPDATE_GAME_PLAYERS';
 export const ADMIN_UPDATED = 'ADMIN_UPDATED';
 export const REMOVE_PLAYER = 'REMOVE_PLAYER';
 export const UPDATE_CANVAS = 'UPDATE_CANVAS';
+export const SET_ERASER = 'SET_ERASER';
+export const SET_PEN = 'SET_PEN';
+export const SET_FILL = 'SET_FILL';
+
+// gameplay:
+export const CHANGE_BRUSH_COLOR = 'CHANGE_BRUSH_COLOR';
+export const CHANGE_BRUSH_RADIUS = 'CHANGE_BRUSH_RADIUS';
 
 // == Saga Actions ==
 export const HANDLE_CREATE_USER_SESSION = 'HANDLE_CREATE_USER_SESSION';
