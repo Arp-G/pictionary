@@ -1,8 +1,13 @@
 .chatContainer {
   height: 31rem;
+  padding: 0px 10px 0px 10px;
+}
+
+.chatListContainer {
+  height: 28rem;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0px 10px 0px 10px;
+  scroll-behavior: smooth;
 }
 
 .chatItemContainer {
@@ -10,12 +15,30 @@
   background-color: lightgray;
 }
 
-.darkMode .chatItemContainer { 
-  background-color: #181818; 
+.chat_correct_guess {
+  background-color: lightgreen;
+}
+
+.chat_too_close_guess {
+  background-color: #fff44f;
+}
+
+.darkMode {
+  .chatItemContainer {
+    background-color: #181818;
+  }
+  .chat_correct_guess {
+    background-color: #228b22;
+  }
+
+  .chat_too_close_guess {
+    background-color: #6a5acd;
+  }
 }
 
 .chatItemName {
-  font-size: normal;
+  font-size: 0.6em;
+  font-weight: normal;
   width: 14rem;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -23,14 +46,16 @@
 }
 
 .chatItemContent {
-  font-family:'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
   padding: 5px;
+  font-size: 0.8em;
 }
 
 .chatInput {
-  position: sticky;
-  bottom: 0;
+  position: absolute;
+  bottom: 6rem;
   z-index: 999;
+  width: 15rem;
 }
 
 .chatInput > input {

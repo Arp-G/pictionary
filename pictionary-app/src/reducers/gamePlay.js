@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
-import { UPDATE_CANVAS, CHANGE_BRUSH_COLOR, CHANGE_BRUSH_RADIUS, SET_ERASER, SET_PEN, SET_FILL } from '../constants/actionTypes';
+import { UPDATE_CANVAS, CHANGE_BRUSH_COLOR, CHANGE_BRUSH_RADIUS, SET_ERASER, SET_PEN, SET_FILL, ADD_MESSAGE } from '../constants/actionTypes';
 
 const DEFAULT_BRUSH_COLOR = '#000000';
 const DEFAULT_BRUSH_RADIUS = 3;
 
 const initTools = { pen: false, eraser: false, fill: false };
-const initialState = { ...initTools, canvasData: null, brushRadius: DEFAULT_BRUSH_RADIUS, brushColor: DEFAULT_BRUSH_COLOR, pen: true };
+const initialState = { ...initTools, canvasData: null, brushRadius: DEFAULT_BRUSH_RADIUS, brushColor: DEFAULT_BRUSH_COLOR, pen: true, messages: [] };
 
 const gamePlayReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -21,6 +21,8 @@ const gamePlayReducer = (state = initialState, action) => {
       return { ...state, ...initTools, fill: true };
     case UPDATE_CANVAS:
       return { ...state, canvasData: action.payload };
+    case ADD_MESSAGE:
+      return { ...state, messages: [...state.messages, action.payload] };
     default:
       return state;
   }

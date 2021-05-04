@@ -11,7 +11,8 @@ import {
   HANDLE_PLAYER_KICKED,
   HANDLE_ADMIN_UPDATED,
   HANDLE_GAME_STARTED,
-  HANDLE_CANVAS_UPDATED
+  HANDLE_CANVAS_UPDATED,
+  HANDLE_NEW_MESSAGE
 } from '../../constants/actionTypes';
 
 import {
@@ -19,7 +20,8 @@ import {
   WS_GAME_ADMIN_UPDATED,
   WS_GAME_SETTINGS_UPDATED,
   WS_GAME_STARTED,
-  WS_CANVAS_UPDATED
+  WS_CANVAS_UPDATED,
+  WS_NEW_MESSAGE
 } from '../../constants/websocketEvents';
 
 const setupGameChannelEventHandlers = (gameChannel, emitter) => {
@@ -33,6 +35,8 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
   gameChannel.on(WS_GAME_STARTED, () => emitter({ type: HANDLE_GAME_STARTED }));
 
   gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => emitter({ type: HANDLE_CANVAS_UPDATED, payload: canvas_data }));
+
+  gameChannel.on(WS_NEW_MESSAGE, message => emitter({ type: HANDLE_NEW_MESSAGE, payload: message }));
 };
 
 const setupGameChannelPresenceHandlers = (gameChannel, emitter) => {

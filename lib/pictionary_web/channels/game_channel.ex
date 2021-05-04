@@ -87,12 +87,10 @@ defmodule PictionaryWeb.GameChannel do
       ) do
     game = GameStore.get_game(game_id)
 
-    IO.puts("STARTING GAME")
-
     if game.creator_id == current_user.id do
-      game_server_pid = Pictionary.GameSupervisor.add_game_server(game_id)
+      Pictionary.GameSupervisor.add_game_server(game_id)
       broadcast(socket, "game_started", %{})
-      {:reply, :ok, assign(socket, :server_pid, game_server_pid)}
+      {:reply, :ok, socket}
     else
       {:reply, :ok, socket}
     end
@@ -103,8 +101,16 @@ defmodule PictionaryWeb.GameChannel do
         %{"canvas_data" => canvas_data},
         socket
       ) do
-    IO.inspect("yes");
     broadcast_from(socket, "canvas_updated", %{canvas_data: canvas_data})
+    {:reply, :ok, socket}
+  end
+
+  def handle_in(
+        "send_message",
+        %{"message" => message},
+        %Phoenix.Socket{assigns: %{current_user: current_user, game_id: game_id}} = socket
+      ) do
+    GenServer.call({:global, "GameServer##{game_id}"}, {:new_message, {current_user.id, message}})
     {:reply, :ok, socket}
   end
 
