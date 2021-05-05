@@ -27,7 +27,10 @@ defmodule Pictionary.Application do
 
     Pictionary.Logging.PhoenixInstrumenter.setup()
     Pictionary.Logging.PipelineInstrumenter.setup()
-    Prometheus.Registry.register_collector(:prometheus_process_collector) # This is an erlang package, this will be collecting values
+    # prometheus_process_collector measures things like your app’s RAM or CPU usage
+    # (as process_resident_memory_bytes and process_cpu_seconds_total), among others.
+    # It’s written in Erlang,  and it calls a C binary to read data directly from /proc entries.
+    Prometheus.Registry.register_collector(:prometheus_process_collector)
     Pictionary.Logging.PrometheusExporter.setup()
 
     Supervisor.start_link(children, opts)

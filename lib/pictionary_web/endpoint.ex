@@ -47,7 +47,7 @@ defmodule PictionaryWeb.Endpoint do
 
   plug Corsica,
     max_age: 600,
-    origins: "http://localhost:3000",
+    origins: "http://localhost:3001",
     allow_headers: ["content-type", "accept", "authorization"]
 
   # Promentheus Plugs
