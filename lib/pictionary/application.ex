@@ -24,6 +24,12 @@ defmodule Pictionary.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Pictionary.Supervisor]
+
+    Pictionary.Logging.PhoenixInstrumenter.setup()
+    Pictionary.Logging.PipelineInstrumenter.setup()
+    Prometheus.Registry.register_collector(:prometheus_process_collector) # This is an erlang package, this will be collecting values
+    Pictionary.Logging.PrometheusExporter.setup()
+
     Supervisor.start_link(children, opts)
   end
 

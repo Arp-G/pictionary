@@ -50,6 +50,10 @@ defmodule PictionaryWeb.Endpoint do
     origins: "http://localhost:3000",
     allow_headers: ["content-type", "accept", "authorization"]
 
+  # Promentheus Plugs
+  plug Pictionary.Logging.PrometheusExporter     # makes the /metrics URL happen
+  plug Pictionary.Logging.PipelineInstrumenter   # measures pipeline exec times
+
   plug PictionaryWeb.Router
 end
 

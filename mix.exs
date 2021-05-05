@@ -20,7 +20,7 @@ defmodule Pictionary.MixProject do
   def application do
     [
       mod: {Pictionary.Application, []},
-      extra_applications: [:logger, :runtime_tools, :corsica]
+      extra_applications: [:logger, :runtime_tools, :corsica, :prometheus_ex, :prometheus_phoenix, :prometheus_plugs, :prometheus_process_collector]
     ]
   end
 
@@ -44,6 +44,13 @@ defmodule Pictionary.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:corsica, "~> 1.0"},
+
+      # Logging
+
+      {:prometheus_ex, "~> 3.0"},
+      {:prometheus_phoenix, "~> 1.3"},
+      {:prometheus_plugs, "~> 1.1"},
+      {:prometheus_process_collector, "~> 1.6"},
 
       # dev, test
       {:phoenix_live_reload, "~> 1.2", only: :dev},
