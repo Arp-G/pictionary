@@ -27,6 +27,10 @@ defmodule Pictionary.Stores.GameStore do
     GenServer.call(__MODULE__, {:set, game})
   end
 
+  def start_game(game_id) do
+    GenServer.call(__MODULE__, {:start, game_id})
+  end
+
   def update_game(game_params) do
     GenServer.call(__MODULE__, {:update, game_params})
   end
@@ -69,6 +73,19 @@ defmodule Pictionary.Stores.GameStore do
     Logger.info("Create game #{game_id}")
 
     {:reply, game_data, state}
+  end
+
+  def handle_call({:start, id}, _from, state) do
+    game = fetch_game(id)
+    updated_game = struct(game, %{started: true, updated_at: DateTime.utc_now()})
+
+    if !game.started do
+      true = :ets.insert(@table_name, {id, updated_game})
+      Pictionary.GameSupervisor.add_game_server(id)
+      Logger.info("Game #{id} started")
+    end
+
+    {:reply, updated_game, state}
   end
 
   def handle_call({:update, %{"id" => id} = game_params}, _from, state) do

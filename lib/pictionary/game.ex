@@ -9,9 +9,10 @@ defmodule Pictionary.Game do
     public_game: true,
     vote_kick_enabled: true,
     players: MapSet.new(),
+    started: false,
     creator_id: nil,
     created_at: DateTime.utc_now(),
-    updated_at: DateTime.utc_now()
+    updated_at: DateTime.utc_now(),
   ])
 
   @type t :: %__MODULE__{
@@ -26,6 +27,7 @@ defmodule Pictionary.Game do
           players: MapSet.t(),
           creator_id: String.t(),
           created_at: t(),
-          updated_at: t()
+          updated_at: t(),
+          started: boolean()
         }
 end

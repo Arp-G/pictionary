@@ -88,12 +88,10 @@ defmodule PictionaryWeb.GameChannel do
     game = GameStore.get_game(game_id)
 
     if game.creator_id == current_user.id do
-      Pictionary.GameSupervisor.add_game_server(game_id)
+      GameStore.start_game(game_id)
       broadcast(socket, "game_started", %{})
-      {:reply, :ok, socket}
-    else
-      {:reply, :ok, socket}
     end
+    {:reply, :ok, socket}
   end
 
   def handle_in(

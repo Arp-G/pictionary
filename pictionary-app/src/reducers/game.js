@@ -11,6 +11,7 @@ const initialState = {
   public_game: true,
   vote_kick_enabled: true,
   players: [],
+  started: false,
   creator_id: null
 };
 
@@ -27,6 +28,7 @@ const gameReducer = (state = initialState, action) => {
         public_game,
         vote_kick_enabled,
         players,
+        started,
         creator_id
       } = action.payload;
       return {
@@ -40,6 +42,7 @@ const gameReducer = (state = initialState, action) => {
         public_game,
         vote_kick_enabled,
         players,
+        started,
         creator_id
       };
     case UPDATE_GAME_STATE:

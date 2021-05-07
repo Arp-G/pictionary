@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { List, ListItem } from '@material-ui/core';
 import { FaPencilAlt } from 'react-icons/fa';
 import withPlayerCountChangeSfx from '../../hocs/withPlayerCountChangeSfx';
@@ -6,37 +7,8 @@ import Avatar from '../Avatar/Avatar';
 import './GamePlayersList.scss';
 
 const GamePlayersList = () => {
-  // const [
-  //   selfId,
-  //   players,
-  //   creator_id,
-  //   max_players,
-  //   darkMode
-  // ] = useSelector(state => [state.userInfo.id, state.game.players, state.game.creator_id, state.game.max_players, state.settings.darkMode]);
-
-  // Dummy Data
-  const players = new Array(2).fill(
-    {
-      id: '7d28937a-a0c8-4edf-86fb-2fafc72f42a5',
-      name: 'Daisyelf Bolaaaaaaaaaaaaaaaaaaaat',
-      avatar: {
-        accessories: 'Wayfarers',
-        clotheColor: 'Black',
-        clotheType: 'ShirtVNeck',
-        eyeBrowType: 'SadConcernedNatural',
-        eyeType: 'WinkWacky',
-        facialHairColor: 'Red',
-        facialHairType: 'Blank',
-        hairColor: 'BrownDark',
-        mouth: 'Concerned',
-        skinColor: 'Tanned',
-        top: 'WinterHat4'
-      }
-    }
-  );
-
+  const players = useSelector(state => state.game.players);
   return (
-    // eslint-disable-next-line react/self-closing-comp
     <div className="gamePlayerListContainer">
       <List>
         {players.map((player, index) => (

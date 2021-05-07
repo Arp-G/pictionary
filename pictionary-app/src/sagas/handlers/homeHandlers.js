@@ -99,9 +99,8 @@ export function* joinGameSession(action) {
   if (gameJoinResponse.payload) {
     yield put(push('/'));
     yield put({ type: ADD_ALERT, alertType: 'error', msg: `Could not join game: ${gameJoinResponse.payload}` });
-  } else {
-    yield put(push(`lobby/${payload?.id}`));
-  }
+  } else if (payload.started) yield put(push('game'));
+  else yield put(push(`lobby/${payload?.id}`));
 
   yield put({ type: CLEAR_LOADING });
 }

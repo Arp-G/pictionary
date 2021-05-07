@@ -12,6 +12,7 @@ defmodule PictionaryWeb.GamesView do
       public_game: game.public_game,
       vote_kick_enabled: game.vote_kick_enabled,
       players: game |> get_game_players() |> render_many(PictionaryWeb.UserView, "show.json"),
+      started: game.started,
       creator_id: game.creator_id
     }
   end
@@ -24,6 +25,7 @@ defmodule PictionaryWeb.GamesView do
       max_players: game.max_players,
       public_game: game.public_game,
       vote_kick_enabled: game.vote_kick_enabled,
+      started: game.started,
       creator_id: game.creator_id
     }
   end
