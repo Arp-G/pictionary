@@ -5,6 +5,7 @@ import GamePlayersList from '../../components/GamePlayersList/GamePlayersList';
 import GameCanvas from '../../components/GameCanvas/GameCanvas';
 import GameChat from '../../components/GameChat/GameChat';
 import GameToolbar from '../../components/GameToolbar/GameToolbar';
+import GameWordChoiceDialog from '../../components/GameWordChoiceDialog/GameWordChoiceDialog';
 import './game.scss';
 
 const Game = () => (
@@ -38,6 +39,9 @@ const Game = () => (
       <Paper>
         <GameToolbar />
       </Paper>
+    </Grid>
+    <Grid item>
+      <GameWordChoiceDialog active={true} choosing="Arpan" />
     </Grid>
   </Grid>
 );
