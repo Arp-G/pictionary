@@ -81,7 +81,6 @@ defmodule Pictionary.Stores.GameStore do
 
     if !game.started do
       true = :ets.insert(@table_name, {id, updated_game})
-      Pictionary.GameSupervisor.add_game_server(id)
       Logger.info("Game #{id} started")
     end
 

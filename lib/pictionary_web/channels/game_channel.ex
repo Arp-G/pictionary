@@ -91,6 +91,8 @@ defmodule PictionaryWeb.GameChannel do
       GameStore.start_game(game_id)
       broadcast(socket, "game_started", %{})
     end
+
+    Pictionary.GameSupervisor.add_game_server(game_id)
     {:reply, :ok, socket}
   end
 
