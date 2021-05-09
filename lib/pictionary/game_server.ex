@@ -23,9 +23,8 @@ defmodule Pictionary.GameServer do
     {:ok, init_game_state(game_id)}
   end
 
-  def handle_call({:select_word, word_data, sender_id}, _from, state) do
-    if state.drawer_id === sender_id,
-      do: Process.send_after(self(), {:word_selected, word_data}, 0)
+  def handle_call({:select_word, word_data}, _from, state) do
+    Process.send_after(self(), {:word_selected, word_data}, 0)
 
     {:reply, :ok, state}
   end
@@ -107,7 +106,12 @@ defmodule Pictionary.GameServer do
     {:noreply, state}
   end
 
-  def handle_info({:word_selected, _}, state), do: {:noreply, state}
+  def handle_info({:word_selected, _}, state) do
+
+    Logger.info("IGNORED")
+
+    {:noreply, state}
+  end
 
   # Everyone has guessed
   def handle_info(:all_answered, state), do: {:noreply, start_next_round(state)}
@@ -225,7 +229,7 @@ defmodule Pictionary.GameServer do
     Process.send_after(
       self(),
       {:game_timer, nil, state.current_round + 1},
-      @inter_round_cooldown
+      if(state.current_round == 0, do: @inter_round_cooldown, else: 0)
     )
 
     %{reset_state(state) | drawer_id: nil, current_round: state.current_round + 1}

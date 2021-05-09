@@ -11,8 +11,9 @@ const GamePlayersList = () => {
     // eslint-disable-next-line no-param-reassign
     player.score = state.gamePlay.scores[player.id] || 0;
     return player;
-  })
-  );
+  }));
+
+  const drawerId = useSelector(state => state.gamePlay.drawerId);
   return (
     <div className="gamePlayerListContainer">
       <List>
@@ -30,7 +31,7 @@ const GamePlayersList = () => {
                 <div className="gamePlayerScore">{`Points: ${player.score}`}</div>
               </div>
               <div className="drawIcon">
-                {index % 2 === 0 && <FaPencilAlt />}
+                {player.id === drawerId && <FaPencilAlt />}
               </div>
               <div className="gamePlayerAvatar">
                 <Avatar avatarStyles={player.avatar} width="45px" height="45px" transparent={true} />
