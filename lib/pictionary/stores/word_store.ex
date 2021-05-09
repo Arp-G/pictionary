@@ -1939,7 +1939,7 @@ defmodule Pictionary.Stores.WordStore do
       "paw",
       "space",
       "bullet",
-      "skribbl.io",
+      "pictionary",
       "shirt",
       "cow",
       "worm",

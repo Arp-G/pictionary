@@ -71,12 +71,15 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:random_word_select, words}, state) do
     [random_selection | _rest] = Enum.shuffle(words)
+    Logger.info("Choose random word #{inspect(random_selection)}")
     Process.send_after(self(), {:word_selected, random_selection}, 0)
     {:noreply, state}
   end
 
-  def handle_info({:word_selected, {type, word}}, state) when is_nil(state.current_word) do
-    PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", word)
+  def handle_info({:word_selected, [type, word]}, state) when is_nil(state.current_word) do
+    PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{
+      selected_word: word
+    })
 
     state =
       remove_selected_word(type, word, state)
@@ -85,14 +88,14 @@ defmodule Pictionary.GameServer do
     {:noreply, state}
   end
 
-  def handle_info({:word_selected, _}, _from, state), do: {:noreply, state}
+  def handle_info({:word_selected, _}, state), do: {:noreply, state}
 
   # Everyone has guessed
-  def handle_info(:all_answered, _from, state), do: {:noreply, start_next_round(state)}
+  def handle_info(:all_answered, state), do: {:noreply, start_next_round(state)}
 
-  def handle_info({:game_timer, drawer, round}, _from, state)
+  def handle_info({:game_timer, drawer, round}, state)
       when state.drawer_id == drawer and state.current_round == round do
-    Logger.info("Game timer Ping !")
+    Logger.info("#{inspect DateTime.utc_now} Game timer Ping ! #{inspect({:game_timer, drawer, round})}")
 
     cond do
       # Drawers are remaining in this round
@@ -107,20 +110,38 @@ defmodule Pictionary.GameServer do
           words: words
         })
 
+        Logger.info("Sent words #{inspect(words)}")
+
         Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
 
-        Process.send_after(self(), {:game_timer, drawer, round}, state.time + @word_choose_time)
+        # Choose next drawer
 
-        # Where do we slect the next drawer in same round?
+        [new_drawer | remaining_drawers] = state.remaining_drawers
 
-        {:noreply, state}
+        Process.send_after(
+          self(),
+          {:game_timer, new_drawer, round},
+          #state.draw_time * 1000 + @word_choose_time
+          5 * 1000 + @word_choose_time
+        )
+
+        Logger.info("#{inspect DateTime.utc_now} Choosing new drawer, Round: #{state.current_round}    Drawer: #{new_drawer}    Remaining Drawers: #{Enum.join(remaining_drawers, ",")}")
+
+        {:noreply,
+         %{
+           state
+           | drawer_id: new_drawer,
+             remaining_drawers: remaining_drawers
+         }}
 
       # No more drawers remaining && not last round
       state.current_round < state.rounds ->
-        start_next_round(state)
+        Logger.info("Round end!")
+        {:noreply, start_next_round(state)}
 
       # Last round
       true ->
+        Logger.info("Last round Game ending, Round: #{state.current_round}")
         # TODO: Shutdown channel game topic
         PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "game_over", %{
           players: state.players
@@ -130,10 +151,15 @@ defmodule Pictionary.GameServer do
     end
   end
 
-  def handle_info({:game_timer, _drawer, _round}, _from, state), do: {:noreply, state}
+  def handle_info({:game_timer, drawer, round}, state) do
+    Logger.info("Ignored game timer call #{inspect {:game_timer, drawer, round}}")
+    Logger.info(inspect state)
+    {:noreply, state}
+  end
 
   def init_state(game_id) do
     game = Pictionary.Stores.GameStore.get_game(game_id)
+
     %{
       game_id: game_id,
       draw_time: game.time,
@@ -162,37 +188,28 @@ defmodule Pictionary.GameServer do
     %{
       state
       | correct_guessed_players: MapSet.new(),
-        remaining_drawers: game.players,
+        remaining_drawers: MapSet.to_list(game.players),
         drawer_id: nil,
         current_word: nil
     }
   end
 
   def start_next_round(state) do
-    Logger.info("Starting round #{state.current_round + 1}")
+    Logger.info("#{DateTime.utc_now} Starting round #{state.current_round + 1}")
 
     PictionaryWeb.Endpoint.broadcast!(
       "game:#{state.game_id}",
       "new_round",
-      state.current_round + 1
+      %{round: state.current_round + 1}
     )
-
-    state = reset_state(state)
-
-    [new_drawer | remaining_drawers] = state.remaining_drawers
 
     Process.send_after(
       self(),
-      {:game_timer, new_drawer, state.current_round + 1},
+      {:game_timer, nil, state.current_round + 1},
       @inter_round_cooldown
     )
 
-    %{
-      reset_state(state)
-      | current_round: state.current_round + 1,
-        drawer_id: new_drawer,
-        remaining_drawers: remaining_drawers
-    }
+    %{ reset_state(state) | drawer_id: nil, current_round: state.current_round + 1 }
   end
 
   ## Private functions
@@ -249,28 +266,36 @@ defmodule Pictionary.GameServer do
 
     selected_words =
       selected_words
-      |> Enum.map(fn {_, word} -> word end)
+      |> Enum.map(fn [_, word] -> word end)
       |> MapSet.new()
+
+    unused_custom_words = MapSet.difference(unused_custom_words, selected_words)
 
     # More the probablity of custom words more the chance for the random number to be smaller than it
     if random < custom_words_probability && MapSet.size(unused_custom_words) != 0 do
-      {:custom_word,
-       unused_custom_words
-       |> MapSet.difference(selected_words)
-       |> select_random()}
+      [
+        :custom_word,
+        unused_custom_words
+        |> select_random()
+      ]
     else
-      {:word_store,
-       Pictionary.Stores.WordStore.get_words_list()
-       |> MapSet.difference(used_words)
-       |> MapSet.difference(selected_words)
-       |> select_random()}
+      [
+        :word_store,
+        Pictionary.Stores.WordStore.get_words_list()
+        |> MapSet.difference(used_words)
+        |> MapSet.difference(selected_words)
+        |> select_random()
+      ]
     end
   end
 
   defp select_random(map_set) do
-    map_set
-    |> MapSet.to_list()
-    |> Enum.shuffle()
-    |> Enum.take(1)
+    [word] =
+      map_set
+      |> MapSet.to_list()
+      |> Enum.shuffle()
+      |> Enum.take(1)
+
+    word
   end
 end
