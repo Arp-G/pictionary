@@ -1,6 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Dialog, DialogTitle, DialogActions, Button, makeStyles, withStyles, Slide } from '@material-ui/core';
+import { HANDLE_UPDATE_SELECTED_WORD } from '../../constants/actionTypes';
 
 const dialogTitle = makeStyles({ root: { textAlign: 'center' } });
 
@@ -13,12 +14,19 @@ const WordButton = withStyles(() => ({
   }
 }))(Button);
 
-const GameWordChoiceDialog = ({ active, choosing }) => {
+const GameWordChoiceDialog = () => {
   const classes = dialogTitle();
-  // const [word1, word2, word3] = useSelector(state => state.gamePlay.words);
-  return (
+  const words = useSelector(state => state.gamePlay.words);
+  const choosing = useSelector((state) => {
+    const drawer = state.game.players.find(player => player.id === state.userInfo.id);
+    return state.gamePlay.drawerId === state.userInfo.id ? drawer.name || 'Anonymous' : false;
+  });
+  const active = useSelector(state => state.gamePlay.words.length !== 0);
+  const dispatch = useDispatch();
+
+  return active ? (
     <Dialog
-      open={active}
+      open={true}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       // eslint-disable-next-line react/jsx-props-no-spreading
@@ -30,21 +38,16 @@ const GameWordChoiceDialog = ({ active, choosing }) => {
       </DialogTitle>
       { !choosing
         && (
-        <DialogActions>
-          <WordButton variant="contained">
-            Word 1
-          </WordButton>
-          <WordButton variant="contained">
-            Word 2
-          </WordButton>
-          <WordButton variant="contained">
-            word 3
-          </WordButton>
-        </DialogActions>
+          <DialogActions>
+            {words.map(([type, word]) => (
+              <WordButton variant="contained" onClick={() => dispatch({ type: HANDLE_UPDATE_SELECTED_WORD, payload: [type, word] })}>
+                {word}
+              </WordButton>
+            ))}
+          </DialogActions>
         )}
-
     </Dialog>
-  );
+  ) : null;
 };
 
 export default GameWordChoiceDialog;

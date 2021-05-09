@@ -7,7 +7,12 @@ import Avatar from '../Avatar/Avatar';
 import './GamePlayersList.scss';
 
 const GamePlayersList = () => {
-  const players = useSelector(state => state.game.players);
+  const players = useSelector(state => state.game.players.map((player) => {
+    // eslint-disable-next-line no-param-reassign
+    player.score = state.gamePlay.scores[player.id] || 0;
+    return player;
+  })
+  );
   return (
     <div className="gamePlayerListContainer">
       <List>
@@ -22,7 +27,7 @@ const GamePlayersList = () => {
               <div className="gamePlayerRank">{`#${index + 1}`}</div>
               <div className="gamePlayerDetails">
                 <div className="gamePlayerName">{player.name}</div>
-                <div className="gamePlayerScore">{`Points: ${100}`}</div>
+                <div className="gamePlayerScore">{`Points: ${player.score}`}</div>
               </div>
               <div className="drawIcon">
                 {index % 2 === 0 && <FaPencilAlt />}

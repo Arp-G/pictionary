@@ -6,17 +6,17 @@ import {
   ADD_ALERT,
   UPDATE_GAME_STATE,
   UPDATE_GAME_PLAYERS,
+  UPDATE_CANVAS,
+  ADD_MESSAGE,
   HANDLE_GAME_JOIN_SUCCESS,
   HANDLE_GAME_JOIN_FAIL,
   HANDLE_PLAYER_KICKED,
   HANDLE_ADMIN_UPDATED,
   HANDLE_GAME_STARTED,
-  HANDLE_CANVAS_UPDATED,
-  HANDLE_NEW_MESSAGE,
-  HANDLE_NEW_ROUND,
-  HANDLE_SELECTED_WORD,
-  HANDLE_SCORE_UPDATE,
-  HANDLE_NEW_DRAWER,
+  UPDATE_ROUND,
+  UPDATE_SELECTED_WORD,
+  UPDATE_SCORE,
+  UPDATE_DRAWER,
   HANDLE_GAME_OVER
 } from '../../constants/actionTypes';
 
@@ -44,18 +44,19 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
 
   gameChannel.on(WS_GAME_STARTED, () => emitter({ type: HANDLE_GAME_STARTED }));
 
-  gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => emitter({ type: HANDLE_CANVAS_UPDATED, payload: canvas_data }));
+  gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => emitter({ type: UPDATE_CANVAS, payload: canvas_data }));
 
-  gameChannel.on(WS_NEW_MESSAGE, message => emitter({ type: HANDLE_NEW_MESSAGE, payload: message }));
+  gameChannel.on(WS_NEW_MESSAGE, message => emitter({ type: ADD_MESSAGE, payload: message }));
 
-  gameChannel.on(WS_NEW_ROUND, payload => emitter({ type: HANDLE_NEW_ROUND, payload: payload.data }));
+  gameChannel.on(WS_NEW_ROUND, payload => emitter({ type: UPDATE_ROUND, payload: payload.data }));
 
-  gameChannel.on(WS_SELECTED_WORD, payload => emitter({ type: HANDLE_SELECTED_WORD, payload: payload.data }));
+  gameChannel.on(WS_SELECTED_WORD, payload => emitter({ type: UPDATE_SELECTED_WORD, payload: payload.data }));
 
-  gameChannel.on(WS_NEW_DRAWER_WORDS, payload => emitter({ type: HANDLE_NEW_DRAWER, payload }));
+  gameChannel.on(WS_NEW_DRAWER_WORDS, payload => emitter({ type: UPDATE_DRAWER, payload }));
 
-  gameChannel.on(WS_SCORE_UPDATE, payload => emitter({ type: HANDLE_SCORE_UPDATE, payload: payload.data }));
+  gameChannel.on(WS_SCORE_UPDATE, payload => emitter({ type: UPDATE_SCORE, payload: payload.data }));
 
+  // TODO: No handlers yet need to show winners list, clear socket and have button or on timeout navigate to home page
   gameChannel.on(WS_GAME_OVER, payload => emitter({ type: HANDLE_GAME_OVER, payload: payload.data }));
 };
 

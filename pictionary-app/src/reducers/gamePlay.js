@@ -7,10 +7,10 @@ import {
   SET_PEN,
   SET_FILL,
   ADD_MESSAGE,
-  HANDLE_NEW_DRAWER,
-  HANDLE_NEW_ROUND,
-  HANDLE_SELECTED_WORD,
-  HANDLE_SCORE_UPDATE
+  UPDATE_DRAWER,
+  UPDATE_ROUND,
+  UPDATE_SELECTED_WORD,
+  UPDATE_SCORE
 } from '../constants/actionTypes';
 
 const DEFAULT_BRUSH_COLOR = '#000000';
@@ -46,13 +46,13 @@ const gamePlayReducer = (state = initialState, action) => {
       return { ...state, canvasData: action.payload };
     case ADD_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
-    case HANDLE_NEW_DRAWER:
+    case UPDATE_DRAWER:
       return { ...state, drawerId: action.payload.drawer_id, words: action.payload.words };
-    case HANDLE_NEW_ROUND:
+    case UPDATE_ROUND:
       return { ...state, currentRound: action.payload };
-    case HANDLE_SELECTED_WORD:
-      return { ...state, words: [], currentWord: null };
-    case HANDLE_SCORE_UPDATE:
+    case UPDATE_SELECTED_WORD:
+      return { ...state, words: [], currentWord: action.payload };
+    case UPDATE_SCORE:
       return { ...state, scores: action.payload };
     default:
       return state;

@@ -8,14 +8,14 @@ import './GameCanvas.scss';
 const GameCanvas = () => {
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
-  const [canvasData, isAdmin, brushColor, brushRadius] = useSelector(state => [
+  const [canvasData, isDrawer, brushColor, brushRadius] = useSelector(state => [
     state.gamePlay.canvasData,
-    state.game.creator_id === state.userInfo.id,
+    state.gamePlay.drawerId === state.userInfo.id,
     state.gamePlay.brushColor,
     state.gamePlay.brushRadius
   ]);
 
-  if (!isAdmin && canvasData) canvasRef?.current?.loadSaveData(canvasData, true);
+  if (!isDrawer && canvasData) canvasRef?.current?.loadSaveData(canvasData, true);
 
   // Trying to get continously tirggering canvas listener
   // const innerCanvasRef = useRef(null);
@@ -35,7 +35,7 @@ const GameCanvas = () => {
     <div className="canvasContainer">
       <CanvasDraw
         ref={canvasRef}
-        onChange={e => isAdmin && dispatch({ type: HANDLE_CANVAS_UPDATE, payload: e.getSaveData() })}
+        onChange={e => isDrawer && dispatch({ type: HANDLE_CANVAS_UPDATE, payload: e.getSaveData() })}
         lazyRadius={10}
         brushRadius={brushRadius}
         brushColor={brushColor}
@@ -43,12 +43,11 @@ const GameCanvas = () => {
         hideGrid={true}
         canvasWidth="100%"
         canvasHeight="100%"
-        disabled={!isAdmin}
+        disabled={!isDrawer}
         imgSrc={null}
         saveData={null}
         immediateLoading={true}
         hideInterface={false}
-        className="test"
       />
     </div>
   );

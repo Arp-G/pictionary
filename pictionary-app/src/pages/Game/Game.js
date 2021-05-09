@@ -41,7 +41,7 @@ const Game = () => (
       </Paper>
     </Grid>
     <Grid item>
-      <GameWordChoiceDialog active={true} choosing="Arpan" />
+      <GameWordChoiceDialog />
     </Grid>
   </Grid>
 );

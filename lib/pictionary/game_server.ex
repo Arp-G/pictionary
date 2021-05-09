@@ -23,9 +23,11 @@ defmodule Pictionary.GameServer do
     {:ok, init_game_state(game_id)}
   end
 
-  def handle_call({:select_word, word_data}, _from, state) do
-    Process.send_after(self(), {:word_selected, word_data}, 0)
-    {:reply, state}
+  def handle_call({:select_word, word_data, sender_id}, _from, state) do
+    if state.drawer_id === sender_id,
+      do: Process.send_after(self(), {:word_selected, word_data}, 0)
+
+    {:reply, :ok, state}
   end
 
   # When a new message arrives these are possible cases:
@@ -49,24 +51,29 @@ defmodule Pictionary.GameServer do
       sent_at: DateTime.utc_now()
     }
 
-    cond do
-      # If the message sender is not the drawer and has not already guessed the correct answer
-      sender_id != state.drawer_id && !MapSet.member?(state.correct_guessed_players, sender_id) ->
-        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
+    state =
+      cond do
+        # If the message sender is not the drawer and has not already guessed the correct answer
+        sender_id != state.drawer_id && !MapSet.member?(state.correct_guessed_players, sender_id) ->
+          PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
 
-        if message_type == :correct_guess do
-          state = update_score(state, sender_id)
+          if message_type == :correct_guess do
+            state = update_score(state, sender_id)
 
-          # All players answered expect drawer
-          if map_size(state.players) - 1 <= map_size(state.correct_guessed_players),
-            do: Process.send_after(self(), :all_answered, 0)
+            # All players answered expect drawer
+            if map_size(state.players) - 1 <= map_size(state.correct_guessed_players),
+              do: Process.send_after(self(), :all_answered, 0)
 
-          {:reply, state}
-        end
+            state
+          else
+            state
+          end
 
-      true ->
-        {:reply, state, state}
-    end
+        true ->
+          state
+      end
+
+    {:reply, :ok, state}
   end
 
   def handle_info({:random_word_select, words}, state) when is_nil(state.current_word) do
@@ -79,9 +86,9 @@ defmodule Pictionary.GameServer do
   def handle_info({:random_word_select, _words}, state), do: {:noreply, state}
 
   def handle_info({:word_selected, [type, word]}, state) when is_nil(state.current_word) do
-    PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{
-      data: word
-    })
+    PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{data: word})
+
+    type = if type in ["word_store", "custom_word"], do: String.to_atom(type), else: type
 
     state =
       remove_selected_word(type, word, state)
@@ -93,8 +100,8 @@ defmodule Pictionary.GameServer do
     Process.send_after(
       self(),
       {:game_timer, state.drawer_id, state.current_round},
-      # state.draw_time * 1000
-      5 * 1000
+      state.draw_time * 1000
+      # 5 * 1000
     )
 
     {:noreply, state}
@@ -119,13 +126,13 @@ defmodule Pictionary.GameServer do
         word3 = select_word(state, [word1, word2])
         words = [word1, word2, word3]
 
-        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_drawer_words", %{
-          drawer_id: drawer,
-          words: words
-        })
-
         # Choose next drawer
         [new_drawer | remaining_drawers] = state.remaining_drawers
+
+        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_drawer_words", %{
+          drawer_id: new_drawer,
+          words: words
+        })
 
         Logger.info(
           "#{DateTime.utc_now()} Choosing new drawer, Round: #{state.current_round}    Drawer: #{
@@ -232,7 +239,7 @@ defmodule Pictionary.GameServer do
          } = game_state,
          guesser_id
        ) do
-    guesser_score = @max_score - length(correct_guessed_players) * @score_interval
+    guesser_score = @max_score - map_size(correct_guessed_players) * @score_interval
 
     # Update Guesser score
     players = update_player_score(players, guesser_id, guesser_score)
@@ -247,7 +254,7 @@ defmodule Pictionary.GameServer do
     %{
       game_state
       | players: players,
-        correct_guessed_players: [guesser_id | correct_guessed_players]
+        correct_guessed_players: MapSet.put(correct_guessed_players, guesser_id)
     }
   end
 
@@ -267,6 +274,8 @@ defmodule Pictionary.GameServer do
 
   defp remove_selected_word(:custom_word, word, state),
     do: %{state | unused_custom_words: MapSet.delete(state.unused_custom_words, word)}
+
+  defp remove_selected_word(_, _, state), do: state
 
   defp select_word(
          %{
