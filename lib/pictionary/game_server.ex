@@ -20,7 +20,7 @@ defmodule Pictionary.GameServer do
   def init(game_id) do
     Logger.info("Initializing game server for #{game_id}")
     Process.send_after(self(), {:game_timer, nil, 0}, 1000)
-    {:ok, init_state(game_id)}
+    {:ok, init_game_state(game_id)}
   end
 
   def handle_call({:select_word, word_data}, _from, state) do
@@ -71,7 +71,7 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:random_word_select, words}, state) when is_nil(state.current_word) do
     [random_selection | _rest] = Enum.shuffle(words)
-    Logger.info("#{DateTime.utc_now} Choose random word #{inspect(random_selection)}")
+    Logger.info("#{DateTime.utc_now()} Choose random word #{inspect(random_selection)}")
     Process.send_after(self(), {:word_selected, random_selection}, 0)
     {:noreply, state}
   end
@@ -80,21 +80,22 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:word_selected, [type, word]}, state) when is_nil(state.current_word) do
     PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{
-      selected_word: word
+      data: word
     })
 
     state =
       remove_selected_word(type, word, state)
       |> Map.put(:current_word, word)
 
-      Logger.info("#{DateTime.utc_now} Selected word #{inspect word}")
+    Logger.info("#{DateTime.utc_now()} Selected word #{inspect(word)}")
 
-      # After word select start draw timer
-      Process.send_after(
-        self(),
-        {:game_timer, state.drawer_id, state.current_round},
-        5 * 1000 # state.draw_time * 1000
-      )
+    # After word select start draw timer
+    Process.send_after(
+      self(),
+      {:game_timer, state.drawer_id, state.current_round},
+      # state.draw_time * 1000
+      5 * 1000
+    )
 
     {:noreply, state}
   end
@@ -106,7 +107,9 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:game_timer, drawer, round}, state)
       when state.drawer_id == drawer and state.current_round == round do
-    Logger.info("#{DateTime.utc_now} Game timer Ping ! #{inspect({:game_timer, drawer, round})}")
+    Logger.info(
+      "#{DateTime.utc_now()} Game timer Ping ! #{inspect({:game_timer, drawer, round})}"
+    )
 
     cond do
       # Drawers are remaining in this round
@@ -116,14 +119,19 @@ defmodule Pictionary.GameServer do
         word3 = select_word(state, [word1, word2])
         words = [word1, word2, word3]
 
-        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_words", %{
+        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_drawer_words", %{
           drawer_id: drawer,
           words: words
         })
 
         # Choose next drawer
         [new_drawer | remaining_drawers] = state.remaining_drawers
-        Logger.info("#{DateTime.utc_now} Choosing new drawer, Round: #{state.current_round}    Drawer: #{new_drawer}    Remaining Drawers: #{Enum.join(remaining_drawers, ",")}")
+
+        Logger.info(
+          "#{DateTime.utc_now()} Choosing new drawer, Round: #{state.current_round}    Drawer: #{
+            new_drawer
+          }    Remaining Drawers: #{Enum.join(remaining_drawers, ",")}"
+        )
 
         # Choose random word after word choosing timeout
         Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
@@ -138,15 +146,15 @@ defmodule Pictionary.GameServer do
 
       # No more drawers remaining && not last round
       state.current_round < state.rounds ->
-        Logger.info("#{DateTime.utc_now} Round end!")
+        Logger.info("#{DateTime.utc_now()} Round end!")
         {:noreply, start_next_round(state)}
 
       # Last round
       true ->
-        Logger.info("#{DateTime.utc_now} Last round Game ending, Round: #{state.current_round}")
+        Logger.info("#{DateTime.utc_now()} Last round Game ending, Round: #{state.current_round}")
         # TODO: Shutdown channel game topic
         PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "game_over", %{
-          players: state.players
+          data: state.players
         })
 
         {:stop, :normal}
@@ -154,12 +162,14 @@ defmodule Pictionary.GameServer do
   end
 
   def handle_info({:game_timer, drawer, round}, state) do
-    Logger.info("Ignored game timer call #{inspect {:game_timer, drawer, round}}")
-    Logger.info(inspect state)
+    Logger.info("Ignored game timer call #{inspect({:game_timer, drawer, round})}")
+    Logger.info(inspect(state))
     {:noreply, state}
   end
 
-  def init_state(game_id) do
+  ## Private functions
+
+  defp init_game_state(game_id) do
     game = Pictionary.Stores.GameStore.get_game(game_id)
 
     %{
@@ -182,7 +192,7 @@ defmodule Pictionary.GameServer do
     }
   end
 
-  def reset_state(state) do
+  defp reset_state(state) do
     game = Pictionary.Stores.GameStore.get_game(state.game_id)
 
     # Maybe here update new players who have joined in state, but they wont have score
@@ -196,13 +206,13 @@ defmodule Pictionary.GameServer do
     }
   end
 
-  def start_next_round(state) do
-    Logger.info("#{DateTime.utc_now} Starting round #{state.current_round + 1}")
+  defp start_next_round(state) do
+    Logger.info("#{DateTime.utc_now()} Starting round #{state.current_round + 1}")
 
     PictionaryWeb.Endpoint.broadcast!(
       "game:#{state.game_id}",
       "new_round",
-      %{round: state.current_round + 1}
+      %{data: state.current_round + 1}
     )
 
     Process.send_after(
@@ -211,19 +221,17 @@ defmodule Pictionary.GameServer do
       @inter_round_cooldown
     )
 
-    %{ reset_state(state) | drawer_id: nil, current_round: state.current_round + 1 }
+    %{reset_state(state) | drawer_id: nil, current_round: state.current_round + 1}
   end
 
-  ## Private functions
-
-  def update_score(
-        %{
-          players: players,
-          drawer_id: drawer_id,
-          correct_guessed_players: correct_guessed_players
-        } = game_state,
-        guesser_id
-      ) do
+  defp update_score(
+         %{
+           players: players,
+           drawer_id: drawer_id,
+           correct_guessed_players: correct_guessed_players
+         } = game_state,
+         guesser_id
+       ) do
     guesser_score = @max_score - length(correct_guessed_players) * @score_interval
 
     # Update Guesser score
@@ -231,6 +239,10 @@ defmodule Pictionary.GameServer do
 
     # Update Drawer Score
     players = update_player_score(players, drawer_id, guesser_score / 2)
+
+    PictionaryWeb.Endpoint.broadcast!("game:#{game_state.game_id}", "score_update", %{
+      data: players
+    })
 
     %{
       game_state
