@@ -69,12 +69,14 @@ defmodule Pictionary.GameServer do
     end
   end
 
-  def handle_info({:random_word_select, words}, state) do
+  def handle_info({:random_word_select, words}, state) when is_nil(state.current_word) do
     [random_selection | _rest] = Enum.shuffle(words)
-    Logger.info("Choose random word #{inspect(random_selection)}")
+    Logger.info("#{DateTime.utc_now} Choose random word #{inspect(random_selection)}")
     Process.send_after(self(), {:word_selected, random_selection}, 0)
     {:noreply, state}
   end
+
+  def handle_info({:random_word_select, _words}, state), do: {:noreply, state}
 
   def handle_info({:word_selected, [type, word]}, state) when is_nil(state.current_word) do
     PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{
@@ -84,6 +86,15 @@ defmodule Pictionary.GameServer do
     state =
       remove_selected_word(type, word, state)
       |> Map.put(:current_word, word)
+
+      Logger.info("#{DateTime.utc_now} Selected word #{inspect word}")
+
+      # After word select start draw timer
+      Process.send_after(
+        self(),
+        {:game_timer, state.drawer_id, state.current_round},
+        5 * 1000 # state.draw_time * 1000
+      )
 
     {:noreply, state}
   end
@@ -95,7 +106,7 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:game_timer, drawer, round}, state)
       when state.drawer_id == drawer and state.current_round == round do
-    Logger.info("#{inspect DateTime.utc_now} Game timer Ping ! #{inspect({:game_timer, drawer, round})}")
+    Logger.info("#{DateTime.utc_now} Game timer Ping ! #{inspect({:game_timer, drawer, round})}")
 
     cond do
       # Drawers are remaining in this round
@@ -110,44 +121,35 @@ defmodule Pictionary.GameServer do
           words: words
         })
 
-        Logger.info("Sent words #{inspect(words)}")
-
-        Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
-
         # Choose next drawer
-
         [new_drawer | remaining_drawers] = state.remaining_drawers
+        Logger.info("#{DateTime.utc_now} Choosing new drawer, Round: #{state.current_round}    Drawer: #{new_drawer}    Remaining Drawers: #{Enum.join(remaining_drawers, ",")}")
 
-        Process.send_after(
-          self(),
-          {:game_timer, new_drawer, round},
-          #state.draw_time * 1000 + @word_choose_time
-          5 * 1000 + @word_choose_time
-        )
-
-        Logger.info("#{inspect DateTime.utc_now} Choosing new drawer, Round: #{state.current_round}    Drawer: #{new_drawer}    Remaining Drawers: #{Enum.join(remaining_drawers, ",")}")
+        # Choose random word after word choosing timeout
+        Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
 
         {:noreply,
          %{
            state
            | drawer_id: new_drawer,
-             remaining_drawers: remaining_drawers
+             remaining_drawers: remaining_drawers,
+             current_word: nil
          }}
 
       # No more drawers remaining && not last round
       state.current_round < state.rounds ->
-        Logger.info("Round end!")
+        Logger.info("#{DateTime.utc_now} Round end!")
         {:noreply, start_next_round(state)}
 
       # Last round
       true ->
-        Logger.info("Last round Game ending, Round: #{state.current_round}")
+        Logger.info("#{DateTime.utc_now} Last round Game ending, Round: #{state.current_round}")
         # TODO: Shutdown channel game topic
         PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "game_over", %{
           players: state.players
         })
 
-        {:stop, :game_over, state}
+        {:stop, :normal}
     end
   end
 
