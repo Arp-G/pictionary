@@ -59,8 +59,9 @@
           if message_type == :correct_guess do
             state = update_score(state, sender_id)
 
-            # All players answered expect drawer
-            if map_size(state.players) - 1 <= map_size(state.correct_guessed_players),
+            Logger.info("all ans test #{inspect state.players}    #{inspect state.correct_guessed_players}")
+            # All players answered except drawer
+            if map_size(state.players) - 1 <= MapSet.size(state.correct_guessed_players),
               do: Process.send_after(self(), :all_answered, 0)
 
             state
@@ -243,7 +244,7 @@
          } = game_state,
          guesser_id
        ) do
-    guesser_score = @max_score - map_size(correct_guessed_players) * @score_interval
+    guesser_score = @max_score - MapSet.size(correct_guessed_players) * @score_interval
 
     # Update Guesser score
     players = update_player_score(players, guesser_id, guesser_score)
