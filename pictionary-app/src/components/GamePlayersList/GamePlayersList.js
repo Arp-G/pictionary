@@ -13,11 +13,11 @@ const GamePlayersList = () => {
     return player;
   }));
 
-  const drawerId = useSelector(state => state.gamePlay.drawerId);
+  const [drawerId, currentUserId] = useSelector(state => [state.gamePlay.drawerId, state.userInfo.id]);
   return (
     <div className="gamePlayerListContainer">
       <List>
-        {players.map((player, index) => (
+        {players.sort((player1, player2) => player2.score - player1.score).map((player, index) => (
           <ListItem
             key={player.id}
             disableGutters={true}
@@ -27,7 +27,7 @@ const GamePlayersList = () => {
             <div className={index % 2 === 0 ? 'gamePlayerListItem' : 'gamePlayerListItemGrey'}>
               <div className="gamePlayerRank">{`#${index + 1}`}</div>
               <div className="gamePlayerDetails">
-                <div className="gamePlayerName">{player.name}</div>
+                <div className="gamePlayerName">{`${player.name} ${player.id === currentUserId ? '(You)' : ''}`}</div>
                 <div className="gamePlayerScore">{`Points: ${player.score}`}</div>
               </div>
               <div className="drawIcon">

@@ -17,9 +17,9 @@ const WordButton = withStyles(() => ({
 const GameWordChoiceDialog = () => {
   const classes = dialogTitle();
   const words = useSelector(state => state.gamePlay.words);
-  const choosing = useSelector((state) => {
+  const [choosing, chooserName] = useSelector((state) => {
     const drawer = state.game.players.find(player => player.id === state.userInfo.id);
-    return state.gamePlay.drawerId === state.userInfo.id ? drawer.name || 'Anonymous' : false;
+    return [state.gamePlay.drawerId === state.userInfo.id, (drawer.name || 'Anonymous')];
   });
   const active = useSelector(state => state.gamePlay.words.length !== 0);
   const dispatch = useDispatch();
@@ -34,9 +34,9 @@ const GameWordChoiceDialog = () => {
       maxWidth="lg"
     >
       <DialogTitle className={classes.root}>
-        {choosing ? `${choosing} is choosing a word...` : 'Choose a Word'}
+        {choosing ? 'Choose a Word' : `${chooserName} is choosing a word...`}
       </DialogTitle>
-      { !choosing
+      { choosing
         && (
           <DialogActions>
             {words.map(([type, word]) => (

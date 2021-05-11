@@ -117,7 +117,7 @@ defmodule PictionaryWeb.GameChannel do
   def handle_in(
         "select_word",
         %{"word" => word},
-        %Phoenix.Socket{assigns: %{current_user: current_user, game_id: game_id}} = socket
+        %Phoenix.Socket{assigns: %{game_id: game_id}} = socket
       ) do
     GenServer.call({:global, "GameServer##{game_id}"}, {:select_word, word})
     {:reply, :ok, socket}

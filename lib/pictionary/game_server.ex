@@ -1,4 +1,4 @@
-defmodule Pictionary.GameServer do
+ defmodule Pictionary.GameServer do
   use GenServer
   require Logger
 
@@ -9,7 +9,7 @@ defmodule Pictionary.GameServer do
   @too_close_similarity 0.90
   @max_score 250
   @score_interval 10
-  @word_choose_time 10000
+  @word_choose_time 10_000
   @inter_round_cooldown 3000
 
   def start_link(game_id) when game_id != nil do

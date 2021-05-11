@@ -8,12 +8,22 @@ import './GameCanvas.scss';
 const GameCanvas = () => {
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
-  const [canvasData, isDrawer, brushColor, brushRadius] = useSelector(state => [
+  const [canvasData, isDrawer, brushColor, brushRadius, eraser, pen, fill] = useSelector(state => [
     state.gamePlay.canvasData,
     state.gamePlay.drawerId === state.userInfo.id,
     state.gamePlay.brushColor,
-    state.gamePlay.brushRadius
+    state.gamePlay.brushRadius,
+    state.gamePlay.eraser,
+    state.gamePlay.pen,
+    state.gamePlay.fill
   ]);
+
+  let canvasTool = 'disabled';
+
+  if (!isDrawer) canvasTool = 'disabled';
+  else if (pen) canvasTool = 'pen';
+  else if (eraser) canvasTool = 'eraser';
+  else if (fill) canvasTool = 'fill';
 
   if (!isDrawer && canvasData) canvasRef?.current?.loadSaveData(canvasData, true);
 
@@ -32,7 +42,7 @@ const GameCanvas = () => {
   // }, []);
 
   return (
-    <div className="canvasContainer">
+    <div className={`canvasContainer canvas-${canvasTool}`}>
       <CanvasDraw
         ref={canvasRef}
         onChange={e => isDrawer && dispatch({ type: HANDLE_CANVAS_UPDATE, payload: e.getSaveData() })}

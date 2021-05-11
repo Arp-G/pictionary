@@ -1,3 +1,19 @@
 .canvasContainer {
   height: 61vh;
 }
+
+.canvas-pen {
+  cursor: url("../../cursors/pencil.svg") 16 16, crosshair;
+}
+
+.canvas-eraser {
+  cursor: url("../../cursors/eraser.svg") 16 16, crosshair;
+}
+
+.canvas-fill {
+  cursor: url("../../cursors/fill.svg") 16 16, crosshair;
+}
+
+.canvas-disabled {
+  cursor: url("../../cursors/disabled.svg") 16 16, crosshair;
+}
