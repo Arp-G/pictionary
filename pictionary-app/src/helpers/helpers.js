@@ -34,3 +34,12 @@ export const range = (startAt = 1, size = 10, step = 1) => {
 
   return arr;
 };
+
+export const getWinnerPosition = (position) => {
+  switch (position) {
+    case 1: return 'Ist';
+    case 2: return '2nd';
+    case 3: return '3rd';
+    default: return '';
+  }
+};

@@ -17,7 +17,7 @@ import {
   UPDATE_SELECTED_WORD,
   UPDATE_SCORE,
   UPDATE_DRAWER,
-  HANDLE_GAME_OVER
+  SET_GAME_OVER
 } from '../../constants/actionTypes';
 
 import {
@@ -57,7 +57,7 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
   gameChannel.on(WS_SCORE_UPDATE, payload => emitter({ type: UPDATE_SCORE, payload: payload.data }));
 
   // TODO: No handlers yet need to show winners list, clear socket and have button or on timeout navigate to home page
-  gameChannel.on(WS_GAME_OVER, payload => emitter({ type: HANDLE_GAME_OVER, payload: payload.data }));
+  gameChannel.on(WS_GAME_OVER, payload => emitter({ type: SET_GAME_OVER, payload: payload.data }));
 };
 
 const setupGameChannelPresenceHandlers = (gameChannel, emitter) => {

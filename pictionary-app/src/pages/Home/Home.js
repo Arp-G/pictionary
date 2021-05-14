@@ -5,14 +5,17 @@ import HomeHeader from '../../components/HomeHeader/HomeHeader';
 import UserInfo from '../../components/UserInfo/userInfo';
 import HowToPlay from '../../components/HowToPlay/howToPlay';
 import About from '../../components/About/about';
-import { CLEAR_SOCKET } from '../../constants/actionTypes';
+import { CLEAR_SOCKET, RESET_GAME_STATE } from '../../constants/actionTypes';
 import './home.scss';
 
 const Home = () => {
   const dispatch = useDispatch();
 
   // Clear and disconnect exisiting socket or channels if any
-  useEffect(() => dispatch({ type: CLEAR_SOCKET }), []);
+  useEffect(() => {
+    dispatch({ type: CLEAR_SOCKET });
+    dispatch({ type: RESET_GAME_STATE });
+  }, []);
 
   return (
     <Container maxWidth="sm" className="homeContainer">

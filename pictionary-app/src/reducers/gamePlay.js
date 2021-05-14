@@ -11,7 +11,9 @@ import {
   UPDATE_ROUND,
   UPDATE_SELECTED_WORD,
   UPDATE_SCORE,
-  HIDE_ROUND_CHANGE_DIALOG
+  HIDE_ROUND_CHANGE_DIALOG,
+  SET_GAME_OVER,
+  RESET_GAME_STATE
 } from '../constants/actionTypes';
 
 const DEFAULT_BRUSH_COLOR = '#000000';
@@ -30,7 +32,8 @@ const initialState = {
   currentRound: 0,
   roundChangeDialog: false,
   scores: {},
-  drawerId: null
+  drawerId: null,
+  gameOver: false
 };
 
 const gamePlayReducer = (state = initialState, action) => {
@@ -59,6 +62,10 @@ const gamePlayReducer = (state = initialState, action) => {
       return { ...state, scores: action.payload };
     case HIDE_ROUND_CHANGE_DIALOG:
       return { ...state, roundChangeDialog: false };
+    case SET_GAME_OVER:
+      return { ...state, gameOver: true };
+    case RESET_GAME_STATE:
+      return initialState;
     default:
       return state;
   }
