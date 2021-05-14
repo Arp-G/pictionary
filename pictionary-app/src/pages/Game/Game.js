@@ -7,6 +7,7 @@ import GameChat from '../../components/GameChat/GameChat';
 import GameToolbar from '../../components/GameToolbar/GameToolbar';
 import GameWordChoiceDialog from '../../components/GameWordChoiceDialog/GameWordChoiceDialog';
 import GameNewRoundDialog from '../../components/GameNewRoundDialog/GameNewRoundDialog';
+import GameWordWasDialog from '../../components/GameWordWasDialog/GameWordWasDialog';
 import './game.scss';
 
 const Game = () => (
@@ -44,6 +45,7 @@ const Game = () => (
     <Grid item>
       <GameWordChoiceDialog />
       <GameNewRoundDialog />
+      <GameWordWasDialog />
     </Grid>
   </Grid>
 );

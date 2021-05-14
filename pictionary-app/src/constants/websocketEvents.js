@@ -11,6 +11,7 @@ export const WS_SELECTED_WORD = 'selected_word';
 export const WS_NEW_DRAWER_WORDS = 'new_drawer_words';
 export const WS_GAME_OVER = 'game_over';
 export const WS_SCORE_UPDATE = 'score_update';
+export const WS_WORD_WAS = 'word_was';
 
 // == Events pushed ==
 export const WS_UPDATE_GAME = 'update_game';

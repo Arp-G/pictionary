@@ -10,8 +10,8 @@ defmodule Pictionary.GameServer do
   @max_score 250
   @score_interval 10
   @word_choose_time 10_000
-  @inter_round_cooldown 3000
-  @inter_draw_cooldown 1500
+  @inter_round_cooldown 7000
+  @inter_draw_cooldown 5000
 
   def start_link(game_id) when game_id != nil do
     Logger.info("Starting Game server for #{game_id}")
@@ -106,44 +106,29 @@ defmodule Pictionary.GameServer do
       when state.drawer_id == drawer and state.current_round == round do
     Process.cancel_timer(state.game_timer)
 
+    if state.current_word do
+      PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "word_was", %{
+        current_word: state.current_word,
+        drawer_id: drawer,
+        correct_guessed_players: MapSet.to_list(state.correct_guessed_players)
+      })
+    end
+
     cond do
       # Drawers are remaining in this round
       length(state.remaining_drawers) > 0 ->
-        word1 = select_word(state, [])
-        word2 = select_word(state, [word1])
-        word3 = select_word(state, [word1, word2])
-        words = [word1, word2, word3]
+        Logger.info("Send braodcast for #{state.current_word} for drawer #{state.drawer_id}")
 
-        # Choose next drawer
-        [new_drawer | remaining_drawers] = state.remaining_drawers
+        Process.send_after(self(), :new_drawer, @inter_draw_cooldown)
 
-        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_drawer_words", %{
-          drawer_id: new_drawer,
-          words: words
-        })
-
-        Logger.info(
-          "Choosing new drawer, Round: #{state.current_round}    Drawer: #{new_drawer}    Remaining Drawers: #{
-            Enum.join(remaining_drawers, ", ")
-          }"
-        )
-
-        # Choose random word after word choosing timeout
-        Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
-
-        {:noreply,
-         %{
-           state
-           | drawer_id: new_drawer,
-             remaining_drawers: remaining_drawers,
-             current_word: nil,
-             correct_guessed_players: MapSet.new()
-         }}
+        {:noreply, state}
 
       # No more drawers remaining && not last round
       state.current_round < state.rounds ->
         Logger.info("#{DateTime.utc_now()} Round end!")
-        {:noreply, start_next_round(state)}
+
+        Process.send_after(self(), :start_next_round, if(state.current_round == 0, do: 1500, else: @inter_round_cooldown))
+        {:noreply, state}
 
       # Last round
       true ->
@@ -158,6 +143,61 @@ defmodule Pictionary.GameServer do
   end
 
   def handle_info({:game_timer, _drawer, _round}, state), do: {:noreply, state}
+
+  def handle_info(:new_drawer, state) do
+    word1 = select_word(state, [])
+    word2 = select_word(state, [word1])
+    word3 = select_word(state, [word1, word2])
+    words = [word1, word2, word3]
+
+    # Choose next drawer
+    [new_drawer | remaining_drawers] = state.remaining_drawers
+
+    PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_drawer_words", %{
+      drawer_id: new_drawer,
+      words: words
+    })
+
+    rm = Enum.join(remaining_drawers, ", ")
+    Logger.info("Round:#{state.current_round} Drawer: #{new_drawer} Remaining Drawers: #{rm}")
+
+    # Choose random word after word choosing timeout
+    Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
+
+    {:noreply,
+     %{
+       state
+       | drawer_id: new_drawer,
+         remaining_drawers: remaining_drawers,
+         current_word: nil,
+         correct_guessed_players: MapSet.new()
+     }}
+  end
+
+  def handle_info(:start_next_round, state) do
+    Logger.info("#{DateTime.utc_now()} Starting round #{state.current_round + 1}")
+
+    PictionaryWeb.Endpoint.broadcast!(
+      "game:#{state.game_id}",
+      "new_round",
+      %{data: state.current_round + 1}
+    )
+
+    game_timer =
+      Process.send_after(
+        self(),
+        {:game_timer, nil, state.current_round + 1},
+        if(state.current_round == 0, do: 1000, else: 0)
+      )
+
+    {:noreply,
+     %{
+       reset_state(state)
+       | drawer_id: nil,
+         game_timer: game_timer,
+         current_round: state.current_round + 1
+     }}
+  end
 
   ## Private functions
 
@@ -196,30 +236,6 @@ defmodule Pictionary.GameServer do
         remaining_drawers: MapSet.to_list(game.players),
         drawer_id: nil,
         current_word: nil
-    }
-  end
-
-  defp start_next_round(state) do
-    Logger.info("#{DateTime.utc_now()} Starting round #{state.current_round + 1}")
-
-    PictionaryWeb.Endpoint.broadcast!(
-      "game:#{state.game_id}",
-      "new_round",
-      %{data: state.current_round + 1}
-    )
-
-    game_timer =
-      Process.send_after(
-        self(),
-        {:game_timer, nil, state.current_round + 1},
-        if(state.current_round == 0, do: @inter_round_cooldown, else: 0)
-      )
-
-    %{
-      reset_state(state)
-      | drawer_id: nil,
-        game_timer: game_timer,
-        current_round: state.current_round + 1
     }
   end
 
@@ -323,7 +339,7 @@ defmodule Pictionary.GameServer do
       Process.cancel_timer(state.game_timer)
 
       game_timer =
-        Process.send_after(self(), {:game_timer, state.drawer_id, state.current_round}, @inter_draw_cooldown)
+        Process.send_after(self(), {:game_timer, state.drawer_id, state.current_round}, 0)
 
       %{state | game_timer: game_timer}
     else
