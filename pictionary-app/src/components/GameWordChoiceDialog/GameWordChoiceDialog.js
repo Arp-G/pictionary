@@ -18,8 +18,8 @@ const GameWordChoiceDialog = () => {
   const classes = dialogTitle();
   const words = useSelector(state => state.gamePlay.words);
   const [choosing, chooserName] = useSelector((state) => {
-    const drawer = state.game.players.find(player => player.id === state.userInfo.id);
-    return [state.gamePlay.drawerId === state.userInfo.id, (drawer.name || 'Anonymous')];
+    const drawer = state.game.players.find(player => player.id === state.gamePlay.drawerId);
+    return [state.gamePlay.drawerId === state.userInfo.id, (drawer?.name || 'Anonymous')];
   });
   const active = useSelector(state => state.gamePlay.words.length !== 0);
   const dispatch = useDispatch();

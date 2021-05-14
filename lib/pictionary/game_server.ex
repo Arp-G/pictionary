@@ -1,4 +1,4 @@
- defmodule Pictionary.GameServer do
+defmodule Pictionary.GameServer do
   use GenServer
   require Logger
 
@@ -11,6 +11,7 @@
   @score_interval 10
   @word_choose_time 10_000
   @inter_round_cooldown 3000
+  @inter_draw_cooldown 1500
 
   def start_link(game_id) when game_id != nil do
     Logger.info("Starting Game server for #{game_id}")
@@ -19,7 +20,6 @@
 
   def init(game_id) do
     Logger.info("Initializing game server for #{game_id}")
-    Process.send_after(self(), {:game_timer, nil, 0}, 1000)
     {:ok, init_game_state(game_id)}
   end
 
@@ -56,18 +56,9 @@
         sender_id != state.drawer_id && !MapSet.member?(state.correct_guessed_players, sender_id) ->
           PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
 
-          if message_type == :correct_guess do
-            state = update_score(state, sender_id)
-
-            Logger.info("all ans test #{inspect state.players}    #{inspect state.correct_guessed_players}")
-            # All players answered except drawer
-            if map_size(state.players) - 1 <= MapSet.size(state.correct_guessed_players),
-              do: Process.send_after(self(), :all_answered, 0)
-
-            state
-          else
-            state
-          end
+          if message_type == :correct_guess,
+            do: handle_correct_answer(state, sender_id),
+            else: state
 
         true ->
           state
@@ -86,42 +77,34 @@
   def handle_info({:random_word_select, _words}, state), do: {:noreply, state}
 
   def handle_info({:word_selected, [type, word]}, state) when is_nil(state.current_word) do
+    # Cancel any existing running timer
+    Process.cancel_timer(state.game_timer)
     PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{data: word})
-
     type = if type in ["word_store", "custom_word"], do: String.to_atom(type), else: type
 
     state =
-      remove_selected_word(type, word, state)
+      remove_selected_word_from_pool(type, word, state)
       |> Map.put(:current_word, word)
 
     Logger.info("#{DateTime.utc_now()} Selected word #{inspect(word)}")
 
-    # After word select start draw timer
-    Process.send_after(
-      self(),
-      {:game_timer, state.drawer_id, state.current_round},
-      state.draw_time * 1000
-      # 5 * 1000
-    )
-
-    {:noreply, state}
+    {:noreply,
+     %{
+       state
+       | game_timer:
+           Process.send_after(
+             self(),
+             {:game_timer, state.drawer_id, state.current_round},
+             state.draw_time * 1000
+           )
+     }}
   end
 
-  def handle_info({:word_selected, _}, state) do
-
-    Logger.info("IGNORED")
-
-    {:noreply, state}
-  end
-
-  # Everyone has guessed
-  def handle_info(:all_answered, state), do: {:noreply, start_next_round(state)}
+  def handle_info({:word_selected, _}, state), do: {:noreply, state}
 
   def handle_info({:game_timer, drawer, round}, state)
       when state.drawer_id == drawer and state.current_round == round do
-    Logger.info(
-      "#{DateTime.utc_now()} Game timer Ping ! #{inspect({:game_timer, drawer, round})}"
-    )
+    Process.cancel_timer(state.game_timer)
 
     cond do
       # Drawers are remaining in this round
@@ -140,9 +123,9 @@
         })
 
         Logger.info(
-          "#{DateTime.utc_now()} Choosing new drawer, Round: #{state.current_round}    Drawer: #{
-            new_drawer
-          }    Remaining Drawers: #{Enum.join(remaining_drawers, ",")}"
+          "Choosing new drawer, Round: #{state.current_round}    Drawer: #{new_drawer}    Remaining Drawers: #{
+            Enum.join(remaining_drawers, ", ")
+          }"
         )
 
         # Choose random word after word choosing timeout
@@ -153,7 +136,8 @@
            state
            | drawer_id: new_drawer,
              remaining_drawers: remaining_drawers,
-             current_word: nil
+             current_word: nil,
+             correct_guessed_players: MapSet.new()
          }}
 
       # No more drawers remaining && not last round
@@ -173,11 +157,7 @@
     end
   end
 
-  def handle_info({:game_timer, drawer, round}, state) do
-    Logger.info("Ignored game timer call #{inspect({:game_timer, drawer, round})}")
-    Logger.info(inspect(state))
-    {:noreply, state}
-  end
+  def handle_info({:game_timer, _drawer, _round}, state), do: {:noreply, state}
 
   ## Private functions
 
@@ -200,6 +180,7 @@
       drawer_id: nil,
       current_round: 0,
       current_word: nil,
+      game_timer: Process.send_after(self(), {:game_timer, nil, 0}, 1000),
       used_words: MapSet.new()
     }
   end
@@ -227,13 +208,19 @@
       %{data: state.current_round + 1}
     )
 
-    Process.send_after(
-      self(),
-      {:game_timer, nil, state.current_round + 1},
-      if(state.current_round == 0, do: @inter_round_cooldown, else: 0)
-    )
+    game_timer =
+      Process.send_after(
+        self(),
+        {:game_timer, nil, state.current_round + 1},
+        if(state.current_round == 0, do: @inter_round_cooldown, else: 0)
+      )
 
-    %{reset_state(state) | drawer_id: nil, current_round: state.current_round + 1}
+    %{
+      reset_state(state)
+      | drawer_id: nil,
+        game_timer: game_timer,
+        current_round: state.current_round + 1
+    }
   end
 
   defp update_score(
@@ -274,13 +261,13 @@
     players
   end
 
-  defp remove_selected_word(:word_store, word, state),
+  defp remove_selected_word_from_pool(:word_store, word, state),
     do: %{state | used_words: MapSet.put(state.used_words, word)}
 
-  defp remove_selected_word(:custom_word, word, state),
+  defp remove_selected_word_from_pool(:custom_word, word, state),
     do: %{state | unused_custom_words: MapSet.delete(state.unused_custom_words, word)}
 
-  defp remove_selected_word(_, _, state), do: state
+  defp remove_selected_word_from_pool(_, _, state), do: state
 
   defp select_word(
          %{
@@ -325,5 +312,22 @@
       |> Enum.take(1)
 
     word
+  end
+
+  defp handle_correct_answer(state, sender_id) do
+    state = update_score(state, sender_id)
+
+    # All players answered except drawer
+    if map_size(state.players) - 1 <= MapSet.size(state.correct_guessed_players) do
+      Logger.info("ALL ANSWERED !")
+      Process.cancel_timer(state.game_timer)
+
+      game_timer =
+        Process.send_after(self(), {:game_timer, state.drawer_id, state.current_round}, @inter_draw_cooldown)
+
+      %{state | game_timer: game_timer}
+    else
+      state
+    end
   end
 end
