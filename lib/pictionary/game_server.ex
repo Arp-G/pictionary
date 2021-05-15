@@ -1,7 +1,8 @@
 defmodule Pictionary.GameServer do
   use GenServer,
-  # Avoid restarting children
-  restart: :transient
+    # Avoid restarting children
+    restart: :transient
+
   require Logger
 
   ## Public API
@@ -24,6 +25,8 @@ defmodule Pictionary.GameServer do
     Logger.info("Initializing game server for #{game_id}")
     {:ok, init_game_state(game_id)}
   end
+
+  def handle_cast(:stop, state), do: {:stop, :normal, state}
 
   def handle_call({:select_word, word_data}, _from, state) do
     Process.send_after(self(), {:word_selected, word_data}, 0)
@@ -81,7 +84,7 @@ defmodule Pictionary.GameServer do
   def handle_info({:word_selected, [type, word]}, state) when is_nil(state.current_word) do
     # Cancel any existing running timer
     if state.game_timer, do: Process.cancel_timer(state.game_timer)
-    if state.word_select_timer, do: Process.cancel_timer(state.word_select_timer);
+    if state.word_select_timer, do: Process.cancel_timer(state.word_select_timer)
 
     PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "selected_word", %{data: word})
     type = if type in ["word_store", "custom_word"], do: String.to_atom(type), else: type
@@ -101,7 +104,7 @@ defmodule Pictionary.GameServer do
              {:game_timer, state.drawer_id, state.current_round},
              state.draw_time * 1000
            ),
-           word_select_timer: nil
+         word_select_timer: nil
      }}
   end
 
@@ -184,7 +187,8 @@ defmodule Pictionary.GameServer do
          current_word: nil,
          correct_guessed_players: MapSet.new(),
          # Choose random word after word choosing timeout
-         word_select_timer: Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
+         word_select_timer:
+           Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
      }}
   end
 

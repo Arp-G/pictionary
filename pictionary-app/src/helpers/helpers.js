@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import AVATAR_STYLES from '../constants/avatarStyles';
 
 export const getRandomAvatarStyles = () => {
@@ -42,4 +43,22 @@ export const getWinnerPosition = (position) => {
     case 3: return '3rd';
     default: return '';
   }
+};
+
+// Hash a string taken from: https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+// function hashCode(str) {
+//   let hash = 0; let i; let chr;
+//   if (str.length === 0) return hash;
+//   // eslint-disable-next-line no-plusplus
+//   for (i = 0; i < str.length; i++) {
+//     chr = str.charCodeAt(i);
+//     hash = ((hash << 5) - hash) + chr;
+//     hash |= 0; // Convert to 32bit integer
+//   }
+//   return hash;
+// }
+
+export const randomIndex = (array) => {
+  const randomNumber = array.reduce((index, sum) => sum + index) % array.length;
+  return array[randomNumber];
 };

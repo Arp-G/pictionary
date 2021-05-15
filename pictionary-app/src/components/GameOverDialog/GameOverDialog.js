@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Grid, Dialog, DialogTitle, DialogContent, Slide, makeStyles } from '@material-ui/core';
 import Confetti from 'react-confetti';
+import { Grid, Dialog, DialogTitle, DialogContent, Slide, makeStyles } from '@material-ui/core';
 import Avatar from '../Avatar/Avatar';
 import useAudio from '../../hooks/useAudio';
 import winnerSfx from '../../sounds/winner.mp3';
@@ -22,17 +22,13 @@ const GameOverDialog = () => {
     }));
 
   const playWinnerSfx = useAudio(winnerSfx);
-  const [timer, setTimer] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
     playWinnerSfx();
-    const timerRef = setTimeout(() => {
-      dispatch(push('/'));
-    }, 10000);
-    setTimer(timerRef);
+    const timerRef = setTimeout(() => dispatch(push('/')), 10000);
 
-    return () => timer && clearTimeout(timer);
+    return () => clearTimeout(timerRef);
   }, []);
 
   const dialogContentClasses = contentStyles();

@@ -158,6 +158,8 @@ defmodule Pictionary.Stores.GameStore do
       # Remove game if everyone leaves
       if MapSet.size(game.players) == 0 do
         true = :ets.delete(@table_name, game.id)
+        # Stop game server
+        GenServer.cast({:global, "GameServer##{game.id}"}, :stop)
         Logger.info("Removed game #{game_id}")
       end
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, Slide } from '@material-ui/core';
 import useAudio from '../../hooks/useAudio';
@@ -8,18 +8,14 @@ import { WS_WORD_WAS } from '../../constants/websocketEvents';
 const GameWordWasDialog = () => {
   const [gameChannel, selfId] = useSelector(state => [state.settings.gameChannel, state.userInfo.id]);
   const [wordWas, setWordWasDialog] = useState(null);
-  const [timer, setDialogHideTimer] = useState(null);
   const playFailSfx = useAudio(failSfx);
 
   useEffect(() => {
+    let dialogTimer;
     gameChannel.on(WS_WORD_WAS, (payload) => {
       setWordWasDialog(payload.current_word);
-      const dialogTimer = setTimeout(() => {
-        setWordWasDialog(null);
-        setDialogHideTimer(null);
-      }, 3500);
+      dialogTimer = setTimeout(() => setWordWasDialog(null), 3500);
 
-      setDialogHideTimer(dialogTimer);
       // eslint-disable-next-line camelcase
       if (!payload.correct_guessed_players.find(player_id => player_id === selfId) && selfId !== payload.drawer_id) {
         console.log('if executed');
@@ -28,7 +24,7 @@ const GameWordWasDialog = () => {
     });
     return () => {
       gameChannel.off(WS_WORD_WAS);
-      if (timer) clearTimeout(timer);
+      if (dialogTimer) clearTimeout(dialogTimer);
     };
   }, []);
 

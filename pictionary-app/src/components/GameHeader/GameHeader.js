@@ -2,11 +2,17 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import GameHeaderClock from '../GameHeaderClock/GameHeaderClock';
+import GameWordBox from '../GameWordBox/GameWordBox';
 import DeleteSvg from '../../images/save.svg';
 import './GameHeader.scss';
 
 const GameHeader = () => {
-  const [totalRounds, currentRound] = useSelector(state => [state.game.rounds, state.gamePlay.currentRound]);
+  const [
+    totalRounds,
+    currentRound,
+    currentWord
+  ] = useSelector(state => [state.game.rounds, state.gamePlay.currentRound, state.gamePlay.currentWord]);
+
   return (
     <Grid container>
       <Grid item xs={2} alignContent="center">
@@ -18,13 +24,7 @@ const GameHeader = () => {
         </div>
       </Grid>
       <Grid item xs={6}>
-        <div className="alphabetGuessContainer">
-          {
-          'elephant man'
-            .split('')
-            .map(alphabet => (alphabet === '' ? <div className="alphabetGuessSpace" /> : <div className="alphabetGuess">{alphabet}</div>))
-          }
-        </div>
+        {currentWord && <GameWordBox />}
       </Grid>
       <Grid item>
         <div className="saveSketch">

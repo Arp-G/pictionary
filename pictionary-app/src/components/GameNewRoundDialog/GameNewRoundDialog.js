@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Dialog, DialogTitle, Slide } from '@material-ui/core';
 import { HIDE_ROUND_CHANGE_DIALOG } from '../../constants/actionTypes';
 
 const GameNewRoundDialog = () => {
   const [active, currentRound] = useSelector(state => [state.gamePlay.roundChangeDialog, state.gamePlay.currentRound]);
-  const [timer, setDialogHideTimer] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    let dialogTimer;
     if (active) {
-      const dialogTimer = setTimeout(() => {
+      dialogTimer = setTimeout(() => {
         dispatch({ type: HIDE_ROUND_CHANGE_DIALOG });
       }, 2000);
-      setDialogHideTimer(dialogTimer);
     }
-    return () => timer && clearTimeout(timer);
+    return () => dialogTimer && clearTimeout(dialogTimer);
   }, [active]);
 
   return active ? (
