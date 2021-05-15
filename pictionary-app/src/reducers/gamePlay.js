@@ -14,7 +14,8 @@ import {
   HIDE_ROUND_CHANGE_DIALOG,
   SET_GAME_OVER,
   RESET_GAME_STATE,
-  REVEAL_MORE_CURRENT_WORD
+  REVEAL_MORE_CURRENT_WORD,
+  SET_GAMEPLAY_STATE
 } from '../constants/actionTypes';
 import { randomIndex } from '../helpers/helpers';
 
@@ -41,6 +42,15 @@ const initialState = {
 
 const gamePlayReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_GAMEPLAY_STATE:
+      return {
+        ...state,
+        scores: action.payload.players,
+        drawerId: action.payload.drawer_id,
+        currentRound: action.payload.current_round,
+        currentWord: action.payload.current_word,
+        currentWordRevealList: action.payload?.split('').map(char => char === ' ')
+      };
     case CHANGE_BRUSH_COLOR:
       return { ...state, ...initTools, brushColor: action.payload, pen: state.pen, fill: state.fill };
     case CHANGE_BRUSH_RADIUS:

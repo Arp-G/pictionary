@@ -17,7 +17,8 @@ import {
   UPDATE_SELECTED_WORD,
   UPDATE_SCORE,
   UPDATE_DRAWER,
-  SET_GAME_OVER
+  SET_GAME_OVER,
+  SET_GAMEPLAY_STATE
 } from '../../constants/actionTypes';
 
 import {
@@ -89,7 +90,10 @@ export default (socket, gameId) => {
     eventChannel((emitter) => {
       console.log('Trying to initialize game channel');
       gameChannel.join()
-        .receive('ok', () => emitter({ type: HANDLE_GAME_JOIN_SUCCESS }))
+        .receive('ok', (payload) => {
+          if (Object.keys(payload).length !== 0) emitter({ type: SET_GAMEPLAY_STATE, payload });
+          emitter({ type: HANDLE_GAME_JOIN_SUCCESS });
+        })
         .receive('error', resp => emitter({ type: HANDLE_GAME_JOIN_FAIL, payload: resp.reason }))
         .receive('timeout', () => emitter({ type: HANDLE_GAME_JOIN_FAIL, payload: 'Could not join game in time' }));
 

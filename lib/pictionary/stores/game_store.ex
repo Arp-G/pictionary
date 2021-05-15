@@ -41,10 +41,12 @@ defmodule Pictionary.Stores.GameStore do
 
   def add_player(game_id, player_id) do
     GenServer.call(__MODULE__, {:add_player, game_id, player_id})
+    GenServer.cast({:global, "GameServer##{game_id}"}, {:add_player, player_id})
   end
 
   def remove_player(game_id, player_id) do
     GenServer.call(__MODULE__, {:remove_player, game_id, player_id})
+    GenServer.cast({:global, "GameServer##{game_id}"}, {:remove_player, player_id})
   end
 
   ## GenServer callbacks
