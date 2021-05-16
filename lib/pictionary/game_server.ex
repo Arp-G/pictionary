@@ -29,6 +29,8 @@ defmodule Pictionary.GameServer do
   def handle_cast(:stop, state), do: {:stop, :normal, state}
 
   def handle_cast({:add_player, player_id}, state) do
+    IO.puts("Restored player score to #{Map.get(state.players_who_left, player_id) || 0}")
+
     {:noreply,
      %{
        state
@@ -39,6 +41,11 @@ defmodule Pictionary.GameServer do
   end
 
   def handle_cast({:remove_player, player_id}, state) do
+    IO.puts "GOT THIS STATE WHEN REMOVING PLAYER"
+    IO.inspect state
+    # Remove the player who left
+    state = %{state | players: Map.delete(state.players, player_id)}
+
     state =
       if player_id == state.drawer_id do
         Process.cancel_timer(state.game_timer)
@@ -54,8 +61,7 @@ defmodule Pictionary.GameServer do
     {:noreply,
      %{
        state
-       | players: Map.delete(state.players, player_id),
-         remaining_drawers: List.delete(state.remaining_drawers, player_id),
+       | remaining_drawers: List.delete(state.remaining_drawers, player_id),
          players_who_left:
            Map.put(state.players_who_left, player_id, Map.get(state.players, player_id))
      }}
@@ -65,15 +71,18 @@ defmodule Pictionary.GameServer do
     score = Map.get(state.players_who_left, user_id) || 0
     players = Map.put(state.players, user_id, score)
 
+    elapsed_time =
+      state.draw_time - trunc(:os.system_time(:millisecond) / 1000 - (state.draw_start || 0))
+
     restored_state =
       state
       |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds])
-      |> Map.put(:players, players)
+      |> Map.merge(%{players: players, elapsed_time: elapsed_time})
 
     {
       :reply,
       restored_state,
-      restored_state
+      state
     }
   end
 
@@ -153,7 +162,8 @@ defmodule Pictionary.GameServer do
              {:game_timer, state.drawer_id, state.current_round},
              state.draw_time * 1000
            ),
-         word_select_timer: nil
+         word_select_timer: nil,
+         draw_start: :os.system_time(:millisecond)
      }}
   end
 
@@ -161,6 +171,8 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:game_timer, drawer, round}, state)
       when state.drawer_id == drawer and state.current_round == round do
+        IO.puts "CURRENT STATE"
+        IO.inspect(state)
     Process.cancel_timer(state.game_timer)
 
     if state.current_word do
@@ -294,7 +306,8 @@ defmodule Pictionary.GameServer do
       game_timer: Process.send_after(self(), {:game_timer, nil, 0}, 1000),
       word_select_timer: nil,
       used_words: MapSet.new(),
-      players_who_left: %{}
+      players_who_left: %{},
+      draw_start: nil
     }
   end
 

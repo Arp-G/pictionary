@@ -43,6 +43,8 @@ const initialState = {
 const gamePlayReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_GAMEPLAY_STATE:
+      // Add a new state vraible drawTimeElapsed and use the action.payload.elapsed_time returned by the server set in the countdown clock
+      console.log("HERE........", action.payload.elapsed_time);
       return {
         ...state,
         scores: action.payload.players,
