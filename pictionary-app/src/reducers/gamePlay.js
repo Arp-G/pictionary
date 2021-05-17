@@ -15,7 +15,8 @@ import {
   SET_GAME_OVER,
   RESET_GAME_STATE,
   REVEAL_MORE_CURRENT_WORD,
-  SET_GAMEPLAY_STATE
+  SET_GAMEPLAY_STATE,
+  RESET_ELAPSED_TIME
 } from '../constants/actionTypes';
 import { randomIndex } from '../helpers/helpers';
 
@@ -37,22 +38,24 @@ const initialState = {
   roundChangeDialog: false,
   scores: {},
   drawerId: null,
-  gameOver: false
+  gameOver: false,
+  timeRemaining: null
 };
 
 const gamePlayReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_GAMEPLAY_STATE:
-      // Add a new state vraible drawTimeElapsed and use the action.payload.elapsed_time returned by the server set in the countdown clock
-      console.log("HERE........", action.payload.elapsed_time);
       return {
         ...state,
         scores: action.payload.players,
         drawerId: action.payload.drawer_id,
         currentRound: action.payload.current_round,
         currentWord: action.payload.current_word,
-        currentWordRevealList: action.payload?.split('').map(char => char === ' ')
+        currentWordRevealList: action.payload.current_word?.split('').map(char => char === ' '),
+        elapsedTime: action.payload.elapsed_time
       };
+    case RESET_ELAPSED_TIME:
+      return { ...state, elapsedTime: 0 };
     case CHANGE_BRUSH_COLOR:
       return { ...state, ...initTools, brushColor: action.payload, pen: state.pen, fill: state.fill };
     case CHANGE_BRUSH_RADIUS:

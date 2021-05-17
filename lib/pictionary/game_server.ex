@@ -41,8 +41,8 @@ defmodule Pictionary.GameServer do
   end
 
   def handle_cast({:remove_player, player_id}, state) do
-    IO.puts "GOT THIS STATE WHEN REMOVING PLAYER"
-    IO.inspect state
+    IO.puts("GOT THIS STATE WHEN REMOVING PLAYER")
+    IO.inspect(state)
     # Remove the player who left
     state = %{state | players: Map.delete(state.players, player_id)}
 
@@ -71,8 +71,7 @@ defmodule Pictionary.GameServer do
     score = Map.get(state.players_who_left, user_id) || 0
     players = Map.put(state.players, user_id, score)
 
-    elapsed_time =
-      state.draw_time - trunc(:os.system_time(:millisecond) / 1000 - (state.draw_start || 0))
+    elapsed_time = trunc(:os.system_time(:millisecond) / 1000 - (state.draw_start || 0) / 1000)
 
     restored_state =
       state
@@ -171,8 +170,8 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:game_timer, drawer, round}, state)
       when state.drawer_id == drawer and state.current_round == round do
-        IO.puts "CURRENT STATE"
-        IO.inspect(state)
+    IO.puts("CURRENT STATE")
+    IO.inspect(state)
     Process.cancel_timer(state.game_timer)
 
     if state.current_word do

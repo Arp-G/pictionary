@@ -3,22 +3,31 @@ import { useSelector, useDispatch } from 'react-redux';
 import { REVEAL_MORE_CURRENT_WORD } from '../../constants/actionTypes';
 import './GameWordBox.scss';
 
-const GameWordBox = () => {
+const GameWordBox = ({ elapsedTime }) => {
   const [
     drawTime,
     currentWord,
     currentWordRevealList
-  ] = useSelector(state => [state.game.time, state.gamePlay.currentWord, state.gamePlay.currentWordRevealList, state.gamePlay.drawerId]);
+  ] = useSelector(state => [
+    state.game.time,
+    state.gamePlay.currentWord,
+    state.gamePlay.currentWordRevealList,
+    state.gamePlay.drawerId
+  ]);
   const isDrawer = useSelector(state => state.gamePlay.drawerId === state.userInfo.id);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const intervalPeriod = drawTime / 5;
-    const intervalTimer = setInterval(() => {
-      console.log(`REVEALING FOR ${currentWord}`);
-      dispatch({ type: REVEAL_MORE_CURRENT_WORD });
-    }, intervalPeriod * 1000);
+
+    if (elapsedTime) {
+      const lettersToReveal = Math.ceil(elapsedTime / intervalPeriod);
+      console.log("herereeeeeeee", elapsedTime, intervalPeriod, Math.trunc(elapsedTime / intervalPeriod));
+      for (let i = 1; i <= lettersToReveal; i += 1) { dispatch({ type: REVEAL_MORE_CURRENT_WORD }); }
+    }
+
+    const intervalTimer = setInterval(() => dispatch({ type: REVEAL_MORE_CURRENT_WORD }), intervalPeriod * 1000);
 
     return () => clearInterval(intervalTimer);
   }, []);
