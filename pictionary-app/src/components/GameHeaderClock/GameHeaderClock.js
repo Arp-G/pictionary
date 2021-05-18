@@ -17,7 +17,7 @@ const GameHeaderClock = ({ elapsedTime }) => {
   useEffect(() => {
     const interval = setInterval(() => setTimer((time) => {
       console.log(`GOT time as ${time}`);
-      if (timer <= 0) {
+      if (time <= 0) {
         console.log("clearing " + interval);
         clearInterval(interval); return 0;
       }
