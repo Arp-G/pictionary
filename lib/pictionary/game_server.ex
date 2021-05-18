@@ -29,7 +29,9 @@ defmodule Pictionary.GameServer do
   def handle_cast(:stop, state), do: {:stop, :normal, state}
 
   def handle_cast({:add_player, player_id}, state) do
-    IO.puts("Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}")
+    IO.puts(
+      "Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}"
+    )
 
     {:noreply,
      %{
@@ -57,15 +59,13 @@ defmodule Pictionary.GameServer do
         handle_all_answered(state)
       end
 
-
     IO.inspect("SAVED PLAYER #{player_id} score #{current_score}")
 
     {:noreply,
      %{
        state
        | remaining_drawers: List.delete(state.remaining_drawers, player_id),
-         players_who_left:
-           Map.put(state.players_who_left, player_id, current_score)
+         players_who_left: Map.put(state.players_who_left, player_id, current_score)
      }}
   end
 
@@ -100,7 +100,10 @@ defmodule Pictionary.GameServer do
   #   ii) Correct guess and last player to guess
   def handle_call({:new_message, {sender_id, message}}, _from, state) do
     message_type =
-      case String.jaro_distance(message, state.current_word || "") do
+      message
+      |> String.downcase()
+      |> String.jaro_distance(state.current_word || "")
+      |> case do
         1.0 -> :correct_guess
         similarity when similarity > @too_close_similarity -> :too_close_guess
         _ -> :wrong_guess

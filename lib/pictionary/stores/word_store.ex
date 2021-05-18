@@ -1,6 +1,7 @@
 defmodule Pictionary.Stores.WordStore do
   def get_words_list() do
     word_list()
+    |> Enum.map(&String.downcase/1)
     |> MapSet.new()
   end
 
