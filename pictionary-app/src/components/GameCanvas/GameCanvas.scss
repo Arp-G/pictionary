@@ -1,5 +1,12 @@
 .canvasContainer {
-  height: 61vh;
+  height: 32rem;
+  background-color: white;
+}
+
+.canvasContainer > canvas {
+  // height: 32rem;
+  // width: 100%;
+  border: 1px solid red;
 }
 
 .canvas-pen {

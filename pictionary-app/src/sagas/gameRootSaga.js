@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable import/prefer-default-export */
-import { takeLatest } from 'redux-saga/effects';
+import { takeLatest, throttle } from 'redux-saga/effects';
 import {
   HANDLE_START_GAME,
   HANDLE_GAME_STARTED,
@@ -19,7 +19,7 @@ import {
 export default function* watchsocketSagas() {
   yield takeLatest(HANDLE_START_GAME, startGame);
   yield takeLatest(HANDLE_GAME_STARTED, handleGameStarted);
-  yield takeLatest(HANDLE_CANVAS_UPDATE, updateCanvas);
+  yield throttle(10, HANDLE_CANVAS_UPDATE, updateCanvas);
   yield takeLatest(HANDLE_SEND_MESSAGE, handleSendMessage);
   yield takeLatest(HANDLE_UPDATE_SELECTED_WORD, handleWordSelected);
 }

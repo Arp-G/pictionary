@@ -45,8 +45,6 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
 
   gameChannel.on(WS_GAME_STARTED, () => emitter({ type: HANDLE_GAME_STARTED }));
 
-  gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => emitter({ type: UPDATE_CANVAS, payload: canvas_data }));
-
   gameChannel.on(WS_NEW_MESSAGE, message => emitter({ type: ADD_MESSAGE, payload: message }));
 
   gameChannel.on(WS_NEW_ROUND, payload => emitter({ type: UPDATE_ROUND, payload: payload.data }));
