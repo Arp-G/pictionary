@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import { WS_CANVAS_UPDATED } from '../../constants/websocketEvents';
+import floodFill from '../../helpers/floodFill';
 import './GameCanvas.scss';
 
 const PEN_X_OFFSET = 15;
@@ -62,7 +63,12 @@ const GameCanvas = () => {
     if (isDrawer) dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
   };
 
-  const startPosition = ({ nativeEvent: { offsetX, offsetY } }) => {
+  const startPosition = (event) => {
+    if (fill) {
+      floodFill(event, canvasRef.current, ctxRef.current, brushColor);
+      return;
+    }
+    const { nativeEvent: { offsetX, offsetY } } = event;
     ctxRef.current.beginPath();
     ctxRef.current.moveTo(offsetX - PEN_X_OFFSET, offsetY + PEN_Y_OFFSET);
     setPainting(true);

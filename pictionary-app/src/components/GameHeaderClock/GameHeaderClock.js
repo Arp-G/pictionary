@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { GrAlarm } from 'react-icons/gr';
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import './GameHeaderClock.scss';
 
 const GameHeaderClock = ({ elapsedTime }) => {
