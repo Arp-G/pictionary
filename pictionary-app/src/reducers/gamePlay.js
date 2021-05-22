@@ -23,6 +23,7 @@ import { randomIndex } from '../helpers/helpers';
 
 const DEFAULT_BRUSH_COLOR = '#000000';
 const DEFAULT_BRUSH_RADIUS = 3;
+const ERASER_WIDTH = 15;
 
 const initTools = { pen: false, eraser: false, fill: false };
 const initialState = {
@@ -46,7 +47,6 @@ const initialState = {
 const gamePlayReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_GAMEPLAY_STATE:
-      console.log("SETTING STATE", action.payload);
       return {
         ...state,
         scores: action.payload.players,
@@ -64,9 +64,9 @@ const gamePlayReducer = (state = initialState, action) => {
     case CHANGE_BRUSH_RADIUS:
       return { ...state, brushRadius: action.payload };
     case SET_ERASER:
-      return { ...state, ...initTools, brushColor: '#FFFFFF', brushRadius: 5, eraser: true };
+      return { ...state, ...initTools, brushColor: '#FFFFFF', brushRadius: ERASER_WIDTH, eraser: true };
     case SET_PEN:
-      return { ...state, ...initTools, pen: true };
+      return { ...state, ...initTools, pen: true, brushColor: DEFAULT_BRUSH_COLOR, brushRadius: DEFAULT_BRUSH_RADIUS };
     case SET_FILL:
       return { ...state, ...initTools, fill: true };
     case UPDATE_CANVAS:
