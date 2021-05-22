@@ -15,7 +15,7 @@ import './GameToolbar.scss';
 
 const debounce = require('lodash.debounce');
 
-const GameToolbar = () => {
+const GameToolbar = ({ popUndoStack, clearCanvas }) => {
   const dispatch = useDispatch();
   const [brushRadius, brushColor, eraser, pen, fill] = useSelector(state => [
     state.gamePlay.brushRadius,
@@ -123,7 +123,7 @@ const GameToolbar = () => {
           role="button"
           tabIndex={0}
           label="Undo"
-          onClick={() => console.log('This will be done after my own canvas implementation')}
+          onClick={popUndoStack}
         >
           <img src={UndoSvg} alt="undo" title="Undo" />
         </div>
@@ -135,7 +135,7 @@ const GameToolbar = () => {
           role="button"
           tabIndex={0}
           label="Clear"
-          onClick={() => console.log('This will be done after my own canvas implementation')}
+          onClick={clearCanvas}
         >
           <img src={DeleteSvg} alt="clear" title="Clear" />
         </div>

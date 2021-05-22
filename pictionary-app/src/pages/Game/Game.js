@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Grid, Paper } from '@material-ui/core';
 import GameHeader from '../../components/GameHeader/GameHeader';
 import GamePlayersList from '../../components/GamePlayersList/GamePlayersList';
@@ -10,10 +10,48 @@ import GameWordChoiceDialog from '../../components/GameWordChoiceDialog/GameWord
 import GameNewRoundDialog from '../../components/GameNewRoundDialog/GameNewRoundDialog';
 import GameWordWasDialog from '../../components/GameWordWasDialog/GameWordWasDialog';
 import GameOverDialog from '../../components/GameOverDialog/GameOverDialog';
+import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import './game.scss';
 
 const Game = () => {
-  const gameOver = useSelector(state => state.gamePlay.gameOver);
+  const [gameOver, isDrawer] = useSelector(state => [state.gamePlay.gameOver, state.gamePlay.drawerId === state.userInfo.id]);
+  const canvasRef = useRef(null);
+  const ctxRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const [undoStack, setUndoStack] = useState([]);
+  const pushToUndoStack = () => {
+    if (!isDrawer || setUndoStack.length >= 10 || !canvasRef.current) return;
+
+    setUndoStack((stack) => {
+      console.log('PUSHED!', canvasRef.current.toDataURL());
+      stack.push(canvasRef.current.toDataURL());
+      return stack;
+    });
+  };
+
+  const popUndoStack = () => {
+    if (!isDrawer || setUndoStack.length < 1) return;
+
+    setUndoStack((stack) => {
+      const canvasData = stack.pop();
+      const img = new Image();
+      img.src = canvasData;
+      ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      img.onload = () => {
+        ctxRef.current.drawImage(img, 0, 0);
+        dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
+      };
+      return stack;
+    });
+  };
+
+  const clearCanvas = () => {
+    if (!canvasRef.current) return;
+    ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
@@ -28,7 +66,12 @@ const Game = () => {
       </Grid>
       <Grid item xs={8}>
         <Paper>
-          <GameCanvas />
+          <GameCanvas
+            pushToUndoStack={pushToUndoStack}
+            canvasRef={canvasRef}
+            ctxRef={ctxRef}
+            isDrawer={isDrawer}
+          />
         </Paper>
       </Grid>
       <Grid item xs={2}>
@@ -42,14 +85,25 @@ const Game = () => {
         </Paper>
       </Grid>
       <Grid item xs={8}>
-        <Paper>
-          <GameToolbar />
-        </Paper>
+        {isDrawer && (
+          <Paper>
+            <GameToolbar
+              popUndoStack={popUndoStack}
+              clearCanvas={clearCanvas}
+            />
+          </Paper>
+        )}
       </Grid>
       <Grid item>
         <GameWordChoiceDialog />
         <GameNewRoundDialog />
-        <GameWordWasDialog />
+        <GameWordWasDialog
+          clearCanvas={() => {
+            clearCanvas();
+            // Clear undo stack
+            setUndoStack([]);
+          }}
+        />
         {gameOver && <GameOverDialog />}
       </Grid>
     </Grid>

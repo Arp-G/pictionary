@@ -16,7 +16,8 @@ import {
   RESET_GAME_STATE,
   REVEAL_MORE_CURRENT_WORD,
   SET_GAMEPLAY_STATE,
-  RESET_ELAPSED_TIME
+  RESET_ELAPSED_TIME,
+  RESET_DRAWER
 } from '../constants/actionTypes';
 import { randomIndex } from '../helpers/helpers';
 
@@ -70,6 +71,8 @@ const gamePlayReducer = (state = initialState, action) => {
       return { ...state, canvasData: action.payload };
     case ADD_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
+    case RESET_DRAWER:
+      return { ...state, drawerId: null };
     case UPDATE_DRAWER:
       return { ...state, drawerId: action.payload.drawer_id, words: action.payload.words, currentWord: null, currentWordRevealList: [] };
     case UPDATE_ROUND:

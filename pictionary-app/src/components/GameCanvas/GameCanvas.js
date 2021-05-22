@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable camelcase */
 import React, { useState, useEffect, useRef } from 'react';
@@ -10,12 +11,11 @@ import './GameCanvas.scss';
 const PEN_X_OFFSET = 15;
 const PEN_Y_OFFSET = 30;
 
-const GameCanvas = () => {
+const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
   const dispatch = useDispatch();
-  const [gameChannel, canvasData, isDrawer, brushColor, brushRadius, eraser, pen, fill] = useSelector(state => [
+  const [gameChannel, canvasData, brushColor, brushRadius, eraser, pen, fill] = useSelector(state => [
     state.settings.gameChannel,
     state.gamePlay.canvasData,
-    state.gamePlay.drawerId === state.userInfo.id,
     state.gamePlay.brushColor,
     state.gamePlay.brushRadius,
     state.gamePlay.eraser,
@@ -31,9 +31,8 @@ const GameCanvas = () => {
   else if (fill) canvasTool = 'fill';
 
   const [isPainting, setPainting] = useState(false);
+
   const canvasContainerRef = useRef(null);
-  const canvasRef = useRef(null);
-  const ctxRef = useRef(null);
 
   const resizeCanvas = () => {
     if (!canvasRef.current) return;
@@ -71,7 +70,10 @@ const GameCanvas = () => {
     gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => {
       const img = new Image();
       img.src = canvas_data;
-      img.onload = () => ctxRef.current.drawImage(img, 0, 0);
+      img.onload = () => {
+        ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        ctxRef.current.drawImage(img, 0, 0);
+      };
     });
 
     // set canvas size on load to canvas container div
@@ -87,7 +89,7 @@ const GameCanvas = () => {
   }, []);
 
   const draw = ({ nativeEvent: { offsetX, offsetY } }) => {
-    if (!isPainting) return;
+    if (!isDrawer || !isPainting) return;
 
     ctxRef.current.lineTo(offsetX - PEN_X_OFFSET, offsetY + PEN_Y_OFFSET);
     ctxRef.current.stroke();
@@ -96,6 +98,10 @@ const GameCanvas = () => {
   };
 
   const startPosition = (event) => {
+    if (!isDrawer) return;
+    // Save current canvas state for undo functionality
+    pushToUndoStack();
+
     if (fill) {
       floodFill(event, canvasRef.current, ctxRef.current, brushColor);
       dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
