@@ -31,10 +31,32 @@ const GameCanvas = () => {
   else if (fill) canvasTool = 'fill';
 
   const [isPainting, setPainting] = useState(false);
+  const canvasContainerRef = useRef(null);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
 
-  if (!isDrawer && canvasData) ctxRef?.current?.loadSaveData(canvasData, true);
+  const resizeCanvas = () => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+
+    // canvas data is lost and context is reset on window resize
+    // store canvas content in an in-memory canvas and restore it on reisze
+    const inMemCanvas = document.createElement('canvas');
+    const inMemCtx = inMemCanvas.getContext('2d');
+
+    inMemCanvas.width = canvas.width;
+    inMemCanvas.height = canvas.height;
+    inMemCtx.drawImage(canvas, 0, 0); // Save canvas content in in-memory canvas
+
+    // Resize canvas to fit parent container width
+    canvasRef.current.width = canvasContainerRef.current.offsetWidth;
+    canvasRef.current.height = canvasContainerRef.current.offsetHeight;
+
+    // Restore canvas content from in-memory canvas
+    ctx.drawImage(inMemCanvas, 0, 0);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -51,7 +73,17 @@ const GameCanvas = () => {
       img.src = canvas_data;
       img.onload = () => ctxRef.current.drawImage(img, 0, 0);
     });
-    return () => gameChannel.off(WS_CANVAS_UPDATED);
+
+    // set canvas size on load to canvas container div
+    // Canvas cannot be resized by css, it will pixelate
+    resizeCanvas();
+
+    // Resize canvas on window resize
+    window.onresize = resizeCanvas;
+    return () => {
+      gameChannel.off(WS_CANVAS_UPDATED);
+      window.removeEventListener('onresize', resizeCanvas, false);
+    };
   }, []);
 
   const draw = ({ nativeEvent: { offsetX, offsetY } }) => {
@@ -66,6 +98,7 @@ const GameCanvas = () => {
   const startPosition = (event) => {
     if (fill) {
       floodFill(event, canvasRef.current, ctxRef.current, brushColor);
+      dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
       return;
     }
     const { nativeEvent: { offsetX, offsetY } } = event;
@@ -80,7 +113,7 @@ const GameCanvas = () => {
   };
 
   return (
-    <div className={`canvasContainer canvas-${canvasTool}`}>
+    <div className={`canvasContainer canvas-${canvasTool}`} ref={canvasContainerRef}>
       <canvas
         onMouseDown={startPosition}
         onMouseUp={endPosition}
