@@ -46,6 +46,7 @@ const initialState = {
 const gamePlayReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_GAMEPLAY_STATE:
+      console.log("SETTING STATE", action.payload);
       return {
         ...state,
         scores: action.payload.players,
@@ -53,7 +54,8 @@ const gamePlayReducer = (state = initialState, action) => {
         currentRound: action.payload.current_round,
         currentWord: action.payload.current_word,
         currentWordRevealList: action.payload.current_word?.split('').map(char => char === ' '),
-        elapsedTime: action.payload.elapsed_time
+        elapsedTime: action.payload.elapsed_time,
+        canvasData: action.payload.canvas_data
       };
     case RESET_ELAPSED_TIME:
       return { ...state, elapsedTime: 0 };

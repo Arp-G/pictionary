@@ -10,6 +10,7 @@ import GameWordChoiceDialog from '../../components/GameWordChoiceDialog/GameWord
 import GameNewRoundDialog from '../../components/GameNewRoundDialog/GameNewRoundDialog';
 import GameWordWasDialog from '../../components/GameWordWasDialog/GameWordWasDialog';
 import GameOverDialog from '../../components/GameOverDialog/GameOverDialog';
+import { loadCanvasData } from '../../helpers/helpers';
 import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import './game.scss';
 
@@ -19,12 +20,11 @@ const Game = () => {
   const ctxRef = useRef(null);
   const dispatch = useDispatch();
 
-  const [undoStack, setUndoStack] = useState([]);
+  const [, setUndoStack] = useState([]);
   const pushToUndoStack = () => {
     if (!isDrawer || setUndoStack.length >= 10 || !canvasRef.current) return;
 
     setUndoStack((stack) => {
-      console.log('PUSHED!', canvasRef.current.toDataURL());
       stack.push(canvasRef.current.toDataURL());
       return stack;
     });
@@ -35,13 +35,12 @@ const Game = () => {
 
     setUndoStack((stack) => {
       const canvasData = stack.pop();
-      const img = new Image();
-      img.src = canvasData;
-      ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      img.onload = () => {
+      loadCanvasData(canvasData, (img) => {
+        ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         ctxRef.current.drawImage(img, 0, 0);
         dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
-      };
+      });
+
       return stack;
     });
   };

@@ -117,9 +117,10 @@ defmodule PictionaryWeb.GameChannel do
   def handle_in(
         "canvas_update",
         %{"canvas_data" => canvas_data},
-        socket
+        %Phoenix.Socket{assigns: %{game_id: game_id}} = socket
       ) do
     broadcast_from(socket, "canvas_updated", %{canvas_data: canvas_data})
+    GenServer.cast({:global, "GameServer##{game_id}"}, {:update_canvas_data, canvas_data})
     {:reply, :ok, socket}
   end
 

@@ -49,3 +49,9 @@ export const randomIndex = (array) => {
   const randomNumber = array.reduce((index, sum) => sum + index) % array.length;
   return array[randomNumber];
 };
+
+export const loadCanvasData = (data, callback) => {
+  const img = new Image();
+  img.src = data;
+  img.onload = () => callback(img);
+};

@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import { WS_CANVAS_UPDATED } from '../../constants/websocketEvents';
+import { loadCanvasData } from '../../helpers/helpers';
 import floodFill from '../../helpers/floodFill';
 import './GameCanvas.scss';
 
@@ -50,11 +51,16 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
     inMemCtx.drawImage(canvas, 0, 0); // Save canvas content in in-memory canvas
 
     // Resize canvas to fit parent container width
-    canvasRef.current.width = canvasContainerRef.current.offsetWidth;
-    canvasRef.current.height = canvasContainerRef.current.offsetHeight;
+    canvasRef.current.width = canvasContainerRef.current.offsetWidth - 5;
+    canvasRef.current.height = canvasContainerRef.current.offsetHeight - 5;
 
     // Restore canvas content from in-memory canvas
     ctx.drawImage(inMemCanvas, 0, 0);
+  };
+
+  const clearAndDrawOnCanvas = (img) => {
+    ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctxRef.current.drawImage(img, 0, 0);
   };
 
   useEffect(() => {
@@ -67,25 +73,23 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
   }, [canvasData, isDrawer, brushColor, brushRadius, eraser, pen, fill]);
 
   useEffect(() => {
-    gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => {
-      const img = new Image();
-      img.src = canvas_data;
-      img.onload = () => {
-        ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        ctxRef.current.drawImage(img, 0, 0);
-      };
-    });
-
     // set canvas size on load to canvas container div
     // Canvas cannot be resized by css, it will pixelate
     resizeCanvas();
 
-    // Resize canvas on window resize
-    window.onresize = resizeCanvas;
-    return () => {
-      gameChannel.off(WS_CANVAS_UPDATED);
-      window.removeEventListener('onresize', resizeCanvas, false);
-    };
+    // When player joins ongoing game paint canvas with current game state
+    if (canvasData) loadCanvasData(canvasData, clearAndDrawOnCanvas);
+
+    gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => {
+      loadCanvasData(canvas_data, clearAndDrawOnCanvas);
+
+      // Resize canvas on window resize
+      window.onresize = resizeCanvas;
+      return () => {
+        gameChannel.off(WS_CANVAS_UPDATED);
+        window.removeEventListener('onresize', resizeCanvas, false);
+      };
+    });
   }, []);
 
   const draw = ({ nativeEvent: { offsetX, offsetY } }) => {

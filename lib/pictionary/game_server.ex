@@ -42,6 +42,10 @@ defmodule Pictionary.GameServer do
      }}
   end
 
+  def handle_cast({:update_canvas_data, canvas_data}, state) do
+    {:noreply, %{state | canvas_data: canvas_data}}
+  end
+
   def handle_cast({:remove_player, player_id}, state) do
     # Remove the player who left
     current_score = Map.get(state.players, player_id)
@@ -77,7 +81,7 @@ defmodule Pictionary.GameServer do
 
     restored_state =
       state
-      |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds])
+      |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds, :canvas_data])
       |> Map.merge(%{players: players, elapsed_time: elapsed_time})
 
     {
@@ -309,7 +313,8 @@ defmodule Pictionary.GameServer do
       word_select_timer: nil,
       used_words: MapSet.new(),
       players_who_left: %{},
-      draw_start: nil
+      draw_start: nil,
+      canvas_data: nil
     }
   end
 
