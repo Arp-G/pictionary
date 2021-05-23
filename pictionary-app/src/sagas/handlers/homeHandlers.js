@@ -78,7 +78,6 @@ export function* joinGameSession(action) {
   yield put({ type: HANDLE_GET_GAME_DATA, payload: action.payload });
 
   const { payload } = yield take([SAVE_GAME, FAILED_SAVE_GAME]);
-  console.log(payload);
 
   // Bad game id
   if (!payload) {
@@ -99,7 +98,7 @@ export function* joinGameSession(action) {
   if (gameJoinResponse.payload) {
     yield put(push('/'));
     yield put({ type: ADD_ALERT, alertType: 'error', msg: `Could not join game: ${gameJoinResponse.payload}` });
-  } else if (payload.started) yield put(push('game'));
+  } else if (payload.started) yield put(push(`game/${payload?.id}`));
   else yield put(push(`lobby/${payload?.id}`));
 
   yield put({ type: CLEAR_LOADING });

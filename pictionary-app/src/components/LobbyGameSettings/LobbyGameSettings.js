@@ -84,7 +84,7 @@ const LobbyGameSettings = () => {
             <span className="customLabel"> Maximum Players </span>
             <Select
               value={max_players}
-              onChange={() => dispatch({ type: HANDLE_START_GAME })}
+              onChange={e => dispatch({ type: HANDLE_UPDATE_GAME, payload: { max_players: e.target.value } })}
             >
               {
                 range(Math.max(players.length, 2), 25).map(key => (

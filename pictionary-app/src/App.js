@@ -19,8 +19,8 @@ function App() {
     <Layout>
       <Switch>
         <Route exact path="/" component={Home} />
-        <ProtectedRoute exact path="/lobby/:game_id" component={Lobby} />
-        <Route exact path="/game" component={Game} />
+        <ProtectedRoute exact path="/lobby/:game_id" type="lobby" component={Lobby} />
+        <ProtectedRoute exact path="/game/:game_id" type="game" component={Game} />
       </Switch>
     </Layout>
   );
