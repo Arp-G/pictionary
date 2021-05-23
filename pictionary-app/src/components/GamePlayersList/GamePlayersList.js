@@ -27,7 +27,11 @@ const GamePlayersList = () => {
             <div className={index % 2 === 0 ? 'gamePlayerListItem' : 'gamePlayerListItemGrey'}>
               <div className="gamePlayerRank">{`#${index + 1}`}</div>
               <div className="gamePlayerDetails">
-                <div className="gamePlayerName">{`${player.name} ${player.id === currentUserId ? '(You)' : ''}`}</div>
+                <div
+                  className={`gamePlayerName ${player.id === currentUserId && 'self'}`}
+                >
+                  {`${player.name} ${player.id === currentUserId ? '(You)' : ''}`}
+                </div>
                 <div className="gamePlayerScore">{`Points: ${player.score}`}</div>
               </div>
               <div className="drawIcon">

@@ -59,9 +59,18 @@ const Game = () => {
         </Paper>
       </Grid>
       <Grid item xs={2}>
-        <Paper>
-          <GamePlayersList />
-        </Paper>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Paper>
+              <GamePlayersList />
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <Paper>
+              Vote to Kick
+            </Paper>
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item xs={8}>
         <Grid container spacing={2}>
@@ -89,11 +98,6 @@ const Game = () => {
       </Grid>
       <Grid item xs={2}>
         <GameChat />
-      </Grid>
-      <Grid item xs={2}>
-        <Paper>
-          Vote to Kick
-        </Paper>
       </Grid>
       <Grid item>
         <GameWordChoiceDialog />

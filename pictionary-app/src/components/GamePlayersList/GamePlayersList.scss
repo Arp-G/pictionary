@@ -17,6 +17,14 @@
   width: 16rem;
 }
 
+.gamePlayerListContainer .self {
+  color: green;
+}
+
+.darkMode .gamePlayerListContainer .self {
+  color: yellow;
+}
+
 .gamePlayerListItemGrey {
   background-color:	lightgray;
 }
