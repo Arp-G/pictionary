@@ -197,7 +197,7 @@ defmodule Pictionary.Stores.GameStore do
         |> String.downcase()
         |> String.trim()
       end)
-      |> Stream.filter(&(String.length(&1) < 30 || String.length(&1) > 2))
+      |> Stream.filter(&(String.length(&1) < 20 || String.length(&1) > 2))
       |> Stream.uniq()
       |> Enum.take(@custom_word_limit)
 

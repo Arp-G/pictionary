@@ -64,34 +64,36 @@ const Game = () => {
         </Paper>
       </Grid>
       <Grid item xs={8}>
-        <Paper>
-          <GameCanvas
-            pushToUndoStack={pushToUndoStack}
-            canvasRef={canvasRef}
-            ctxRef={ctxRef}
-            isDrawer={isDrawer}
-          />
-        </Paper>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Paper>
+              <GameCanvas
+                pushToUndoStack={pushToUndoStack}
+                canvasRef={canvasRef}
+                ctxRef={ctxRef}
+                isDrawer={isDrawer}
+              />
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            {isDrawer && (
+              <Paper>
+                <GameToolbar
+                  popUndoStack={popUndoStack}
+                  clearCanvas={clearCanvas}
+                />
+              </Paper>
+            )}
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item xs={2}>
-        <Paper>
-          <GameChat />
-        </Paper>
+        <GameChat />
       </Grid>
       <Grid item xs={2}>
         <Paper>
           Vote to Kick
         </Paper>
-      </Grid>
-      <Grid item xs={8}>
-        {isDrawer && (
-          <Paper>
-            <GameToolbar
-              popUndoStack={popUndoStack}
-              clearCanvas={clearCanvas}
-            />
-          </Paper>
-        )}
       </Grid>
       <Grid item>
         <GameWordChoiceDialog />

@@ -59,7 +59,10 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
   };
 
   const clearAndDrawOnCanvas = (img) => {
-    ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    // TODO: the below line of code slows canvas rendering and give little bit bad experience however,
+    // with out it people who join in game wont see current state of canvas properly until something drawn OR MAYBE NOT?
+    // need to test this more, keeping it commented out for now
+    // ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     ctxRef.current.drawImage(img, 0, 0);
   };
 
