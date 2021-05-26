@@ -1,14 +1,26 @@
-.gameClockContentWrapper {
-  padding: 10px;
-}
-
-.gameClockContentIcon {
-  color: black;
-  font-size: 1.2em;
-}
-
-.gameClockContentText {
-  text-align: center;
+.gameClock {
+  // Clock text font
   font-weight: bolder;
   font-family: 'Courier New', Courier, monospace;
+
+  // Center text inside clock
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+
+  // clock background image
+  background-image: url("./../../images/clock.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 3.5em;
+  height: 3.5em;
+
+  transition: color 2s ease;
+  margin-left: 10px;
+  margin-top: 10px;
 }
+
+.gameClock-red { color: #A30000 }
+.gameClock-yellow { color: #F7B801 }
+.gameClock-green { color: #008000 }

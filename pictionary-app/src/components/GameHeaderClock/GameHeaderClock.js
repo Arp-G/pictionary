@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { GrAlarm } from 'react-icons/gr';
+import useAudio from '../../hooks/useAudio';
+import clockTickSfx from '../../sounds/clock_tick.mp3';
 import './GameHeaderClock.scss';
 
 const GameHeaderClock = ({ elapsedTime }) => {
@@ -10,47 +11,35 @@ const GameHeaderClock = ({ elapsedTime }) => {
     state.game.time - (elapsedTime || 0)
   ]);
 
-  console.log(`SET INITIAL DRAW TIME TO ${drawTime}`);
   const [timer, setTimer] = useState(drawTime);
+  const playClockTick = useAudio(clockTickSfx);
 
   useEffect(() => {
     const interval = setInterval(() => setTimer((time) => {
-      console.log(`GOT time as ${time}`);
+      // Start tick sound when 5 sec remaining
+      if (time === 7) {
+        console.log("Trying to play tick");
+        playClockTick();
+      }
+
       if (time <= 0) {
-        console.log("clearing " + interval);
-        clearInterval(interval); return 0;
+        clearInterval(interval);
+        return 0;
       }
       return time - 1;
     }), 1000);
     return () => clearInterval(interval);
   }, []);
 
+  let clockColor = 'green';
+  if (drawTime / 3 > timer) { clockColor = 'red'; } else if (drawTime / 2 > timer) { clockColor = 'yellow'; }
+
   return (
     <div className="gameClockContentWrapper">
       { drawerId && currentWord && (
-        <h3>
+        <div className={`gameClock gameClock-${clockColor}`}>
           {timer}
-        </h3>
-        // <CountdownCircleTimer
-        //   isPlaying
-        //   duration={drawTime}
-        //   colors={[
-        //     ['#008000', 0.33],
-        //     ['#F7B801', 0.33],
-        //     ['#A30000', 0.33]
-        //   ]}
-        //   size={60}
-        //   strokeWidth={7}
-        // >
-        //   {
-        //     ({ remainingTime }) => (
-        //       <div>
-        //         <GrAlarm className="gameClockContentIcon" />
-        //         <div className="gameClockContentText">{remainingTime}</div>
-        //       </div>
-        //     )
-        //   }
-        // </CountdownCircleTimer>
+        </div>
       )}
     </div>
   );
