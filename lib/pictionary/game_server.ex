@@ -63,14 +63,16 @@ defmodule Pictionary.GameServer do
         handle_all_answered(state)
       end
 
-    IO.inspect("SAVED PLAYER #{player_id} score #{current_score}")
-
-    {:noreply,
-     %{
-       state
-       | remaining_drawers: List.delete(state.remaining_drawers, player_id),
-         players_who_left: Map.put(state.players_who_left, player_id, current_score)
-     }}
+    if map_size(state.players) <= 1 do
+      end_game(state)
+    else
+      {:noreply,
+       %{
+         state
+         | remaining_drawers: List.delete(state.remaining_drawers, player_id),
+           players_who_left: Map.put(state.players_who_left, player_id, current_score)
+       }}
+    end
   end
 
   def handle_call({:get_state, user_id}, _from, state) do
@@ -214,16 +216,7 @@ defmodule Pictionary.GameServer do
       true ->
         Logger.info("#{DateTime.utc_now()} Last round Game ending, Round: #{state.current_round}")
 
-        Task.start_link(fn ->
-          # Wait for 2 seconds and then broadcast game over
-          Process.sleep(2000)
-
-          PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "game_over", %{
-            data: state.players
-          })
-        end)
-
-        {:stop, :normal, state}
+        end_game(state)
     end
   end
 
@@ -442,5 +435,18 @@ defmodule Pictionary.GameServer do
     else
       state
     end
+  end
+
+  defp end_game(state) do
+    Task.start_link(fn ->
+      # Wait for 2 seconds and then broadcast game over
+      Process.sleep(2000)
+
+      PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "game_over", %{
+        data: state.players
+      })
+    end)
+
+    {:stop, :normal, state}
   end
 end
