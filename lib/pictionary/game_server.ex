@@ -13,7 +13,7 @@ defmodule Pictionary.GameServer do
   @max_score 250
   @score_interval 10
   @word_choose_time 10_000
-  @inter_round_cooldown 7000
+  @inter_round_cooldown 3500
   @inter_draw_cooldown 5000
 
   def start_link(game_id) when game_id != nil do
@@ -126,7 +126,7 @@ defmodule Pictionary.GameServer do
     state =
       cond do
         # If the message sender is not the drawer and has not already guessed the correct answer
-        sender_id != state.drawer_id && !MapSet.member?(state.correct_guessed_players, sender_id) ->
+        sender_id != state.drawer_id && !Map.has_key?(state.correct_guessed_players, sender_id) ->
           PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
 
           if message_type == :correct_guess,
@@ -187,7 +187,7 @@ defmodule Pictionary.GameServer do
       PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "word_was", %{
         current_word: state.current_word,
         drawer_id: drawer,
-        correct_guessed_players: MapSet.to_list(state.correct_guessed_players)
+        correct_guessed_players: Map.put(state.correct_guessed_players, drawer, state.drawer_current_score)
       })
     end
 
@@ -249,7 +249,8 @@ defmodule Pictionary.GameServer do
        | drawer_id: new_drawer,
          remaining_drawers: remaining_drawers,
          current_word: nil,
-         correct_guessed_players: MapSet.new(),
+         correct_guessed_players: %{},
+         drawer_current_score: 0,
          # Choose random word after word choosing timeout
          word_select_timer:
            Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
@@ -295,7 +296,9 @@ defmodule Pictionary.GameServer do
       # Player map with score
       players: game.players |> Enum.into(%{}, fn player -> {player, 0} end),
       # Players who have guessed correct answers
-      correct_guessed_players: MapSet.new(),
+      correct_guessed_players: %{},
+      # Drawer score for current ongoing drawing
+      drawer_current_score: 0,
       # Players who have not yet drawn in current round
       remaining_drawers: [],
       # Current player id who is drawing
@@ -318,7 +321,8 @@ defmodule Pictionary.GameServer do
 
     %{
       state
-      | correct_guessed_players: MapSet.new(),
+      | correct_guessed_players: %{},
+        drawer_current_score: 0,
         remaining_drawers: MapSet.to_list(game.players),
         drawer_id: nil,
         current_word: nil
@@ -329,11 +333,12 @@ defmodule Pictionary.GameServer do
          %{
            players: players,
            drawer_id: drawer_id,
-           correct_guessed_players: correct_guessed_players
+           correct_guessed_players: correct_guessed_players,
+           drawer_current_score: drawer_current_score,
          } = game_state,
          guesser_id
        ) do
-    guesser_score = @max_score - MapSet.size(correct_guessed_players) * @score_interval
+    guesser_score = @max_score - map_size(correct_guessed_players) * @score_interval
 
     # Update Guesser score
     players = update_player_score(players, guesser_id, guesser_score)
@@ -348,7 +353,8 @@ defmodule Pictionary.GameServer do
     %{
       game_state
       | players: players,
-        correct_guessed_players: MapSet.put(correct_guessed_players, guesser_id)
+        correct_guessed_players: Map.put(correct_guessed_players, guesser_id, guesser_score),
+        drawer_current_score: drawer_current_score + (guesser_score / 2)
     }
   end
 
@@ -424,8 +430,7 @@ defmodule Pictionary.GameServer do
   end
 
   defp handle_all_answered(state) do
-    if map_size(state.players) - 1 <= MapSet.size(state.correct_guessed_players) do
-      Logger.info("ALL ANSWERED !")
+    if map_size(state.players) - 1 <= map_size(state.correct_guessed_players) do
       Process.cancel_timer(state.game_timer)
 
       game_timer =
