@@ -89,8 +89,8 @@ const gamePlayReducer = (state = initialState, action) => {
     case REVEAL_MORE_CURRENT_WORD:
       const revealedCount = state.currentWordRevealList.filter(char => char).length;
 
-      // Return if more than 40% revealed
-      if (!state.currentWord || (revealedCount / state.currentWord.length) >= 0.4) return state;
+      // Return if more than 40% revealed or word is smaller than 5 characters
+      if (!state.currentWord || state.currentWord.length < 5 || (revealedCount / state.currentWord.length) >= 0.4) return state;
       const unrevealedIndexes = state.currentWordRevealList
         .map((revealed, index) => [revealed, index])
         .filter(([revealed]) => !revealed)
