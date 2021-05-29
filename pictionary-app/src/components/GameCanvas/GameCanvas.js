@@ -101,7 +101,13 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
     ctxRef.current.lineTo(offsetX - PEN_X_OFFSET, offsetY + PEN_Y_OFFSET);
     ctxRef.current.stroke();
 
-    if (isDrawer) dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
+    // Do the sending canvas event on socket asynchronously
+    // this improves user expereince and removes lag while drawing on canvas
+    // since the canvas drawing movement is no longer blocked for sending updates over socket
+    // eslint-disable-next-line no-new
+    new Promise(() => {
+      if (isDrawer) dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
+    });
   };
 
   const startPosition = (event) => {

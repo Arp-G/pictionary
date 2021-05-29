@@ -60,7 +60,7 @@ const Game = () => {
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Paper>
-          <GameHeader />
+          <GameHeader canvasRef={canvasRef} />
         </Paper>
       </Grid>
       <Grid item xs={2}>
