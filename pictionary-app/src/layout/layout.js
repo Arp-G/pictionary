@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { Grid, Container, Snackbar, Slide } from '@material-ui/core';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BsFillVolumeUpFill, BsFillVolumeMuteFill, BsSun, BsMoon } from 'react-icons/bs';
@@ -13,6 +14,7 @@ import './layout.scss';
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { alertType, msg } = useSelector(state => state.settings.alert);
   const loading = useSelector(state => state.settings.loading);
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -46,13 +48,24 @@ const Layout = ({ children }) => {
       <div className={`${darkMode || loading ? 'bg dark-mode-bg' : 'bg'}`} />
       <Grid container className={`main-wrapper-container ${darkMode && 'darkMode'}`}>
         <ErrorBoundary>
-          <Grid item xs={1}>
-            <Grid item xs={12}>
-              {sound ? (
-                <BsFillVolumeUpFill onClick={toggleSound} size="2em" className="toggleIcon" />
-              ) : (
-                <BsFillVolumeMuteFill onClick={toggleSound} size="2em" className="toggleIcon" />
-              )}
+          <Grid item xs={12}>
+            <Grid item xs={6}>
+              <Grid container>
+                <Grid item xs={1}>
+                  {sound ? (
+                    <BsFillVolumeUpFill onClick={toggleSound} size="2em" className="toggleIcon" />
+                  ) : (
+                    <BsFillVolumeMuteFill onClick={toggleSound} size="2em" className="toggleIcon" />
+                  )}
+                </Grid>
+                {location.pathname !== '/' && (
+                  <Grid item xs={2}>
+                    <div className="pictionary-text">
+                      Pictionary
+                    </div>
+                  </Grid>
+                )}
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               {darkMode ? (
