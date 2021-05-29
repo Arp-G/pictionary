@@ -5,7 +5,7 @@ defmodule PictionaryWeb.GamesController do
 
   def create(%{assigns: %{current_user: current_user}} = conn, _params) do
     game = %Game{
-      id: Ecto.UUID.generate(),
+      id: Nanoid.generate(),
       players: MapSet.new([current_user.id]),
       creator_id: current_user.id
     }

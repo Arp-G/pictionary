@@ -1,6 +1,6 @@
 defmodule Pictionary.Game do
   defstruct([
-    id: Ecto.UUID.generate(),
+    id: Nanoid.generate(),
     rounds: 3,
     time: 60,
     max_players: 10,

@@ -44,6 +44,7 @@ defmodule Pictionary.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:corsica, "~> 1.0"},
+      {:nanoid, "~> 2.0"},
 
       # dev, test
       {:phoenix_live_reload, "~> 1.2", only: :dev},
