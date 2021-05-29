@@ -6,6 +6,7 @@ import { HANDLE_RESTORE_SESSION } from './constants/actionTypes';
 import Home from './pages/Home/Home';
 import Lobby from './pages/Lobby/Lobby';
 import Game from './pages/Game/Game';
+import NotFound from './pages/NotFound/NotFound';
 import Layout from './layout/layout';
 import './App.scss';
 
@@ -21,6 +22,7 @@ function App() {
         <Route exact path="/" component={Home} />
         <ProtectedRoute exact path="/lobby/:game_id" component={Lobby} />
         <Route exact path="/game" component={Game} />
+        <Route path="*" exact={true} component={NotFound} />
       </Switch>
     </Layout>
   );
