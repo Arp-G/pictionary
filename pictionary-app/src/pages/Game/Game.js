@@ -10,12 +10,17 @@ import GameWordChoiceDialog from '../../components/GameWordChoiceDialog/GameWord
 import GameNewRoundDialog from '../../components/GameNewRoundDialog/GameNewRoundDialog';
 import GameWordWasDialog from '../../components/GameWordWasDialog/GameWordWasDialog';
 import GameOverDialog from '../../components/GameOverDialog/GameOverDialog';
+import GameVoteKickButton from '../../components/GameVoteKickButton/GameVoteKickButton';
 import { loadCanvasData } from '../../helpers/helpers';
 import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import './game.scss';
 
 const Game = () => {
-  const [gameOver, isDrawer] = useSelector(state => [state.gamePlay.gameOver, state.gamePlay.drawerId === state.userInfo.id]);
+  const [gameOver, isDrawer, voteKickEnabled] = useSelector(state => [
+    state.gamePlay.gameOver,
+    state.gamePlay.drawerId === state.userInfo.id,
+    state.game.vote_kick_enabled
+  ]);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const dispatch = useDispatch();
@@ -65,11 +70,11 @@ const Game = () => {
               <GamePlayersList />
             </Paper>
           </Grid>
-          <Grid item xs={12}>
-            <Paper>
-              Vote to Kick
-            </Paper>
-          </Grid>
+          {voteKickEnabled && (
+            <Grid item xs={12}>
+              <GameVoteKickButton />
+            </Grid>
+          )}
         </Grid>
       </Grid>
       <Grid item xs={8}>

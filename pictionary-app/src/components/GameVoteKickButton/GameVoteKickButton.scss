@@ -1,0 +1,10 @@
+.voteToKickButtonContainer {
+  .Mui-disabled { 
+    background-color: lightgrey !important;
+    opacity: 1 !important;
+
+    .MuiButton-label {
+      color: black;
+    }
+  }
+}

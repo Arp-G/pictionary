@@ -46,6 +46,27 @@ defmodule Pictionary.GameServer do
     {:noreply, %{state | canvas_data: canvas_data}}
   end
 
+  def handle_cast({:vote_to_kick, player_id}, state) do
+    if state.drawer_id != player_id && !MapSet.member?(state.vote_to_kick_set, player_id) do
+      vote_to_kick_set = MapSet.put(state.vote_to_kick_set, player_id)
+
+      PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "vote_kick_update", %{
+        vote_count: MapSet.size(vote_to_kick_set)
+      })
+
+      # If everyone voted then kick player
+      if map_size(state.players) - 1 <= MapSet.size(vote_to_kick_set) do
+        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "kick_player", %{
+          player_id: state.drawer_id
+        })
+      end
+
+      {:noreply, %{state | vote_to_kick_set: vote_to_kick_set}}
+    else
+      {:noreply, state}
+    end
+  end
+
   def handle_cast({:remove_player, player_id}, state) do
     # Remove the player who left
     current_score = Map.get(state.players, player_id)
@@ -187,7 +208,8 @@ defmodule Pictionary.GameServer do
       PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "word_was", %{
         current_word: state.current_word,
         drawer_id: drawer,
-        correct_guessed_players: Map.put(state.correct_guessed_players, drawer, state.drawer_current_score)
+        correct_guessed_players:
+          Map.put(state.correct_guessed_players, drawer, state.drawer_current_score)
       })
     end
 
@@ -251,6 +273,7 @@ defmodule Pictionary.GameServer do
          current_word: nil,
          correct_guessed_players: %{},
          drawer_current_score: 0,
+         vote_to_kick_set: MapSet.new(),
          # Choose random word after word choosing timeout
          word_select_timer:
            Process.send_after(self(), {:random_word_select, words}, @word_choose_time)
@@ -301,6 +324,8 @@ defmodule Pictionary.GameServer do
       drawer_current_score: 0,
       # Players who have not yet drawn in current round
       remaining_drawers: [],
+      # Set of players who votekicked
+      vote_to_kick_set: MapSet.new(),
       # Current player id who is drawing
       drawer_id: nil,
       current_round: 0,
@@ -325,7 +350,8 @@ defmodule Pictionary.GameServer do
         drawer_current_score: 0,
         remaining_drawers: MapSet.to_list(game.players),
         drawer_id: nil,
-        current_word: nil
+        current_word: nil,
+        vote_to_kick_set: MapSet.new()
     }
   end
 
@@ -334,7 +360,7 @@ defmodule Pictionary.GameServer do
            players: players,
            drawer_id: drawer_id,
            correct_guessed_players: correct_guessed_players,
-           drawer_current_score: drawer_current_score,
+           drawer_current_score: drawer_current_score
          } = game_state,
          guesser_id
        ) do
@@ -354,7 +380,7 @@ defmodule Pictionary.GameServer do
       game_state
       | players: players,
         correct_guessed_players: Map.put(correct_guessed_players, guesser_id, guesser_score),
-        drawer_current_score: drawer_current_score + (guesser_score / 2)
+        drawer_current_score: drawer_current_score + guesser_score / 2
     }
   end
 

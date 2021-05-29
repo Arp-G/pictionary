@@ -80,20 +80,11 @@ defmodule PictionaryWeb.GameChannel do
   end
 
   def handle_in(
-        "kick_player",
-        %{"player_id" => player_id},
+        "vote_to_kick",
+        _args,
         %Phoenix.Socket{assigns: %{current_user: current_user, game_id: game_id}} = socket
       ) do
-    game = GameStore.get_game(game_id)
-
-    if game.creator_id == current_user.id do
-      game = GameStore.remove_player(game_id, player_id)
-
-      if game != :error do
-        broadcast(socket, "player_removed", %{player_id: player_id})
-        # MyAppWeb.Endpoint.broadcast("users_socket:" <> user.id, "disconnect", %{})
-      end
-    end
+    GenServer.cast({:global, "GameServer##{game_id}"}, {:vote_to_kick, current_user.id})
 
     {:reply, :ok, socket}
   end
