@@ -17,6 +17,8 @@ defmodule Pictionary.Stores.GameStore do
     "vote_kick_enabled"
   ]
 
+  @game_stats_broadcast_interval 3000
+
   ## Public API
 
   def list_games do
@@ -64,6 +66,7 @@ defmodule Pictionary.Stores.GameStore do
     # private access ensure read/write limited to owner process.
     :ets.new(@table_name, [:named_table, :set, :private])
 
+    Process.send_after(self(), :notify_about_game_updates, 1000)
     {:ok, nil}
   end
 
@@ -72,7 +75,7 @@ defmodule Pictionary.Stores.GameStore do
   end
 
   def handle_call(:list, _from, state) do
-    {:reply, :ets.tab2list(@table_name), state}
+    {:reply, get_game_stats(), state}
   end
 
   def handle_call({:set, %Game{id: game_id}} = game_data, _from, state) do
@@ -194,6 +197,19 @@ defmodule Pictionary.Stores.GameStore do
     end
   end
 
+  # Notifys the GameListChannel about game stats changes periodically
+  def handle_info(:notify_about_game_updates, state) do
+    IO.puts("broadcast now")
+
+    # Broadcast on game list channel about game update change
+    PictionaryWeb.Endpoint.broadcast!("game_stats", "game_stats_update", %{
+      game_stats: get_game_stats()
+    })
+
+    Process.send_after(self(), :notify_about_game_updates, @game_stats_broadcast_interval)
+    {:noreply, state}
+  end
+
   ## Private helpers
 
   defp handle_custom_words(%{custom_words: custom_words} = filtered_params) do
@@ -227,5 +243,24 @@ defmodule Pictionary.Stores.GameStore do
     |> MapSet.to_list()
     |> Enum.shuffle()
     |> List.first()
+  end
+
+  defp get_game_stats() do
+    :ets.tab2list(@table_name)
+    |> Stream.filter(fn {_id, %Game{public_game: is_public}} -> is_public end)
+    |> Stream.map(fn {id, game} ->
+      %{
+        id: id,
+        max_players: game.max_players,
+        current_players_count: MapSet.size(game.players),
+        rounds: game.rounds,
+        round_time: game.time,
+        started: game.started,
+        vote_kick_enabled: game.vote_kick_enabled,
+        custom_words: length(game.custom_words) != 0,
+        created_at: game.created_at
+      }
+    end)
+    |> Enum.to_list()
   end
 end

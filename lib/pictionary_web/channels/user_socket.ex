@@ -3,6 +3,7 @@ defmodule PictionaryWeb.UserSocket do
 
   ## Channels
   channel "game:*", PictionaryWeb.GameChannel
+  channel "game_stats", PictionaryWeb.GameListChannel
 
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do

@@ -14,6 +14,7 @@ export const WS_SCORE_UPDATE = 'score_update';
 export const WS_WORD_WAS = 'word_was';
 export const WS_VOTE_KICK_UPDATE = 'vote_kick_update';
 export const WS_KICK_PLAYER = 'kick_player';
+export const WS_GAME_STATS_UPDATED = 'game_stats_update';
 
 // == Events pushed ==
 export const WS_UPDATE_GAME = 'update_game';

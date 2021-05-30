@@ -17,6 +17,7 @@ import {
   HANDLE_INIT_GAME_CHANNEL,
   HANDLE_CREATE_GAME_FLOW,
   HANDLE_JOIN_GAME_FLOW,
+  HANDLE_FIND_GAME_FLOW,
   HANDLE_CREATE_AND_ENTER_GAME_SESSION,
   HANDLE_JOIN_EXISTING_GAME_SESSION,
   HANDLE_GAME_JOIN_SUCCESS,
@@ -43,9 +44,12 @@ export function* saveUserSession(action) {
     const response = yield call(createUserSession, action.payload); // This is always required to save the updated user avatar
     yield put({ type: SAVE_TOKEN, payload: response.data });
     window.localStorage.setItem('token', response.data.token);
-
     if (action.flowType === HANDLE_CREATE_GAME_FLOW) yield put({ type: HANDLE_CREATE_AND_ENTER_GAME_SESSION });
     if (action.flowType === HANDLE_JOIN_GAME_FLOW) yield put({ type: HANDLE_JOIN_EXISTING_GAME_SESSION, payload: action.gameToJoinId });
+    if (action.flowType === HANDLE_FIND_GAME_FLOW) {
+      yield put({ type: CLEAR_LOADING });
+      yield put(push('/play'));
+    }
   } catch (error) {
     console.log(error);
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Something went wrong when creating user session!' });
