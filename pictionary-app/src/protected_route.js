@@ -7,7 +7,9 @@ import { SAVE_GAME_TO_JOIN_ID } from './constants/actionTypes';
 export default ({ component: Component, ...rest }) => {
   const token = useSelector(state => state.userInfo.token);
   const dispatch = useDispatch();
-  const { params: { game_id: gameToJoinId } } = useRouteMatch('/lobby/:game_id');
+  const lobbyParams = useRouteMatch('/lobby/:game_id');
+  const gameParams = useRouteMatch('/game/:game_id');
+  const gameToJoinId = lobbyParams?.params?.game_id || gameParams?.params?.game_id;
 
   if (gameToJoinId) dispatch({ type: SAVE_GAME_TO_JOIN_ID, payload: gameToJoinId });
 

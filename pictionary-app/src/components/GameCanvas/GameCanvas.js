@@ -59,10 +59,10 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
   };
 
   const clearAndDrawOnCanvas = (img) => {
-    // TODO: the below line of code slows canvas rendering and give little bit bad experience however,
-    // with out it people who join in game wont see current state of canvas properly until something drawn OR MAYBE NOT?
-    // need to test this more, keeping it commented out for now
-    // ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    // TODO: the below line of code slows canvas rendering but since we do this asynchronously via a promise it should be fine I guess
+    // With this people who join in game wont see current state of canvas properly until something drawn, and the undo and clear canvas
+    // options wont work for the other players.
+    ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     ctxRef.current.drawImage(img, 0, 0);
   };
 
@@ -84,6 +84,7 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
     if (canvasData) loadCanvasData(canvasData, clearAndDrawOnCanvas);
 
     gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => {
+      console.log("Received new update with", canvas_data);
       loadCanvasData(canvas_data, clearAndDrawOnCanvas);
 
       // Resize canvas on window resize

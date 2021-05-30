@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { Grid, Paper } from '@material-ui/core';
 import GameHeader from '../../components/GameHeader/GameHeader';
 import GamePlayersList from '../../components/GamePlayersList/GamePlayersList';
@@ -16,11 +17,15 @@ import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import './game.scss';
 
 const Game = () => {
-  const [gameOver, isDrawer, voteKickEnabled] = useSelector(state => [
+  const [gameId, gameOver, isDrawer, voteKickEnabled] = useSelector(state => [
+    state.game.id,
     state.gamePlay.gameOver,
     state.gamePlay.drawerId === state.userInfo.id,
     state.game.vote_kick_enabled
   ]);
+
+  if (gameId === null) return (<Redirect to={{ pathname: '/' }} />);
+
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const dispatch = useDispatch();

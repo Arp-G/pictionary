@@ -21,7 +21,7 @@ function App() {
       <Switch>
         <Route exact path="/" component={Home} />
         <ProtectedRoute exact path="/lobby/:game_id" component={Lobby} />
-        <Route exact path="/game" component={Game} />
+        <ProtectedRoute exact path="/game/:game_id" component={Game} />
         <Route path="*" exact={true} component={NotFound} />
       </Switch>
     </Layout>
