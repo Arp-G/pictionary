@@ -19,6 +19,10 @@ defmodule Pictionary.Stores.GameStore do
 
   ## Public API
 
+  def list_games do
+    GenServer.call(__MODULE__, :list)
+  end
+
   def get_game(game_id) do
     GenServer.call(__MODULE__, {:get, game_id})
   end
@@ -65,6 +69,10 @@ defmodule Pictionary.Stores.GameStore do
 
   def handle_call({:get, game_id}, _from, state) do
     {:reply, fetch_game(game_id), state}
+  end
+
+  def handle_call(:list, _from, state) do
+    {:reply, :ets.tab2list(@table_name), state}
   end
 
   def handle_call({:set, %Game{id: game_id}} = game_data, _from, state) do
