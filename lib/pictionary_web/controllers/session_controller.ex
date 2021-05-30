@@ -6,7 +6,13 @@ defmodule PictionaryWeb.SessionController do
     user =
       if user,
         do: %User{user | name: name, avatar: avatar},
-        else: %User{id: Ecto.UUID.generate(), name: name, avatar: avatar}
+        else: %User{
+          id: Ecto.UUID.generate(),
+          name: name,
+          avatar: avatar,
+          created_at: DateTime.utc_now(),
+          updated_at: DateTime.utc_now()
+        }
 
     UserStore.add_user(user)
 

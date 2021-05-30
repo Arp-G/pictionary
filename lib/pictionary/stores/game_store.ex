@@ -199,8 +199,6 @@ defmodule Pictionary.Stores.GameStore do
 
   # Notifys the GameListChannel about game stats changes periodically
   def handle_info(:notify_about_game_updates, state) do
-    IO.puts("broadcast now")
-
     # Broadcast on game list channel about game update change
     PictionaryWeb.Endpoint.broadcast!("game_stats", "game_stats_update", %{
       game_stats: get_game_stats()
