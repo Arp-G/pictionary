@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Grid, Paper, List, ListItem, ListItemIcon, ListItemSecondaryAction, IconButton } from '@material-ui/core';
+import { Paper, List, Table, TableBody, TableCell, TableContainer, TableHead, Chip, TableRow, IconButton } from '@material-ui/core';
 import { ImPencil2 } from 'react-icons/im';
 import { FaPlay } from 'react-icons/fa';
 import createWebSocketConnection from '../../sagas/websocket';
 import { timeSince } from '../../helpers/helpers';
 import { SAVE_GAME_TO_JOIN_ID } from '../../constants/actionTypes';
 import { WS_GAME_STATS_UPDATED } from '../../constants/websocketEvents';
+
+// max_player current_player_count rounds round_time started vote kick custom word time
+const columns = [
+  { id: 'max_players', label: 'Max Players' },
+  { id: 'current_players_count', label: 'Active Players' },
+  { id: 'rounds', label: 'Rounds' },
+  { id: 'round_time', label: 'Draw Time' },
+  { id: 'started', label: 'Status' },
+  { id: 'vote_kick_enabled', label: 'Vote Kick' },
+  { id: 'custom_words', label: 'Custom Words' },
+  { id: 'created_at', label: 'Elapsed Time' },
+  { id: 'join_game', label: 'Join Game' }
+];
 
 const GamesList = () => {
   const dispatch = useDispatch();
@@ -28,71 +41,61 @@ const GamesList = () => {
     return () => socket.disconnect();
   }, []);
 
-  // max_players: game.max_players,
-  //       current_players_count: MapSet.size(game.players),
-  //       rounds: game.rounds,
-  //       round_time: game.time,
-  //       started: game.started,
-  //       vote_kick_enabled: game.vote_kick_enabled,
-  //       custom_words: length(game.custom_words) != 0,
-  //       created_at: game.created_at
-
   return (
     <Paper>
-      <List>
-        {
-          gamesList.map(game => (
-            <ListItem key={game.id} dense>
-              <ListItemIcon>
-                <ImPencil2 />
-              </ListItemIcon>
-              <Grid container>
-                <Grid item xs={1}>
-                  {game.max_players}
-                </Grid>
+      <TableContainer>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map(column => (
+                <TableCell
+                  key={column.id}
+                  align="justify"
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {gamesList.map(row => (
+              <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                {columns.map((column) => {
+                  let value = column.id === 'created_at' ? `${timeSince(row[column.id])} ago` : row[column.id];
 
-                <Grid item xs={1}>
-                  {game.current_players_count}
-                </Grid>
+                  if (column.id === 'started') {
+                    value = value
+                      ? <Chip label="Started" style={{ backgroundColor: 'green' }} />
+                      : <Chip label="In Lobby" color="secondary" style={{ backgroundColor: '#8B8000' }} />;
+                  } else if (column.id === 'vote_kick_enabled') {
+                    value = value ? <Chip label="Enabled" color="primary" /> : <Chip label="Disabled" color="secondary" />;
+                  } else if (column.id === 'custom_words') {
+                    value = value ? <Chip label="Yes" style={{ backgroundColor: 'green', color: 'white' }} /> : <Chip label="No" color="secondary" />;
+                  } else if (column.id === 'join_game') {
+                    value = (
+                      <IconButton edge="end" aria-label="comments">
+                        <FaPlay onClick={() => {
+                          // This redirects to home and then to game, this is kinda bad, player should directly enter game or lobby
+                          // since (s)he has altready set up character and has valid token at this point
+                          dispatch(push(`/game/${row.id}`));
+                        }}
+                        />
+                      </IconButton>
+                    );
+                  }
 
-                <Grid item xs={1}>
-                  {game.rounds}
-                </Grid>
-
-                <Grid item xs={1}>
-                  {game.round_time}
-                </Grid>
-
-                <Grid item xs={1}>
-                  {game.started}
-                </Grid>
-
-                <Grid item xs={1}>
-                  {game.vote_kick_enabled}
-                </Grid>
-
-                <Grid item xs={1}>
-                  {game.custom_words}
-                </Grid>
-
-                <Grid item xs={1}>
-                  {`${timeSince(game.created_at)} ago`}
-                </Grid>
-              </Grid>
-              <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="comments">
-                  <FaPlay onClick={() => {
-                    // This redirects to home and then to game, this is kinda bad, player should directly enter game or lobby
-                    // since (s)he has altready set up character and has valid token at this point
-                    dispatch(push(`/game/${game.id}`));
-                  }}
-                  />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))
-        }
-      </List>
+                  return (
+                    <TableCell key={column.id} align={column.align}>
+                      {value}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
 };
