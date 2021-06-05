@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Grid, Paper } from '@material-ui/core';
@@ -13,7 +13,7 @@ import GameWordWasDialog from '../../components/GameWordWasDialog/GameWordWasDia
 import GameOverDialog from '../../components/GameOverDialog/GameOverDialog';
 import GameVoteKickButton from '../../components/GameVoteKickButton/GameVoteKickButton';
 import { loadCanvasData } from '../../helpers/helpers';
-import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
+import { HANDLE_CANVAS_UPDATE, CLEAR_SOCKET, RESET_GAME_STATE } from '../../constants/actionTypes';
 import './game.scss';
 
 const Game = () => {
@@ -29,6 +29,12 @@ const Game = () => {
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const dispatch = useDispatch();
+
+  // If game page is left reset game state and disconnect socket
+  useEffect(() => () => {
+    dispatch({ type: CLEAR_SOCKET });
+    dispatch({ type: RESET_GAME_STATE });
+  }, []);
 
   const [, setUndoStack] = useState([]);
   const pushToUndoStack = () => {

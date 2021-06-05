@@ -18,6 +18,7 @@ import {
   HANDLE_CREATE_GAME_FLOW,
   HANDLE_JOIN_GAME_FLOW,
   HANDLE_FIND_GAME_FLOW,
+  HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW,
   HANDLE_CREATE_AND_ENTER_GAME_SESSION,
   HANDLE_JOIN_EXISTING_GAME_SESSION,
   HANDLE_GAME_JOIN_SUCCESS,
@@ -41,6 +42,12 @@ import {
 export function* saveUserSession(action) {
   try {
     yield put({ type: SET_LOADING });
+
+    if (action.flowType === HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW) {
+      yield put({ type: HANDLE_JOIN_EXISTING_GAME_SESSION, payload: action.gameToJoinId });
+      return;
+    }
+
     const response = yield call(createUserSession, action.payload); // This is always required to save the updated user avatar
     yield put({ type: SAVE_TOKEN, payload: response.data });
     window.localStorage.setItem('token', response.data.token);

@@ -7,7 +7,7 @@ import { ImPencil2 } from 'react-icons/im';
 import { FaPlay } from 'react-icons/fa';
 import createWebSocketConnection from '../../sagas/websocket';
 import { timeSince } from '../../helpers/helpers';
-import { SAVE_GAME_TO_JOIN_ID } from '../../constants/actionTypes';
+import { HANDLE_CREATE_USER_SESSION, HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW } from '../../constants/actionTypes';
 import { WS_GAME_STATS_UPDATED } from '../../constants/websocketEvents';
 
 // max_player current_player_count rounds round_time started vote kick custom word time
@@ -90,7 +90,8 @@ const GamesList = () => {
                             <FaPlay onClick={() => {
                               // This redirects to home and then to game, this is kinda bad, player should directly enter game or lobby
                               // since (s)he has altready set up character and has valid token at this point
-                              dispatch(push(`/game/${row.id}`));
+
+                              dispatch({ type: HANDLE_CREATE_USER_SESSION, flowType: HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW, gameToJoinId: row.id });
                             }}
                             />
                           </IconButton>
