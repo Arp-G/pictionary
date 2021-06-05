@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
@@ -11,6 +12,7 @@ import { WS_GAME_STATS_UPDATED } from '../../constants/websocketEvents';
 
 // max_player current_player_count rounds round_time started vote kick custom word time
 const columns = [
+  { id: 'index', label: 'S.no' },
   { id: 'max_players', label: 'Max Players' },
   { id: 'current_players_count', label: 'Active Players' },
   { id: 'rounds', label: 'Rounds' },
@@ -36,66 +38,78 @@ const GamesList = () => {
       .receive('error', resp => console.log('Error 1 ', resp))
       .receive('timeout', () => console.log('Error 2 '));
 
-    gameListChannel.on(WS_GAME_STATS_UPDATED, payload => setGamesList(payload.game_stats));
+    gameListChannel.on(WS_GAME_STATS_UPDATED, (payload) => {
+      const activeGames = payload.game_stats
+        .filter(game => game.current_players_count < game.max_players)
+        .map((game, index) => ({ ...game, index: index + 1 }));
+      setGamesList(activeGames);
+    });
 
     return () => socket.disconnect();
   }, []);
 
+  // HANDLE NO DATA IN LIST
+  // HANDLE AUTO JOIN
   return (
     <Paper>
-      <TableContainer>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  key={column.id}
-                  align="justify"
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {gamesList.map(row => (
-              <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                {columns.map((column) => {
-                  let value = column.id === 'created_at' ? `${timeSince(row[column.id])} ago` : row[column.id];
-
-                  if (column.id === 'started') {
-                    value = value
-                      ? <Chip label="Started" style={{ backgroundColor: 'green' }} />
-                      : <Chip label="In Lobby" color="secondary" style={{ backgroundColor: '#8B8000' }} />;
-                  } else if (column.id === 'vote_kick_enabled') {
-                    value = value ? <Chip label="Enabled" color="primary" /> : <Chip label="Disabled" color="secondary" />;
-                  } else if (column.id === 'custom_words') {
-                    value = value ? <Chip label="Yes" style={{ backgroundColor: 'green', color: 'white' }} /> : <Chip label="No" color="secondary" />;
-                  } else if (column.id === 'join_game') {
-                    value = (
-                      <IconButton edge="end" aria-label="comments">
-                        <FaPlay onClick={() => {
-                          // This redirects to home and then to game, this is kinda bad, player should directly enter game or lobby
-                          // since (s)he has altready set up character and has valid token at this point
-                          dispatch(push(`/game/${row.id}`));
-                        }}
-                        />
-                      </IconButton>
-                    );
-                  }
-
-                  return (
-                    <TableCell key={column.id} align={column.align}>
-                      {value}
+      {gamesList.length === 0
+        ? <Paper> No active game found, create a new game or click on "Join any" to join a game when available </Paper>
+        : (
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map(column => (
+                    <TableCell
+                      key={column.id}
+                      align="justify"
+                      style={{ fontWeight: 'bolder', textAlign: 'center' }}
+                    >
+                      {column.label}
                     </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {gamesList.map(row => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                    {columns.map((column) => {
+                      let value = column.id === 'created_at' ? `${timeSince(row[column.id])} ago` : row[column.id];
+
+                      if (column.id === 'started') {
+                        value = value
+                          ? <Chip label="Started" style={{ backgroundColor: 'green' }} />
+                          : <Chip label="In Lobby" color="secondary" style={{ backgroundColor: '#8B8000' }} />;
+                      } else if (column.id === 'vote_kick_enabled') {
+                        value = value ? <Chip label="Enabled" color="primary" /> : <Chip label="Disabled" color="secondary" />;
+                      } else if (column.id === 'custom_words') {
+                        value = value ? <Chip label="Yes" style={{ backgroundColor: 'green', color: 'white' }} /> : <Chip label="No" color="secondary" />;
+                      } else if (column.id === 'join_game') {
+                        value = (
+                          <IconButton>
+                            <FaPlay onClick={() => {
+                              // This redirects to home and then to game, this is kinda bad, player should directly enter game or lobby
+                              // since (s)he has altready set up character and has valid token at this point
+                              dispatch(push(`/game/${row.id}`));
+                            }}
+                            />
+                          </IconButton>
+                        );
+                      }
+
+                      return (
+                        <TableCell key={column.id} align={column.align} style={{ textAlign: 'center' }}>
+                          {value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
     </Paper>
   );
 };
