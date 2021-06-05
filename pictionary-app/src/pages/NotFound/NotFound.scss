@@ -1,55 +1,66 @@
-.full-screen {
-  background-color: rgb(51, 51, 51);
-  width: 100vw;
-  height: 100vh;
-  color: white;
-  font-family: "Arial Black";
-  text-align: center;
-
-  .container {
-    padding-top: 4em;
-    width: 50%;
-    display: block;
-    margin: 0 auto;
+.mainbox {
+  background-color: #95c2de;
+  margin: auto;
+  height: 600px;
+  width: 600px;
+  position: relative;
+  .err {
+    color: #ffffff;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 11rem;
+    position: absolute;
+    left: 20%;
+    top: 8%;
   }
 
-  .error-num {
-    font-size: 8em;
+  .far {
+    position: absolute;
+    font-size: 8.5rem;
+    left: 42%;
+    top: 15%;
+    color: #ffffff;
   }
 
-  .eye {
-    background: #fff;
-    border-radius: 50%;
-    display: inline-block;
-    height: 100px;
-    position: relative;
-    width: 100px;
-    &::after {
-      background: #000;
-      border-radius: 50%;
-      bottom: 56.1px;
-      content: " ";
-      height: 33px;
-      position: absolute;
-      right: 33px;
-      width: 33px;
-    }
+  .err2 {
+    color: #ffffff;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 11rem;
+    position: absolute;
+    left: 68%;
+    top: 8%;
   }
 
-  .italic {
-    font-style: italic;
-  }
-
-  p {
-    margin-bottom: 4em;
+  .msg {
+    text-align: center;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 1.6rem;
+    position: absolute;
+    left: 16%;
+    top: 45%;
+    width: 75%;
   }
 
   a {
-    color: white;
     text-decoration: none;
-    text-transform: uppercase;
-    &:hover {
-      color: lightgray;
+    color: white;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .icn-spinner {
+    animation: spin-animation 3s infinite;
+    animation-timing-function: linear;
+    display: inline-block;
+  }
+  
+  @keyframes spin-animation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 }

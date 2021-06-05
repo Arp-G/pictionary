@@ -19,6 +19,7 @@ import {
 import './lobbyGameSettings.scss';
 import { HANDLE_UPDATE_GAME, HANDLE_START_GAME } from '../../constants/actionTypes';
 import NUMBERS from '../../constants/numbers';
+import { humanizeTime } from '../../helpers/helpers';
 import { HOST_URL } from '../../helpers/api';
 import { clipboardCopy, range } from '../../helpers/helpers';
 
@@ -151,6 +152,10 @@ const LobbyGameSettings = () => {
             )}
             label="Allow vote kick"
           />
+
+          <div className="max-game-time">
+            {`Max game time: ${humanizeTime(time * players.length * rounds)}`}
+          </div>
         </FormGroup>
       </div>
       {

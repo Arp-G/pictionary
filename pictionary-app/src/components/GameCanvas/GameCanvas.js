@@ -84,7 +84,6 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
     if (canvasData) loadCanvasData(canvasData, clearAndDrawOnCanvas);
 
     gameChannel.on(WS_CANVAS_UPDATED, ({ canvas_data }) => {
-      console.log("Received new update with", canvas_data);
       loadCanvasData(canvas_data, clearAndDrawOnCanvas);
 
       // Resize canvas on window resize
@@ -124,6 +123,7 @@ const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
     const { nativeEvent: { offsetX, offsetY } } = event;
     ctxRef.current.beginPath();
     ctxRef.current.moveTo(offsetX - PEN_X_OFFSET, offsetY + PEN_Y_OFFSET);
+    ctxRef.current.stroke();
     setPainting(true);
   };
 

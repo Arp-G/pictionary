@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
+import { BsArrowsFullscreen } from 'react-icons/bs';
 import GameHeaderClock from '../GameHeaderClock/GameHeaderClock';
 import GameWordBox from '../GameWordBox/GameWordBox';
 import { RESET_ELAPSED_TIME } from '../../constants/actionTypes';
@@ -26,6 +27,20 @@ const GameHeader = ({ canvasRef }) => {
     link.click();
   };
 
+  function toggleFullScreen() {
+    const doc = window.document;
+    const docEl = doc.documentElement;
+
+    const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+    if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+      requestFullScreen.call(docEl);
+    } else {
+      cancelFullScreen.call(doc);
+    }
+  }
+
   return (
     <Grid container>
       <Grid item xs={2} alignContent="center">
@@ -39,7 +54,6 @@ const GameHeader = ({ canvasRef }) => {
       <Grid item xs={6}>
         {currentWord && <GameWordBox elapsedTime={elapsedTime} />}
       </Grid>
-
       <Grid item>
         <div
           role="button"
@@ -48,6 +62,11 @@ const GameHeader = ({ canvasRef }) => {
           onClick={downloadCanvasImage}
         >
           <img src={SaveSvg} alt="Save" title="Save Sketch" width={35} />
+        </div>
+      </Grid>
+      <Grid item>
+        <div className="fullScreenWrapper">
+          <BsArrowsFullscreen onClick={() => toggleFullScreen()} className="fullScreen" title="Fullscreen" />
         </div>
       </Grid>
     </Grid>

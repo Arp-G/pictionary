@@ -30,24 +30,19 @@ const UserInfo = () => {
   const avatar = useSelector(state => state.userInfo.avatar);
   const gameToJoinId = useSelector(state => state.settings.gameToJoinId);
 
-  const validName = () => {
-    if (name === '') {
-      setError(true);
-      return false;
-    }
-    return true;
-  };
-
   const createAndJoinGame = () => {
-    if (validName) dispatch({ type: HANDLE_CREATE_USER_SESSION, payload: { name, avatar }, flowType: HANDLE_CREATE_GAME_FLOW });
+    if (name !== '') dispatch({ type: HANDLE_CREATE_USER_SESSION, payload: { name, avatar }, flowType: HANDLE_CREATE_GAME_FLOW });
+    else setError(true);
   };
 
   const joinExistingGame = () => {
-    if (validName) dispatch({ type: HANDLE_CREATE_USER_SESSION, payload: { name, avatar }, flowType: HANDLE_JOIN_GAME_FLOW, gameToJoinId });
+    if (name !== '') dispatch({ type: HANDLE_CREATE_USER_SESSION, payload: { name, avatar }, flowType: HANDLE_JOIN_GAME_FLOW, gameToJoinId });
+    else setError(true);
   };
 
   const findNewGame = () => {
-    if (validName) dispatch({ type: HANDLE_CREATE_USER_SESSION, payload: { name, avatar }, flowType: HANDLE_FIND_GAME_FLOW });
+    if (name !== '') dispatch({ type: HANDLE_CREATE_USER_SESSION, payload: { name, avatar }, flowType: HANDLE_FIND_GAME_FLOW });
+    else setError(true);
   };
 
   return (

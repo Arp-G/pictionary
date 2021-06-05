@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/button-has-type */
 /* eslint-disable react/no-unescaped-entities */
 /*
@@ -6,29 +7,19 @@ since I suck at css
 */
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaQuestionCircle } from 'react-icons/fa';
 import './NotFound.scss';
 
 const NotFound = () => (
-  <div className="not-found-container">
-    <div className="error">
-      <p className="p">4</p>
-      <span className="dracula">
-        <div className="con">
-          <div className="hair" />
-          <div className="hair-r" />
-          <div className="head" />
-          <div className="eye" />
-          <div className="eye eye-r" />
-          <div className="mouth" />
-          <div className="blod" />
-          <div className="blod blod2" />
-        </div>
-      </span>
-      <p className="p">4</p>
-      <div className="page-ms">
-        <p className="page-msg"> Oops, the page you're looking for Disappeared </p>
-        <button className="go-back"><Link to="/" style={{ textDecoration: 'none' }}>Go back to home</Link></button>
-      </div>
+  <div className="mainbox">
+    <div className="err">4</div>
+    <FaQuestionCircle className="far icn-spinner" />
+    <div className="err2">4</div>
+    <div className="msg">
+      Maybe this page moved? Got deleted? Is hiding out in quarantine? Never existed in the first place?
+      <p>
+        Let's go <Link to="/">home</Link> and try from there.
+      </p>
     </div>
   </div>
 );

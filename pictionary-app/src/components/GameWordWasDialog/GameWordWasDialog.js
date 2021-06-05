@@ -33,10 +33,7 @@ const GameWordWasDialog = ({ clearCanvas }) => {
       }, 3500);
       clearCanvas();
       // eslint-disable-next-line camelcase
-      if (!payload.correct_guessed_players[selfId] && selfId !== payload.drawer_id) {
-        console.log('if executed');
-        return playFailSfx();
-      }
+      if (!payload.correct_guessed_players[selfId] && selfId !== payload.drawer_id) return playFailSfx();
     });
     return () => {
       gameChannel.off(WS_WORD_WAS);

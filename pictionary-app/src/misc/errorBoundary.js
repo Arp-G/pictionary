@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable react/destructuring-assignment */

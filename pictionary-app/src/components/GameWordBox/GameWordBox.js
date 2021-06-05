@@ -23,7 +23,6 @@ const GameWordBox = ({ elapsedTime }) => {
 
     if (elapsedTime) {
       const lettersToReveal = Math.ceil(elapsedTime / intervalPeriod);
-      console.log("herereeeeeeee", elapsedTime, intervalPeriod, Math.trunc(elapsedTime / intervalPeriod));
       for (let i = 1; i <= lettersToReveal; i += 1) { dispatch({ type: REVEAL_MORE_CURRENT_WORD }); }
     }
 

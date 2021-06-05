@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 /* eslint-disable import/prefer-default-export */
 import { put, select } from 'redux-saga/effects';

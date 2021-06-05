@@ -17,10 +17,7 @@ const GameHeaderClock = ({ elapsedTime }) => {
   useEffect(() => {
     const interval = setInterval(() => setTimer((time) => {
       // Start tick sound when 5 sec remaining
-      if (time === 7) {
-        console.log('clock log');
-        playClockTick();
-      }
+      if (time === 7) playClockTick();
 
       if (time <= 0) {
         clearInterval(interval);

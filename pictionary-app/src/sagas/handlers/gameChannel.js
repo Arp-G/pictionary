@@ -6,7 +6,6 @@ import {
   ADD_ALERT,
   UPDATE_GAME_STATE,
   UPDATE_GAME_PLAYERS,
-  UPDATE_CANVAS,
   ADD_MESSAGE,
   HANDLE_GAME_JOIN_SUCCESS,
   HANDLE_GAME_JOIN_FAIL,
@@ -85,7 +84,6 @@ export default (socket, gameId) => {
   return [
     gameChannel,
     eventChannel((emitter) => {
-      console.log('Trying to initialize game channel');
       gameChannel.join()
         .receive('ok', (payload) => {
           if (Object.keys(payload).length !== 0) emitter({ type: SET_GAMEPLAY_STATE, payload });

@@ -58,8 +58,7 @@ export const loadCanvasData = (data, callback) => {
 
 // I am too lazy to write this and don't want to include a heavy library like
 // moment js so I copied this from https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
-export const timeSince = (date) => {
-  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+export const humanizeTime = (seconds) => {
   let interval = seconds / 31536000;
 
   if (interval > 1) {
@@ -82,4 +81,9 @@ export const timeSince = (date) => {
     return `${Math.floor(interval)} minutes`;
   }
   return `${Math.floor(seconds)} seconds`;
+};
+
+export const timeSince = (date) => {
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  return humanizeTime(seconds);
 };
