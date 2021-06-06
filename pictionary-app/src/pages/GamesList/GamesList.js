@@ -6,7 +6,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, Chip, Ta
 import { FaPlay } from 'react-icons/fa';
 import { RiEmotionSadFill } from 'react-icons/ri';
 import createWebSocketConnection from '../../sagas/websocket';
-import { HANDLE_CREATE_USER_SESSION, HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW } from '../../constants/actionTypes';
+import { CLEAR_SOCKET, RESET_GAME_STATE, HANDLE_CREATE_USER_SESSION, HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW } from '../../constants/actionTypes';
 import { WS_GAME_STATS_UPDATED } from '../../constants/websocketEvents';
 import { timeSince } from '../../helpers/helpers';
 import './GamesList.scoped.scss';
@@ -37,6 +37,8 @@ const GamesList = () => {
   };
 
   useEffect(() => {
+    dispatch({ type: CLEAR_SOCKET });
+    dispatch({ type: RESET_GAME_STATE });
     const socket = createWebSocketConnection(token);
     const gameListChannel = socket.channel('game_stats', {});
 
@@ -77,7 +79,7 @@ const GamesList = () => {
               </TableHead>
               <TableBody>
                 {gamesList.map(row => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       let value = column.id === 'created_at' ? `${timeSince(row[column.id])} ago` : row[column.id];
 
@@ -91,14 +93,16 @@ const GamesList = () => {
                         value = value ? <Chip label="Yes" style={{ backgroundColor: 'green', color: 'white' }} /> : <Chip label="No" color="secondary" />;
                       } else if (column.id === 'join_game') {
                         value = (
-                          <IconButton style={{ color: 'green' }}>
-                            <FaPlay onClick={() => {
+                          <IconButton
+                            style={{ color: 'green' }}
+                            onClick={() => {
                               // This redirects to home and then to game, this is kinda bad, player should directly enter game or lobby
                               // since (s)he has altready set up character and has valid token at this point
 
                               dispatch({ type: HANDLE_CREATE_USER_SESSION, flowType: HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW, gameToJoinId: row.id });
                             }}
-                            />
+                          >
+                            <FaPlay />
                           </IconButton>
                         );
                       }

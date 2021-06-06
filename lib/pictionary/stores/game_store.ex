@@ -224,6 +224,8 @@ defmodule Pictionary.Stores.GameStore do
       game_stats: get_game_stats()
     })
 
+    Logger.info("Braodcat game update")
+
     Process.send_after(self(), :notify_about_game_updates, @game_stats_broadcast_interval)
     {:noreply, state}
   end

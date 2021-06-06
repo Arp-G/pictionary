@@ -3,6 +3,6 @@ defmodule PictionaryWeb.GameListChannel do
   alias Pictionary.Stores.GameStore
 
   def join("game_stats", _payload, socket) do
-    {:ok, GameStore.list_games(), assign(socket, :game_stats, [])}
+    {:ok, %{game_stats: GameStore.list_games()}, socket}
   end
 end
