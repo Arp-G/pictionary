@@ -45,11 +45,11 @@ export function* initGameChannel(action, x) {
 
   try {
     while (true) {
-      console.log('Watching for events on game channel');
-
       // Wait for and take emitted events from game channel
       // take(END) will terminate the watcher and go to finally block
       const { type, payload } = yield take(sagaEventChannel);
+
+      console.log(`Received event on game channel ${type}`);
 
       // Dispatch event on store
       yield put({ type, payload });

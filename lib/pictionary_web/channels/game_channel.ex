@@ -90,6 +90,22 @@ defmodule PictionaryWeb.GameChannel do
   end
 
   def handle_in(
+        "kick_player",
+        %{"player_id" => player_id},
+        %Phoenix.Socket{assigns: %{current_user: current_user, game_id: game_id}} = socket
+      ) do
+    game = GameStore.get_game(game_id)
+
+    if game.creator_id == current_user.id do
+      GameStore.remove_player(game_id, player_id)
+
+      broadcast(socket, "player_removed", %{player_id: player_id})
+    end
+
+    {:reply, :ok, socket}
+  end
+
+  def handle_in(
         "start_game",
         _args,
         %Phoenix.Socket{assigns: %{current_user: current_user, game_id: game_id}} = socket

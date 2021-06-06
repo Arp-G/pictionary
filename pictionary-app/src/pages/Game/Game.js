@@ -36,9 +36,9 @@ const Game = () => {
     dispatch({ type: RESET_GAME_STATE });
   }, []);
 
-  const [, setUndoStack] = useState([]);
+  const [undoStack, setUndoStack] = useState([]);
   const pushToUndoStack = () => {
-    if (!isDrawer || setUndoStack.length >= 10 || !canvasRef.current) return;
+    if (!isDrawer || undoStack.length >= 10 || !canvasRef.current) return;
 
     setUndoStack((stack) => {
       stack.push(canvasRef.current.toDataURL());
@@ -47,7 +47,7 @@ const Game = () => {
   };
 
   const popUndoStack = () => {
-    if (!isDrawer || setUndoStack.length < 1) return;
+    if (!isDrawer || undoStack.length < 1) return;
 
     setUndoStack((stack) => {
       const canvasData = stack.pop();

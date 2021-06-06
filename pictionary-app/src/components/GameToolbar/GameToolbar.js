@@ -95,8 +95,9 @@ const GameToolbar = ({ popUndoStack, clearCanvas }) => {
         </div>
       </Grid>
       {
-        range(3, 6).map(strokeWidth => (
-          <Grid item>
+        range(3, 6).map((strokeWidth, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Grid item key={index}>
             <div
               className={`strokeContainer ${brushRadius === strokeWidth ? 'selected' : ''}`}
               title="Stroke Width"

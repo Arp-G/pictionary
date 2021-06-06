@@ -64,7 +64,7 @@ const GameWordWasDialog = ({ clearCanvas }) => {
                 const className = score === 0 ? 'could-not-guess' : 'guessed-correctly';
 
                 return (
-                  <Grid item xs={12 / (players.length || 1)}>
+                  <Grid item xs={12 / (players.length || 1)} key={player.id}>
                     <div className="playerScoreContainer">
                       <div className={`playerScore ${className}`}>{`+${score}`}</div>
                       <Avatar avatarStyles={player.avatar} width="80px" height="80px" transparent={false} />

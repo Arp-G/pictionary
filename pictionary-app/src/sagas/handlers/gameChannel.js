@@ -17,7 +17,8 @@ import {
   UPDATE_SCORE,
   UPDATE_DRAWER,
   SET_GAME_OVER,
-  SET_GAMEPLAY_STATE
+  SET_GAMEPLAY_STATE,
+  CLEAR_SOCKET
 } from '../../constants/actionTypes';
 
 import {
@@ -97,7 +98,9 @@ export default (socket, gameId) => {
 
       gameChannel.onError((e) => {
         console.log('An error occuered on game channel ', e);
-        emitter({ type: ADD_ALERT, alertType: 'error', msg: 'An error occuered on game channel' });
+
+        // This will prevent react unmounted component state update issue and prevent memory leaks
+        emitter({ type: CLEAR_SOCKET });
       });
 
       gameChannel.onClose((e) => {

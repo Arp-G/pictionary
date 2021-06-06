@@ -53,7 +53,7 @@ const GameOverDialog = () => {
         <Grid container spacing={10}>
           {
             players.map((player, index) => (
-              <Grid item xs={12 / (players.length || 1)}>
+              <Grid item xs={12 / (players.length || 1)} key={player.id}>
                 <div className="winnerContainer">
                   <div className="winnerPlace">{getWinnerPosition(index + 1)}</div>
                   <Avatar avatarStyles={player.avatar} width="80px" height="80px" transparent={false} />

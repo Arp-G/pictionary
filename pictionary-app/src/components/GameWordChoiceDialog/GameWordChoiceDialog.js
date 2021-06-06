@@ -40,7 +40,7 @@ const GameWordChoiceDialog = () => {
         && (
           <DialogActions>
             {words.map(([type, word]) => (
-              <WordButton variant="contained" onClick={() => dispatch({ type: HANDLE_UPDATE_SELECTED_WORD, payload: [type, word] })}>
+              <WordButton key={word} variant="contained" onClick={() => dispatch({ type: HANDLE_UPDATE_SELECTED_WORD, payload: [type, word] })}>
                 {word}
               </WordButton>
             ))}

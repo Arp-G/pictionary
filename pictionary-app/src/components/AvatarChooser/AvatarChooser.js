@@ -30,7 +30,7 @@ const AvatarChooser = ({ closeModal }) => {
             {Object.entries(AVATAR_STYLES).map(([avatarStyle, values]) => {
               const label = getInputlabel(avatarStyle);
               return (
-                <Box m={1} className="avatarChooserFormItem">
+                <Box m={1} className="avatarChooserFormItem" key={avatarStyle}>
                   <FormControlLabel
                     control={(
                       <FormControl margin="dense">
@@ -45,8 +45,9 @@ const AvatarChooser = ({ closeModal }) => {
                           }}
                           style={{ marginLeft: '20px' }}
                         >
-                          {values.map(value => (
-                            <MenuItem value={value}>{getInputlabel(value)}</MenuItem>
+                          {values.map((value, index) => (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <MenuItem value={value} key={index}>{getInputlabel(value)}</MenuItem>
                           ))}
                         </Select>
                       </FormControl>
