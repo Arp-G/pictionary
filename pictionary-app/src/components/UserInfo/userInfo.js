@@ -87,7 +87,9 @@ const UserInfo = () => {
           className={classes.modal}
           onEscapeKeyDown={closeModal} // NOT WORKING
         >
-          <AvatarChooser closeModal={closeModal} />
+          <div>
+            <AvatarChooser closeModal={closeModal} />
+          </div>
         </Modal>
       </Box>
     </Container>

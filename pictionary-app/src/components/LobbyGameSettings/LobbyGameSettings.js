@@ -160,7 +160,7 @@ const LobbyGameSettings = () => {
       </div>
       {
         isAdmin && (
-          <div className="startGameButton">
+          <div className={`startGameButton ${canStartGame ? 'activeStartGameButton' : ''}`}>
             <Button
               variant="contained"
               disabled={!canStartGame}

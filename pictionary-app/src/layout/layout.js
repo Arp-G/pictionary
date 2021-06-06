@@ -10,7 +10,7 @@ import { CLEAR_ALERT } from '../constants/actionTypes';
 import ErrorBoundary from '../misc/errorBoundary';
 import useDarkMode from '../hooks/useDarkMode';
 import useSfx from '../hooks/useSfx';
-import './layout.scoped.scss';
+import './layout.scss';
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();

@@ -43,10 +43,10 @@ const GameHeader = ({ canvasRef }) => {
 
   return (
     <Grid container>
-      <Grid item xs={2} alignContent="center">
+      <Grid item xs={2}>
         {currentWord && <GameHeaderClock elapsedTime={elapsedTime} />}
       </Grid>
-      <Grid item xs={2} spacing={2}>
+      <Grid item xs={2}>
         <div className="gameRoundText">
           {`Round ${currentRound} of ${totalRounds}`}
         </div>
