@@ -8,7 +8,7 @@ import { RESET_ELAPSED_TIME } from '../../constants/actionTypes';
 import SaveSvg from '../../images/save.svg';
 import './GameHeader.scoped.scss';
 
-const GameHeader = ({ canvasRef }) => {
+const GameHeader = ({ canvasRef, setRevealInterval }) => {
   const [
     gameId,
     totalRounds,
@@ -52,7 +52,7 @@ const GameHeader = ({ canvasRef }) => {
         </div>
       </Grid>
       <Grid item xs={6}>
-        {currentWord && <GameWordBox elapsedTime={elapsedTime} />}
+        {currentWord && <GameWordBox elapsedTime={elapsedTime} setRevealInterval={setRevealInterval} />}
       </Grid>
       <Grid item>
         <div

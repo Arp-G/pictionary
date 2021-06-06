@@ -97,7 +97,7 @@ export default (socket, gameId) => {
       setupGameChannelEventHandlers(gameChannel, emitter);
 
       gameChannel.onError((e) => {
-        console.log('An error occuered on game channel ', e);
+        console.log('An error occured on game channel ', e);
 
         // This will prevent react unmounted component state update issue and prevent memory leaks
         emitter({ type: CLEAR_SOCKET });

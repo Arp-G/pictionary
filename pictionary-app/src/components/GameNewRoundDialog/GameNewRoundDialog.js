@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Dialog, DialogTitle, Slide } from '@material-ui/core';
+import { Dialog, DialogTitle } from '@material-ui/core';
 import { HIDE_ROUND_CHANGE_DIALOG } from '../../constants/actionTypes';
 
 const GameNewRoundDialog = () => {
@@ -22,8 +22,6 @@ const GameNewRoundDialog = () => {
       open={true}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      TransitionComponent={props => <Slide {...props} direction="up" />}
       maxWidth="lg"
     >
       <DialogTitle>

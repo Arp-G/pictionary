@@ -271,18 +271,9 @@ defmodule Pictionary.Stores.GameStore do
       {_id, %Game{public_game: is_public}} -> is_public
       {_id, {:set, %Game{public_game: is_public}}} -> is_public
     end)
-    |> Stream.map(fn {id, game} ->
-      %{
-        id: id,
-        max_players: game.max_players,
-        current_players_count: MapSet.size(game.players),
-        rounds: game.rounds,
-        round_time: game.time,
-        started: game.started,
-        vote_kick_enabled: game.vote_kick_enabled,
-        custom_words: length(game.custom_words) != 0,
-        created_at: game.created_at
-      }
+    |> Stream.map(fn
+      {_id, %Game{} = game} -> game_data(game)
+      {_id, {:set, %Game{} = game}} -> game_data(game)
     end)
     |> Enum.to_list()
   end
@@ -299,5 +290,19 @@ defmodule Pictionary.Stores.GameStore do
       |> GenServer.whereis()
       |> Pictionary.GameSupervisor.remove_game_server()
     end
+  end
+
+  defp game_data(game) do
+    %{
+      id: game.id,
+      max_players: game.max_players,
+      current_players_count: MapSet.size(game.players),
+      rounds: game.rounds,
+      round_time: game.time,
+      started: game.started,
+      vote_kick_enabled: game.vote_kick_enabled,
+      custom_words: length(game.custom_words) != 0,
+      created_at: game.created_at
+    }
   end
 end

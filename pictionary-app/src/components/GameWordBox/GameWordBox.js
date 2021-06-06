@@ -4,17 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { REVEAL_MORE_CURRENT_WORD } from '../../constants/actionTypes';
 import './GameWordBox.scoped.scss';
 
-const GameWordBox = ({ elapsedTime }) => {
+const GameWordBox = ({ elapsedTime, setRevealInterval }) => {
   const [
     drawTime,
     currentWord,
-    currentWordRevealList,
-    drawerId
+    currentWordRevealList
   ] = useSelector(state => [
     state.game.time,
     state.gamePlay.currentWord,
-    state.gamePlay.currentWordRevealList,
-    state.gamePlay.drawerId
+    state.gamePlay.currentWordRevealList
   ]);
   const isDrawer = useSelector(state => state.gamePlay.drawerId === state.userInfo.id);
 
@@ -29,16 +27,15 @@ const GameWordBox = ({ elapsedTime }) => {
     }
 
     const intervalTimer = setInterval(() => {
-      // Don't reveal more word if its guessed
-      if (!drawerId) {
-        clearInterval(intervalTimer);
-        return;
-      }
-
       dispatch({ type: REVEAL_MORE_CURRENT_WORD });
     }, intervalPeriod * 1000);
 
-    return () => clearInterval(intervalTimer);
+    setRevealInterval(intervalTimer);
+
+    return () => {
+      console.log("CLEARING INTERVAL", intervalTimer);
+      clearInterval(intervalTimer);
+    };
   }, []);
 
   return (

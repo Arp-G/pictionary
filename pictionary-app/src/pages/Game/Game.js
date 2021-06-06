@@ -13,7 +13,7 @@ import GameWordWasDialog from '../../components/GameWordWasDialog/GameWordWasDia
 import GameOverDialog from '../../components/GameOverDialog/GameOverDialog';
 import GameVoteKickButton from '../../components/GameVoteKickButton/GameVoteKickButton';
 import { loadCanvasData } from '../../helpers/helpers';
-import { HANDLE_CANVAS_UPDATE, CLEAR_SOCKET, RESET_GAME_STATE } from '../../constants/actionTypes';
+import { HANDLE_CANVAS_UPDATE, CLEAR_SOCKET, RESET_GAME_STATE, SAVE_GAME_TO_JOIN_ID } from '../../constants/actionTypes';
 import './game.scoped.scss';
 
 const Game = () => {
@@ -31,11 +31,15 @@ const Game = () => {
   const dispatch = useDispatch();
 
   // If game page is left reset game state and disconnect socket
-  useEffect(() => () => {
-    dispatch({ type: CLEAR_SOCKET });
-    dispatch({ type: RESET_GAME_STATE });
+  useEffect(() => {
+    dispatch({ type: SAVE_GAME_TO_JOIN_ID, payload: null });
+    return () => {
+      dispatch({ type: CLEAR_SOCKET });
+      dispatch({ type: RESET_GAME_STATE });
+    };
   }, []);
 
+  const [revealInterval, setRevealInterval] = useState(null);
   const [undoStack, setUndoStack] = useState([]);
   const pushToUndoStack = () => {
     if (!isDrawer || undoStack.length >= 10 || !canvasRef.current) return;
@@ -71,7 +75,7 @@ const Game = () => {
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Paper>
-          <GameHeader canvasRef={canvasRef} />
+          <GameHeader canvasRef={canvasRef} setRevealInterval={setRevealInterval} />
         </Paper>
       </Grid>
       <Grid item xs={2}>
@@ -124,6 +128,7 @@ const Game = () => {
             // Clear undo stack
             setUndoStack([]);
           }}
+          revealInterval={revealInterval}
         />
         {gameOver && <GameOverDialog />}
       </Grid>
