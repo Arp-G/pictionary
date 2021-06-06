@@ -17,7 +17,7 @@ const AvatarChooser = ({ closeModal }) => {
     <Paper className={`${darkMode && 'darkMode'} avatarChooserWrapper`}>
       <Grid container>
         <Grid item xs={12}>
-          <Box className="closeButton">
+          <Box className="modalCloseButton">
             <AiFillCloseCircle onClick={closeModal} />
           </Box>
         </Grid>

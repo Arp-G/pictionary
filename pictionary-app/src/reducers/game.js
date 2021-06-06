@@ -4,7 +4,7 @@ import { SAVE_GAME, UPDATE_GAME_STATE, UPDATE_GAME_PLAYERS, ADMIN_UPDATED, REMOV
 const initialState = {
   id: null,
   rounds: 3,
-  time: 60,
+  time: 80,
   max_players: 10,
   custom_words: '',
   custom_words_probability: 50,

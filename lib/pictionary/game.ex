@@ -2,7 +2,7 @@ defmodule Pictionary.Game do
   defstruct([
     id: Nanoid.generate(),
     rounds: 3,
-    time: 60,
+    time: 80,
     max_players: 10,
     custom_words: [],
     custom_words_probability: 50,

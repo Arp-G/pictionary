@@ -16,14 +16,14 @@
   -moz-text-fill-color: transparent;
 }
 
-.closeButton {
+.modalCloseButton {
   font-size: larger;
   margin-top: 10px;
   margin-right: 10px;
   text-align: end;
 }
 
-.closeButton:hover {
+.modalCloseButton:hover {
   cursor: pointer;
   color: red;
 }
