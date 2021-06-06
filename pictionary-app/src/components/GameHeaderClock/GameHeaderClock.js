@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import useAudio from '../../hooks/useAudio';
 import clockTickSfx from '../../sounds/clock_tick.mp3';
-import './GameHeaderClock.scss';
+import './GameHeaderClock.scoped.scss';
 
 const GameHeaderClock = ({ elapsedTime }) => {
   const [drawerId, currentWord, drawTime] = useSelector(state => [

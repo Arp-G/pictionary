@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import Avatar from '../Avatar/Avatar';
 import { getRandomAvatarStyles, range } from '../../helpers/helpers';
-import './HomeHeader.scss';
+import './HomeHeader.scoped.scss';
 
 const HomeHeader = () => {
   const [, setRandom] = useState(Math.random());

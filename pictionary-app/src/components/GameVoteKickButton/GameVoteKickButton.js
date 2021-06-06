@@ -7,7 +7,7 @@ import { Button } from '@material-ui/core';
 import { GiHighKick } from 'react-icons/gi';
 import { ADD_ALERT } from '../../constants/actionTypes';
 import { WS_VOTE_KICK_UPDATE, WS_KICK_PLAYER, WS_VOTE_TO_KICK } from '../../constants/websocketEvents';
-import './GameVoteKickButton.scss';
+import './GameVoteKickButton.scoped.scss';
 
 const GameVoteKickButton = () => {
   const dispatch = useDispatch();

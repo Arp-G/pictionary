@@ -9,7 +9,7 @@ import Game from './pages/Game/Game';
 import GamesList from './pages/GamesList/GamesList';
 import NotFound from './pages/NotFound/NotFound';
 import Layout from './layout/layout';
-import './App.scss';
+import './App.scoped.scss';
 
 function App() {
   const dispatch = useDispatch();

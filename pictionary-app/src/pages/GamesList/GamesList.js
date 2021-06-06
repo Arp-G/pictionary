@@ -9,7 +9,7 @@ import createWebSocketConnection from '../../sagas/websocket';
 import { HANDLE_CREATE_USER_SESSION, HANDLE_JOIN_GAME_FROM_GAMES_LIST_FLOW } from '../../constants/actionTypes';
 import { WS_GAME_STATS_UPDATED } from '../../constants/websocketEvents';
 import { timeSince } from '../../helpers/helpers';
-import './GamesList.scss';
+import './GamesList.scoped.scss';
 
 const columns = [
   { id: 'index', label: 'S.no' },

@@ -7,7 +7,7 @@ import { HANDLE_CANVAS_UPDATE } from '../../constants/actionTypes';
 import { WS_CANVAS_UPDATED } from '../../constants/websocketEvents';
 import { loadCanvasData } from '../../helpers/helpers';
 import floodFill from '../../helpers/floodFill';
-import './GameCanvas.scss';
+import './GameCanvas.scoped.scss';
 
 const PEN_X_OFFSET = 15;
 const PEN_Y_OFFSET = 30;

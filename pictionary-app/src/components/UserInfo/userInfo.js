@@ -9,7 +9,7 @@ import { BsHouseFill } from 'react-icons/bs';
 import UserAvatar from '../UserAvatar/userAvatar';
 import AvatarChooser from '../AvatarChooser/AvatarChooser';
 import { CHANGE_NAME, HANDLE_CREATE_USER_SESSION, HANDLE_CREATE_GAME_FLOW, HANDLE_JOIN_GAME_FLOW, HANDLE_FIND_GAME_FLOW } from '../../constants/actionTypes';
-import './userInfo.scss';
+import './userInfo.scoped.scss';
 
 const useStyles = makeStyles(() => ({
   modal: {

@@ -16,7 +16,7 @@ import {
   Chip,
   Button
 } from '@material-ui/core';
-import './lobbyGameSettings.scss';
+import './lobbyGameSettings.scoped.scss';
 import { HANDLE_UPDATE_GAME, HANDLE_START_GAME } from '../../constants/actionTypes';
 import NUMBERS from '../../constants/numbers';
 import { humanizeTime } from '../../helpers/helpers';

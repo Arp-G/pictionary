@@ -4,7 +4,7 @@ import { List, ListItem } from '@material-ui/core';
 import { FaPencilAlt } from 'react-icons/fa';
 import withPlayerCountChangeSfx from '../../hocs/withPlayerCountChangeSfx';
 import Avatar from '../Avatar/Avatar';
-import './GamePlayersList.scss';
+import './GamePlayersList.scoped.scss';
 
 const GamePlayersList = () => {
   const players = useSelector(state => state.game.players.map((player) => {

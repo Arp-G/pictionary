@@ -2,7 +2,7 @@ import React from 'react';
 import ReactLoading from 'react-loading';
 import loadingAnimations from '../../constants/loadingTypes';
 import { getRandomItem } from '../../helpers/helpers';
-import './loading.scss';
+import './loading.scoped.scss';
 
 const Loading = () => (
   <div className="loadingWrapper">

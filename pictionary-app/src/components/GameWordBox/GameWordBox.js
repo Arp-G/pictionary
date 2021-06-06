@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { REVEAL_MORE_CURRENT_WORD } from '../../constants/actionTypes';
-import './GameWordBox.scss';
+import './GameWordBox.scoped.scss';
 
 const GameWordBox = ({ elapsedTime }) => {
   const [

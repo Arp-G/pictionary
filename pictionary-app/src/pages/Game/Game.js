@@ -14,7 +14,7 @@ import GameOverDialog from '../../components/GameOverDialog/GameOverDialog';
 import GameVoteKickButton from '../../components/GameVoteKickButton/GameVoteKickButton';
 import { loadCanvasData } from '../../helpers/helpers';
 import { HANDLE_CANVAS_UPDATE, CLEAR_SOCKET, RESET_GAME_STATE } from '../../constants/actionTypes';
-import './game.scss';
+import './game.scoped.scss';
 
 const Game = () => {
   const [gameId, gameOver, isDrawer, voteKickEnabled] = useSelector(state => [

@@ -6,7 +6,7 @@ import GameHeaderClock from '../GameHeaderClock/GameHeaderClock';
 import GameWordBox from '../GameWordBox/GameWordBox';
 import { RESET_ELAPSED_TIME } from '../../constants/actionTypes';
 import SaveSvg from '../../images/save.svg';
-import './GameHeader.scss';
+import './GameHeader.scoped.scss';
 
 const GameHeader = ({ canvasRef }) => {
   const [

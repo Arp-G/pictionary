@@ -1,3 +1,7 @@
+body {
+  border: 2px solid black;
+}
+
 .avatarChooserWrapper {
   min-width: 1000px;
   max-height: 100%;
@@ -16,14 +20,14 @@
   -moz-text-fill-color: transparent;
 }
 
-.modalCloseButton {
+.closeButton {
   font-size: larger;
   margin-top: 10px;
   margin-right: 10px;
   text-align: end;
 }
 
-.modalCloseButton:hover {
+.closeButton:hover {
   cursor: pointer;
   color: red;
 }

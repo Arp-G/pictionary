@@ -11,7 +11,7 @@ import UndoSvg from '../../images/undo.svg';
 import DeleteSvg from '../../images/delete.svg';
 import { range } from '../../helpers/helpers';
 import { CHANGE_BRUSH_COLOR, CHANGE_BRUSH_RADIUS, SET_ERASER, SET_PEN, SET_FILL } from '../../constants/actionTypes';
-import './GameToolbar.scss';
+import './GameToolbar.scoped.scss';
 
 const debounce = require('lodash.debounce');
 

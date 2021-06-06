@@ -8,7 +8,7 @@ since I suck at css
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaQuestionCircle } from 'react-icons/fa';
-import './NotFound.scss';
+import './NotFound.scoped.scss';
 
 const NotFound = () => (
   <div className="mainbox">

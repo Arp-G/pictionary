@@ -7,7 +7,7 @@ import Avatar from '../Avatar/Avatar';
 import useAudio from '../../hooks/useAudio';
 import winnerSfx from '../../sounds/winner.mp3';
 import { getWinnerPosition } from '../../helpers/helpers';
-import './GameOverDialog.scss';
+import './GameOverDialog.scoped.scss';
 
 const contentStyles = makeStyles({ root: { overflow: 'hidden' } });
 const dialogStyles = makeStyles(() => ({ paper: { minWidth: '600px', minHeight: '250px' } }));

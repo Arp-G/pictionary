@@ -6,7 +6,7 @@ import Avatar from '../Avatar/Avatar';
 import AVATAR_STYLES from '../../constants/avatarStyles';
 import { CHANGE_AVATAR } from '../../constants/actionTypes';
 import { getInputlabel } from '../../helpers/helpers';
-import './avatarChooser.scss';
+import './avatarChooser.scoped.scss';
 
 const AvatarChooser = ({ closeModal }) => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const AvatarChooser = ({ closeModal }) => {
     <Paper className={`${darkMode && 'darkMode'} avatarChooserWrapper`}>
       <Grid container>
         <Grid item xs={12}>
-          <Box className="modalCloseButton">
+          <Box className="closeButton">
             <AiFillCloseCircle onClick={closeModal} />
           </Box>
         </Grid>

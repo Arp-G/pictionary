@@ -8,7 +8,7 @@ import useAudio from '../../hooks/useAudio';
 import failSfx from '../../sounds/fail.mp3';
 import { RESET_DRAWER } from '../../constants/actionTypes';
 import { WS_WORD_WAS } from '../../constants/websocketEvents';
-import './GameWordWasDialog.scss';
+import './GameWordWasDialog.scoped.scss';
 
 const contentStyles = makeStyles({ root: { overflow: 'hidden' } });
 

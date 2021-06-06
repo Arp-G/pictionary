@@ -3,7 +3,6 @@
 }
 
 .playerScoreContainer {
-
   overflow: hidden;
 
   .playerScore {
@@ -19,6 +18,10 @@
   }
 
   .playerName {
+    max-width: 5rem;
+    overflow: hidden;
+    text-align: center;
     font-size: medium;
+    font-family: Arial, Helvetica, sans-serif;
   }
 }

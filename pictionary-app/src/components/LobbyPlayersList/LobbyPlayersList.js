@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Paper, List, ListItem } from '@material-ui/core';
 import Avatar from '../Avatar/Avatar';
 import LobbyPlayerDialog from '../LobbyPlayerDialog/LobbyPlayerDialog';
-import './LobbyPlayersList.scss';
+import './LobbyPlayersList.scoped.scss';
 import withPlayerCountChangeSfx from '../../hocs/withPlayerCountChangeSfx';
 
 const LobbyPlayersList = () => {

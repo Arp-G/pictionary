@@ -7,7 +7,7 @@ import usePrevious from '../../hooks/usePrevious';
 import useAudio from '../../hooks/useAudio';
 import correctGuessSfx from '../../sounds/correct_guess.mp3';
 import newMessageSfx from '../../sounds/new_message.mp3';
-import './GameChat.scss';
+import './GameChat.scoped.scss';
 
 const useStyles = makeStyles({
   root: {

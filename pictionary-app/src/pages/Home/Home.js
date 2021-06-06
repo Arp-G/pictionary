@@ -6,7 +6,7 @@ import UserInfo from '../../components/UserInfo/userInfo';
 import HowToPlay from '../../components/HowToPlay/howToPlay';
 import About from '../../components/About/about';
 import { CLEAR_SOCKET, RESET_GAME_STATE } from '../../constants/actionTypes';
-import './home.scss';
+import './home.scoped.scss';
 
 const Home = () => {
   const dispatch = useDispatch();
