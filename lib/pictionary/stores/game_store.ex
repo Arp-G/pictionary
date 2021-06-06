@@ -19,6 +19,9 @@ defmodule Pictionary.Stores.GameStore do
 
   @game_stats_broadcast_interval 3000
 
+  # 1 month
+  @record_expiry 30 * 24 * 60 * 60
+
   ## Public API
 
   def list_games do
@@ -53,6 +56,10 @@ defmodule Pictionary.Stores.GameStore do
   def remove_player(game_id, player_id) do
     GenServer.call(__MODULE__, {:remove_player, game_id, player_id})
     GenServer.cast({:global, "GameServer##{game_id}"}, {:remove_player, player_id})
+  end
+
+  def remove_old_records do
+    GenServer.cast(__MODULE__, :remove_old_records)
   end
 
   ## GenServer callbacks
@@ -197,6 +204,19 @@ defmodule Pictionary.Stores.GameStore do
     end
   end
 
+  def handle_cast(:remove_old_records, state) do
+    Logger.info("Game Store cleanup start")
+
+    :ets.tab2list(@table_name)
+    |> Enum.each(fn
+      {_id, {:set, game}} -> remove_stale_records(game)
+      {_id, game} -> remove_stale_records(game)
+    end)
+
+    Logger.info("Game Store cleanup end")
+    {:noreply, state}
+  end
+
   # Notifys the GameListChannel about game stats changes periodically
   def handle_info(:notify_about_game_updates, state) do
     # Broadcast on game list channel about game update change
@@ -245,7 +265,10 @@ defmodule Pictionary.Stores.GameStore do
 
   defp get_game_stats() do
     :ets.tab2list(@table_name)
-    |> Stream.filter(fn {_id, %Game{public_game: is_public}} -> is_public end)
+    |> Stream.filter(fn
+      {_id, %Game{public_game: is_public}} -> is_public
+      {_id, {:set, %Game{public_game: is_public}}} -> is_public
+    end)
     |> Stream.map(fn {id, game} ->
       %{
         id: id,
@@ -260,5 +283,19 @@ defmodule Pictionary.Stores.GameStore do
       }
     end)
     |> Enum.to_list()
+  end
+
+  defp remove_stale_records(%Game{id: id, created_at: created_at}) do
+    diff = DateTime.utc_now() |> DateTime.diff(created_at)
+
+    if diff > @record_expiry do
+      :ets.delete(@table_name, id)
+
+      Logger.info("Drop game id #{id}")
+
+      {:global, "GameServer##{id}"}
+      |> GenServer.whereis()
+      |> Pictionary.GameSupervisor.remove_game_server()
+    end
   end
 end

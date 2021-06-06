@@ -17,6 +17,7 @@ defmodule Pictionary.Application do
       Pictionary.StoreSupervisor,
       Pictionary.GameChannelWatcher,
       Pictionary.GameSupervisor,
+      Pictionary.DBCleaner,
       # Start the Endpoint (http/https)
       PictionaryWeb.Endpoint
     ]

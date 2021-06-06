@@ -4,6 +4,11 @@ defmodule Pictionary.Stores.UserStore do
 
   @table_name :user_table
 
+  require Logger
+
+  # 1 month
+  @record_expiry 30 * 24 * 60 * 60
+
   # Public API
   def get_user(user_id) do
     case GenServer.call(__MODULE__, {:get, user_id}) do
@@ -18,6 +23,10 @@ defmodule Pictionary.Stores.UserStore do
 
   def add_user(user) do
     GenServer.call(__MODULE__, {:set, user})
+  end
+
+  def remove_old_records do
+    GenServer.cast(__MODULE__, :remove_old_records)
   end
 
   # GenServer callbacks
@@ -52,5 +61,27 @@ defmodule Pictionary.Stores.UserStore do
     # of ETS insertion faliure
     true = :ets.insert(@table_name, {user_id, user_data})
     {:reply, user_data, state}
+  end
+
+  def handle_cast(:remove_old_records, state) do
+    Logger.info("User Store cleanup start")
+
+    :ets.tab2list(@table_name)
+    |> Enum.each(fn
+      {_id, {:set, user}} -> remove_stale_records(user)
+      {_id, user} -> remove_stale_records(user)
+    end)
+
+    Logger.info("User Store cleanup end")
+    {:noreply, state}
+  end
+
+  defp remove_stale_records(%User{id: id, created_at: created_at}) do
+    diff = DateTime.utc_now() |> DateTime.diff(created_at)
+
+    if diff > @record_expiry do
+      :ets.delete(@table_name, id)
+      Logger.info("Drop user id #{id}")
+    end
   end
 end

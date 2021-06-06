@@ -1,5 +1,6 @@
 defmodule Pictionary.GameSupervisor do
   use DynamicSupervisor
+  require Logger
 
   def start_link(_) do
     DynamicSupervisor.start_link(__MODULE__, :no_args, name: __MODULE__)
@@ -14,7 +15,10 @@ defmodule Pictionary.GameSupervisor do
     pid
   end
 
+  def remove_game_server(nil), do: Logger.info("Ignoring stop request")
+
   def remove_game_server(child_pid) do
     DynamicSupervisor.terminate_child(__MODULE__, child_pid)
+    Logger.info("Stopped game server #{inspect child_pid}")
   end
 end
