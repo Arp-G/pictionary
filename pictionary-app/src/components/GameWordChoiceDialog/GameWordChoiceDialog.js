@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Dialog, DialogTitle, DialogActions, Button, makeStyles, withStyles, Slide } from '@material-ui/core';
 import { HANDLE_UPDATE_SELECTED_WORD } from '../../constants/actionTypes';
 
+// eslint-disable-next-line react/jsx-props-no-spreading
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+
 const dialogTitle = makeStyles({ root: { textAlign: 'center' } });
 
 const WordButton = withStyles(() => ({
@@ -29,9 +32,8 @@ const GameWordChoiceDialog = () => {
       open={true}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      TransitionComponent={props => <Slide {...props} direction="up" />}
       maxWidth="lg"
+      TransitionComponent={Transition}
     >
       <DialogTitle className={classes.root}>
         {choosing ? 'Choose a Word' : `${chooserName} is choosing a word...`}

@@ -77,6 +77,7 @@ const Game = () => {
     // Clearing the state inside the setState callback is important
     // since this function colsure does not capture the updated state
     setRevealInterval((currentState) => {
+      console.log("CLEAR INTERVAL " + currentState);
       clearInterval(currentState);
       return null;
     });

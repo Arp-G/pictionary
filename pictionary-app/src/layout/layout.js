@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Grid, Container, Snackbar, Slide } from '@material-ui/core';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { BsFillVolumeUpFill, BsFillVolumeMuteFill, BsSun, BsMoon } from 'react-icons/bs';
@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
                 {location.pathname !== '/' && (
                   <Grid item xs={2}>
                     <div className="pictionary-text">
-                      Pictionary
+                      <Link to="/">Pictionary</Link>
                     </div>
                   </Grid>
                 )}
