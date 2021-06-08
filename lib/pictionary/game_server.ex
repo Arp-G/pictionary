@@ -13,7 +13,7 @@ defmodule Pictionary.GameServer do
   @max_score 250
   @score_interval 10
   @word_choose_time 10_000
-  @inter_round_cooldown 3500
+  @inter_round_cooldown 4000
   @inter_draw_cooldown 5000
 
   def start_link(game_id) when game_id != nil do
@@ -229,7 +229,7 @@ defmodule Pictionary.GameServer do
         Process.send_after(
           self(),
           :start_next_round,
-          if(state.current_round == 0, do: 1500, else: @inter_round_cooldown)
+          if(state.current_round == 0, do: 1000, else: @inter_round_cooldown)
         )
 
         {:noreply, state}

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { REVEAL_MORE_CURRENT_WORD } from '../../constants/actionTypes';
 import './GameWordBox.scoped.scss';
 
-const GameWordBox = ({ elapsedTime, setRevealInterval }) => {
+const GameWordBox = ({ elapsedTime, setRevealInterval, clearRevealInterval }) => {
   const [
     drawTime,
     currentWord,
@@ -32,10 +32,7 @@ const GameWordBox = ({ elapsedTime, setRevealInterval }) => {
 
     setRevealInterval(intervalTimer);
 
-    return () => {
-      console.log("CLEARING INTERVAL", intervalTimer);
-      clearInterval(intervalTimer);
-    };
+    return () => clearRevealInterval();
   }, []);
 
   return (

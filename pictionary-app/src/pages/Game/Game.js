@@ -39,7 +39,7 @@ const Game = () => {
     };
   }, []);
 
-  const [revealInterval, setRevealInterval] = useState(null);
+  const [, setRevealInterval] = useState(null);
   const [undoStack, setUndoStack] = useState([]);
   const pushToUndoStack = () => {
     if (!isDrawer || undoStack.length >= 10 || !canvasRef.current) return;
@@ -71,11 +71,24 @@ const Game = () => {
     dispatch({ type: HANDLE_CANVAS_UPDATE, payload: canvasRef?.current?.toDataURL() });
   };
 
+  const clearRevealInterval = () => {
+    // Clearing the state inside the setState callback is important
+    // since this function colsure does not capture the updated state
+    setRevealInterval((currentState) => {
+      clearInterval(currentState);
+      return null;
+    });
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Paper>
-          <GameHeader canvasRef={canvasRef} setRevealInterval={setRevealInterval} />
+          <GameHeader
+            canvasRef={canvasRef}
+            setRevealInterval={setRevealInterval}
+            clearRevealInterval={clearRevealInterval}
+          />
         </Paper>
       </Grid>
       <Grid item xs={2}>
@@ -128,7 +141,7 @@ const Game = () => {
             // Clear undo stack
             setUndoStack([]);
           }}
-          revealInterval={revealInterval}
+          clearRevealInterval={clearRevealInterval}
         />
         {gameOver && <GameOverDialog />}
       </Grid>

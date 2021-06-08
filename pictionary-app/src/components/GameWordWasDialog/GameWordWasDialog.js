@@ -12,7 +12,7 @@ import './GameWordWasDialog.scoped.scss';
 
 const contentStyles = makeStyles({ root: { overflow: 'hidden' } });
 
-const GameWordWasDialog = ({ clearCanvas, revealInterval }) => {
+const GameWordWasDialog = ({ clearCanvas, clearRevealInterval }) => {
   const [gameChannel, selfId, players] = useSelector(state => [state.settings.gameChannel, state.userInfo.id, state.game.players]);
   const [wordWas, setWordWasDialog] = useState(null);
   const [correctGuessedPlayers, setCorrectGuessedPlayers] = useState({});
@@ -24,10 +24,8 @@ const GameWordWasDialog = ({ clearCanvas, revealInterval }) => {
   useEffect(() => {
     let dialogTimer;
     gameChannel.on(WS_WORD_WAS, (payload) => {
-      // BUG: This "revealInterval" always comes in as null
-      console.log(revealInterval);
       // Clear word reveal interval
-      clearInterval(revealInterval);
+      clearRevealInterval();
 
       dispatch({ type: RESET_DRAWER });
       setWordWasDialog(payload.current_word);
