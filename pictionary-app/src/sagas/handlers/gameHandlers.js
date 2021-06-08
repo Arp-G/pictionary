@@ -21,7 +21,6 @@ export function* startGame(_action) {
 export function* handleGameStarted(_action) {
   const gameId = yield select(state => state.game.id);
 
-  // TODO: update game state
   yield put(push(`/game/${gameId}`));
 }
 

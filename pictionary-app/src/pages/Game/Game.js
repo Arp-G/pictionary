@@ -17,14 +17,16 @@ import { HANDLE_CANVAS_UPDATE, CLEAR_SOCKET, RESET_GAME_STATE, SAVE_GAME_TO_JOIN
 import './game.scoped.scss';
 
 const Game = () => {
-  const [gameId, gameOver, isDrawer, voteKickEnabled] = useSelector(state => [
+  const [gameId, gameOver, isDrawer, voteKickEnabled, gameChannel] = useSelector(state => [
     state.game.id,
     state.gamePlay.gameOver,
     state.gamePlay.drawerId === state.userInfo.id,
-    state.game.vote_kick_enabled
+    state.game.vote_kick_enabled,
+    state.settings.gameChannel
   ]);
 
-  if (gameId === null) return (<Redirect to={{ pathname: '/' }} />);
+  // Redirect if game channel is null, this avoids errors due to back button press
+  if (gameId === null || gameChannel === null) return (<Redirect to={{ pathname: '/' }} />);
 
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);

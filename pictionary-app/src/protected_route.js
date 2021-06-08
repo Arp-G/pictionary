@@ -5,13 +5,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_GAME_TO_JOIN_ID } from './constants/actionTypes';
 
 export default ({ component: Component, ...rest }) => {
-  const token = useSelector(state => state.userInfo.token);
+  const [token, gameId] = useSelector(state => [state.userInfo.token, state.game.id]);
   const dispatch = useDispatch();
   const lobbyParams = useRouteMatch('/lobby/:game_id');
   const gameParams = useRouteMatch('/game/:game_id');
   const gameToJoinId = lobbyParams?.params?.game_id || gameParams?.params?.game_id;
 
-  if (gameToJoinId) dispatch({ type: SAVE_GAME_TO_JOIN_ID, payload: gameToJoinId });
+  // This dispatch leads to a warning "Cannot update a component while rendering a different component"
+  // We don't need to save the game to join id when entering a game from lobby, thus we are using "gameId" here
+  if (!gameId && gameToJoinId) dispatch({ type: SAVE_GAME_TO_JOIN_ID, payload: gameToJoinId });
 
   return (
     <Route
