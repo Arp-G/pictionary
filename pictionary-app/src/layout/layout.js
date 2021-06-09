@@ -12,6 +12,9 @@ import useDarkMode from '../hooks/useDarkMode';
 import useSfx from '../hooks/useSfx';
 import './layout.scss';
 
+// eslint-disable-next-line react/jsx-props-no-spreading
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -93,7 +96,7 @@ const Layout = ({ children }) => {
             action={<AiFillCloseCircle onClick={() => dispatch({ type: CLEAR_ALERT })} />}
             ContentProps={{ style: { backgroundColor: alertColor } }}
             // eslint-disable-next-line react/jsx-props-no-spreading
-            TransitionComponent={props => <Slide {...props} direction="up" />}
+            TransitionComponent={Transition}
           />
         )}
     </ThemeProvider>

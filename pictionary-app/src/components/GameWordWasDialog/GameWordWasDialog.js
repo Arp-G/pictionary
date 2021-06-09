@@ -11,6 +11,8 @@ import { WS_WORD_WAS } from '../../constants/websocketEvents';
 import './GameWordWasDialog.scoped.scss';
 
 const contentStyles = makeStyles({ root: { overflow: 'hidden' } });
+// eslint-disable-next-line react/jsx-props-no-spreading
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const GameWordWasDialog = ({ clearCanvas, clearRevealInterval }) => {
   const [gameChannel, selfId, players] = useSelector(state => [state.settings.gameChannel, state.userInfo.id, state.game.players]);
@@ -50,7 +52,7 @@ const GameWordWasDialog = ({ clearCanvas, clearRevealInterval }) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       // eslint-disable-next-line react/jsx-props-no-spreading
-      TransitionComponent={props => <Slide {...props} direction="up" />}
+      TransitionComponent={Transition}
       maxWidth="lg"
     >
       <DialogTitle>

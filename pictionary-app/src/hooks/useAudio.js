@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
-import useSound from 'use-sound';
 
-export default (audioPath) => {
+export default (audioPath, force = false) => {
   const soundEnabled = useSelector(state => state.settings.sound);
-  const [playSoundSfx] = useSound(audioPath, { volume: 0.3 });
+  const audioElement = new Audio(audioPath);
 
   const playAudio = () => {
-    if (soundEnabled) playSoundSfx();
+    // eslint-disable-next-line no-console
+    console.log(`Playing Sound ${audioPath}`);
+    if (soundEnabled || force) audioElement.play();
   };
 
   return playAudio;

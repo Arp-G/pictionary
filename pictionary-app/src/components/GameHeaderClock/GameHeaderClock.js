@@ -15,9 +15,10 @@ const GameHeaderClock = ({ elapsedTime }) => {
   const playClockTick = useAudio(clockTickSfx);
 
   useEffect(() => {
+    // At every 1 sec set state and decrement timer
     const interval = setInterval(() => setTimer((time) => {
-      // Start tick sound when 5 sec remaining
-      if (time === 7) playClockTick();
+      // Start tick sound when 7 sec remaining and word was not guessed
+      if (time === 7 && drawerId) playClockTick();
 
       if (time <= 0) {
         clearInterval(interval);
@@ -26,7 +27,7 @@ const GameHeaderClock = ({ elapsedTime }) => {
       return time - 1;
     }), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [drawerId]);
 
   let clockColor = 'green';
   if (drawTime / 3 > timer) { clockColor = 'red'; } else if (drawTime / 2 > timer) { clockColor = 'yellow'; }

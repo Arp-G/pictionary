@@ -77,7 +77,8 @@ const Game = () => {
     // Clearing the state inside the setState callback is important
     // since this function colsure does not capture the updated state
     setRevealInterval((currentState) => {
-      console.log("CLEAR INTERVAL " + currentState);
+      // eslint-disable-next-line no-console
+      console.log(`Clear Word Reveal Interval ${currentState}`);
       clearInterval(currentState);
       return null;
     });

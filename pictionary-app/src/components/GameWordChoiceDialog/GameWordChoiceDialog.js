@@ -5,9 +5,7 @@ import { HANDLE_UPDATE_SELECTED_WORD } from '../../constants/actionTypes';
 
 // eslint-disable-next-line react/jsx-props-no-spreading
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
-
 const dialogTitle = makeStyles({ root: { textAlign: 'center' } });
-
 const WordButton = withStyles(() => ({
   root: {
     backgroundColor: 'grey',

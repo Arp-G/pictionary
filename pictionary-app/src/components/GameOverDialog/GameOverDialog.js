@@ -11,6 +11,8 @@ import './GameOverDialog.scoped.scss';
 
 const contentStyles = makeStyles({ root: { overflow: 'hidden' } });
 const dialogStyles = makeStyles(() => ({ paper: { minWidth: '600px', minHeight: '250px' } }));
+// eslint-disable-next-line react/jsx-props-no-spreading
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const GameOverDialog = () => {
   const players = useSelector(state => state.game.players
@@ -39,7 +41,7 @@ const GameOverDialog = () => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       // eslint-disable-next-line react/jsx-props-no-spreading
-      TransitionComponent={props => <Slide {...props} direction="up" />}
+      TransitionComponent={Transition}
       classes={{ paper: dialogClasses.paper }}
     >
       <DialogTitle>
