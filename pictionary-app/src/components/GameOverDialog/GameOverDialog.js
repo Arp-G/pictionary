@@ -22,12 +22,12 @@ const GameOverDialog = () => {
       player.score = state.gamePlay.scores[player.id] || 0;
       return player;
     }));
-
+  const selfId = useSelector(state => state.userInfo.id);
   const playWinnerSfx = useAudio(winnerSfx);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    playWinnerSfx();
+    if (players.find(({ id }) => selfId === id)) playWinnerSfx();
     const timerRef = setTimeout(() => dispatch(push('/')), 10000);
 
     return () => clearTimeout(timerRef);

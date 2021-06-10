@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
 import { eventChannel, END } from 'redux-saga';
-import { select } from 'redux-saga/effects';
 import { Presence } from 'phoenix';
 import {
   ADD_ALERT,
@@ -19,7 +18,8 @@ import {
   UPDATE_DRAWER,
   SET_GAME_OVER,
   SET_GAMEPLAY_STATE,
-  CLEAR_SOCKET
+  CLEAR_SOCKET,
+  HANDLE_NEW_DRAWER
 } from '../../constants/actionTypes';
 
 import {
@@ -34,7 +34,6 @@ import {
   WS_SCORE_UPDATE,
   WS_GAME_OVER
 } from '../../constants/websocketEvents';
-import newDrawerSfx from '../../sounds/new_drawer.mp3';
 
 const setupGameChannelEventHandlers = (gameChannel, emitter) => {
   // Register listeners different types of events this channel can receive
@@ -52,11 +51,7 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
 
   gameChannel.on(WS_SELECTED_WORD, (payload) => {
     emitter({ type: UPDATE_SELECTED_WORD, payload: payload.data });
-    // BUG: This sound happens event if sound is disabled, need to fix this
-    const soundEnabled = select(state => state.settings.sound);
-
-    // Play the new drawer sfx, its difficult to use the audio audio hook here
-    if (soundEnabled) new Audio(newDrawerSfx).play();
+    emitter({ type: HANDLE_NEW_DRAWER });
   });
 
   gameChannel.on(WS_NEW_DRAWER_WORDS, payload => emitter({ type: UPDATE_DRAWER, payload }));

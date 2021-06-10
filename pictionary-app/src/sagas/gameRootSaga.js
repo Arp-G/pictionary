@@ -6,14 +6,16 @@ import {
   HANDLE_GAME_STARTED,
   HANDLE_CANVAS_UPDATE,
   HANDLE_SEND_MESSAGE,
-  HANDLE_UPDATE_SELECTED_WORD
+  HANDLE_UPDATE_SELECTED_WORD,
+  HANDLE_NEW_DRAWER
 } from '../constants/actionTypes';
 import {
   startGame,
   handleGameStarted,
   updateCanvas,
   handleSendMessage,
-  handleWordSelected
+  handleWordSelected,
+  handleNewDrawer
 } from './handlers/gameHandlers';
 
 export default function* watchsocketSagas() {
@@ -22,4 +24,5 @@ export default function* watchsocketSagas() {
   yield throttle(10, HANDLE_CANVAS_UPDATE, updateCanvas);
   yield takeLatest(HANDLE_SEND_MESSAGE, handleSendMessage);
   yield takeLatest(HANDLE_UPDATE_SELECTED_WORD, handleWordSelected);
+  yield takeLatest(HANDLE_NEW_DRAWER, handleNewDrawer);
 }

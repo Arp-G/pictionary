@@ -5,6 +5,7 @@ import { put, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import { ADD_ALERT } from '../../constants/actionTypes';
 import { WS_START_GAME, WS_CANVAS_UPDATE, WS_SEND_MESSAGE, WS_SELECT_WORD } from '../../constants/websocketEvents';
+import newDrawerSfx from '../../sounds/new_drawer.mp3';
 
 // Handle admin updated
 export function* startGame(_action) {
@@ -56,4 +57,11 @@ export function* handleWordSelected(action) {
     console.log('Failed to push updates to game data', error);
     yield put({ type: ADD_ALERT, alertType: 'error', msg: 'Failed to push updates to game data' });
   }
+}
+
+export function* handleNewDrawer() {
+  const soundEnabled = yield select(state => state.settings.sound);
+
+  // Play the new drawer sfx, its difficult to use the audio audio hook here
+  if (soundEnabled) new Audio(newDrawerSfx).play();
 }

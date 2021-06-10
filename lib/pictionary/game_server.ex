@@ -216,7 +216,7 @@ defmodule Pictionary.GameServer do
     cond do
       # Drawers are remaining in this round
       length(state.remaining_drawers) > 0 ->
-        Logger.info("Send braodcast for #{state.current_word} for drawer #{state.drawer_id}")
+        Logger.info("Send broadcast for #{state.current_word} for drawer #{state.drawer_id}")
 
         Process.send_after(self(), :new_drawer, @inter_draw_cooldown)
 

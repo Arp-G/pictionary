@@ -42,7 +42,7 @@ const GameVoteKickButton = () => {
 
   const text = count > 0 ? `(${count}/${playersCount - 1})` : '';
 
-  return selfVoteKick || !drawerId ? null : (
+  return selfVoteKick || !drawerId || playersCount < 3 ? null : (
     <div className="voteToKickButtonContainer">
       <Button
         size="small"
