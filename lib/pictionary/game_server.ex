@@ -29,9 +29,7 @@ defmodule Pictionary.GameServer do
   def handle_cast(:stop, state), do: {:stop, :normal, state}
 
   def handle_cast({:add_player, player_id}, state) do
-    IO.puts(
-      "Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}"
-    )
+    Logger.info("Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}")
 
     {:noreply,
      %{
@@ -163,7 +161,7 @@ defmodule Pictionary.GameServer do
 
   def handle_info({:random_word_select, words}, state) when is_nil(state.current_word) do
     [random_selection | _rest] = Enum.shuffle(words)
-    Logger.info("#{DateTime.utc_now()} Choose random word #{inspect(random_selection)}")
+    Logger.info("Choose random word #{inspect(random_selection)}")
     Process.send_after(self(), {:word_selected, random_selection}, 0)
     {:noreply, state}
   end
@@ -182,7 +180,7 @@ defmodule Pictionary.GameServer do
       remove_selected_word_from_pool(type, word, state)
       |> Map.put(:current_word, word)
 
-    Logger.info("#{DateTime.utc_now()} Selected word #{inspect(word)}")
+    Logger.info("Selected word #{inspect(word)}")
 
     {:noreply,
      %{
@@ -224,7 +222,7 @@ defmodule Pictionary.GameServer do
 
       # No more drawers remaining && not last round
       state.current_round < state.rounds ->
-        Logger.info("#{DateTime.utc_now()} Round end!")
+        Logger.info("Round end!")
 
         Process.send_after(
           self(),
@@ -236,7 +234,7 @@ defmodule Pictionary.GameServer do
 
       # Last round
       true ->
-        Logger.info("#{DateTime.utc_now()} Last round Game ending, Round: #{state.current_round}")
+        Logger.info("Last round Game ending, Round: #{state.current_round}")
 
         end_game(state)
     end
@@ -281,7 +279,7 @@ defmodule Pictionary.GameServer do
   end
 
   def handle_info(:start_next_round, state) do
-    Logger.info("#{DateTime.utc_now()} Starting round #{state.current_round + 1}")
+    Logger.info("Starting round #{state.current_round + 1}")
 
     PictionaryWeb.Endpoint.broadcast!(
       "game:#{state.game_id}",
