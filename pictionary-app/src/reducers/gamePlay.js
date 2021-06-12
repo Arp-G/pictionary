@@ -17,7 +17,8 @@ import {
   REVEAL_MORE_CURRENT_WORD,
   SET_GAMEPLAY_STATE,
   RESET_ELAPSED_TIME,
-  RESET_DRAWER
+  RESET_DRAWER,
+  ADD_GUESSER
 } from '../constants/actionTypes';
 import { randomIndex } from '../helpers/helpers';
 
@@ -41,7 +42,8 @@ const initialState = {
   scores: {},
   drawerId: null,
   gameOver: false,
-  timeRemaining: null
+  timeRemaining: null,
+  guessers: []
 };
 
 const gamePlayReducer = (state = initialState, action) => {
@@ -55,7 +57,8 @@ const gamePlayReducer = (state = initialState, action) => {
         currentWord: action.payload.current_word,
         currentWordRevealList: action.payload.current_word?.split('').map(char => char === ' '),
         elapsedTime: action.payload.elapsed_time,
-        canvasData: action.payload.canvas_data
+        canvasData: action.payload.canvas_data,
+        guessers: Object.keys(action.payload.correct_guessed_players)
       };
     case RESET_ELAPSED_TIME:
       return { ...state, elapsedTime: 0 };
@@ -73,8 +76,10 @@ const gamePlayReducer = (state = initialState, action) => {
       return { ...state, canvasData: action.payload };
     case ADD_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
+    case ADD_GUESSER:
+      return { ...state, guessers: [...state.guessers, action.payload] };
     case RESET_DRAWER:
-      return { ...state, drawerId: null };
+      return { ...state, drawerId: null, guessers: [] };
     case UPDATE_DRAWER:
       return { ...state, drawerId: action.payload.drawer_id, words: action.payload.words, currentWord: null, currentWordRevealList: [] };
     case UPDATE_ROUND:

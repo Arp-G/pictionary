@@ -102,7 +102,7 @@ defmodule Pictionary.GameServer do
 
     restored_state =
       state
-      |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds, :canvas_data])
+      |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds, :canvas_data, :correct_guessed_players])
       |> Map.merge(%{players: players, elapsed_time: elapsed_time})
 
     {

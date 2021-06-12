@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { List, ListItem } from '@material-ui/core';
@@ -8,8 +9,8 @@ import './GamePlayersList.scoped.scss';
 
 const GamePlayersList = () => {
   const players = useSelector(state => state.game.players.map((player) => {
-    // eslint-disable-next-line no-param-reassign
     player.score = state.gamePlay.scores[player.id] || 0;
+    player.guessed = !!state.gamePlay.guessers.find(playerId => playerId === player.id);
     return player;
   }));
 
@@ -26,7 +27,7 @@ const GamePlayersList = () => {
           >
             <div className={index % 2 === 0 ? 'gamePlayerListItem' : 'gamePlayerListItemGrey'}>
               <div className="gamePlayerRank">{`#${index + 1}`}</div>
-              <div className="gamePlayerDetails">
+              <div className={`gamePlayerDetails ${player.guessed ? 'playerGuessed' : ''}`}>
                 <div
                   className={`gamePlayerName ${player.id === currentUserId && 'self'}`}
                 >

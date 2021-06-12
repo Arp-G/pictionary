@@ -8,6 +8,7 @@ import {
   UPDATE_GAME_STATE,
   UPDATE_GAME_PLAYERS,
   ADD_MESSAGE,
+  ADD_GUESSER,
   HANDLE_GAME_JOIN_SUCCESS,
   HANDLE_GAME_JOIN_FAIL,
   HANDLE_PLAYER_KICKED,
@@ -45,7 +46,11 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
 
   gameChannel.on(WS_GAME_STARTED, () => emitter({ type: HANDLE_GAME_STARTED }));
 
-  gameChannel.on(WS_NEW_MESSAGE, message => emitter({ type: ADD_MESSAGE, payload: message }));
+  gameChannel.on(WS_NEW_MESSAGE, (message) => {
+    emitter({ type: ADD_MESSAGE, payload: message });
+
+    if (message.type === 'correct_guess') emitter({ type: ADD_GUESSER, payload: message.sender_id });
+  });
 
   gameChannel.on(WS_NEW_ROUND, payload => emitter({ type: UPDATE_ROUND, payload: payload.data }));
 
@@ -58,7 +63,6 @@ const setupGameChannelEventHandlers = (gameChannel, emitter) => {
 
   gameChannel.on(WS_SCORE_UPDATE, payload => emitter({ type: UPDATE_SCORE, payload: payload.data }));
 
-  // TODO: No handlers yet need to show winners list, clear socket and have button or on timeout navigate to home page
   gameChannel.on(WS_GAME_OVER, payload => emitter({ type: SET_GAME_OVER, payload: payload.data }));
 };
 
