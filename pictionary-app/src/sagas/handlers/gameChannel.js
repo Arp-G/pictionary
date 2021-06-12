@@ -19,7 +19,6 @@ import {
   UPDATE_DRAWER,
   SET_GAME_OVER,
   SET_GAMEPLAY_STATE,
-  CLEAR_SOCKET,
   HANDLE_NEW_DRAWER
 } from '../../constants/actionTypes';
 
