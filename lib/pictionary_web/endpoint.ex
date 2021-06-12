@@ -49,18 +49,8 @@ defmodule PictionaryWeb.Endpoint do
   plug Corsica,
     max_age: 600,
     origins: ["http://localhost:3000", System.get_env("CLIENT_APP_ORIGIN")],
-    allow_headers: ["content-type", "accept", "authorization"]
-
-  plug PictionaryWeb.Router
-end
-
-defmodule Pictionary.CORS do
-  use Corsica.Router,
-    origins: ["*"],
-    allow_credentials: true,
-    max_age: 600,
     allow_headers: :all,
     allow_methods: :all
 
-  resource("/*", origins: "*")
+  plug PictionaryWeb.Router
 end
