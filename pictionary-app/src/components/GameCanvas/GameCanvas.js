@@ -9,8 +9,8 @@ import { loadCanvasData } from '../../helpers/helpers';
 import floodFill from '../../helpers/floodFill';
 import './GameCanvas.scoped.scss';
 
-const PEN_X_OFFSET = 15;
-const PEN_Y_OFFSET = 30;
+const PEN_X_OFFSET = 0;
+const PEN_Y_OFFSET = 0;
 
 const GameCanvas = ({ pushToUndoStack, canvasRef, ctxRef, isDrawer }) => {
   const dispatch = useDispatch();

@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
 import { eventChannel, END } from 'redux-saga';
+import { push } from 'connected-react-router';
 import { Presence } from 'phoenix';
 import {
   ADD_ALERT,
@@ -104,7 +105,8 @@ export default (socket, gameId) => {
         console.log('An error occured on game channel ', e);
 
         // This will prevent react unmounted component state update issue and prevent memory leaks
-        emitter({ type: CLEAR_SOCKET });
+        emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Some error occured' });
+        emitter(push('/'));
       });
 
       gameChannel.onClose((e) => {
