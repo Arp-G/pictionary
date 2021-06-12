@@ -7,8 +7,6 @@ defmodule Pictionary.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      # Pictionary.Repo,
       # Start the Telemetry supervisor
       PictionaryWeb.Telemetry,
       # Start the PubSub system

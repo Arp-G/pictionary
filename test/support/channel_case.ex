@@ -27,14 +27,4 @@ defmodule PictionaryWeb.ChannelCase do
       @endpoint PictionaryWeb.Endpoint
     end
   end
-
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Pictionary.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Pictionary.Repo, {:shared, self()})
-    end
-
-    :ok
-  end
 end

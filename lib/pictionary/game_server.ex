@@ -137,7 +137,7 @@ defmodule Pictionary.GameServer do
       end
 
     new_message = %{
-      id: Ecto.UUID.generate(),
+      id: Nanoid.generate(),
       type: message_type,
       sender_id: sender_id,
       message: message,

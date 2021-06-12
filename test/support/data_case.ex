@@ -18,23 +18,8 @@ defmodule Pictionary.DataCase do
 
   using do
     quote do
-      alias Pictionary.Repo
-
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
       import Pictionary.DataCase
     end
-  end
-
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Pictionary.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Pictionary.Repo, {:shared, self()})
-    end
-
-    :ok
   end
 
   @doc """

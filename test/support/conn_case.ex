@@ -30,14 +30,4 @@ defmodule PictionaryWeb.ConnCase do
       @endpoint PictionaryWeb.Endpoint
     end
   end
-
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Pictionary.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Pictionary.Repo, {:shared, self()})
-    end
-
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
-  end
 end

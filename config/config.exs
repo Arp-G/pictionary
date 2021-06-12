@@ -7,9 +7,6 @@
 # General application configuration
 use Mix.Config
 
-config :pictionary,
-  ecto_repos: [Pictionary.Repo]
-
 # Configures the endpoint
 config :pictionary, PictionaryWeb.Endpoint,
   url: [host: "localhost"],

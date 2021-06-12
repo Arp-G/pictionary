@@ -11,10 +11,21 @@ use Mix.Config
 # before starting your production server.
 config :pictionary, PictionaryWeb.Endpoint,
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  check_origin: false
+
+# Sentry configuration
+config :sentry,
+  dsn: "https://d3b92ec461a347468fe712e1d302ef40@o833217.ingest.sentry.io/5812902",
+  environment_name: :prod,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  tags: %{
+    env: "production"
+  },
+  included_environments: [:prod]
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :info, backends: [:console, Sentry.LoggerBackend]
 
 # ## SSL Support
 #
