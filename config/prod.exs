@@ -21,7 +21,7 @@ config :pictionary, PictionaryWeb.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT"}],
   server: true,
-  secret_key_base: secret_key_base
+  secret_key_base: secret_key_base,
   url: [host: "${APP_NAME}.gigalixirapp.com", port: 443],
   check_origin: false
 
