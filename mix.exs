@@ -65,7 +65,7 @@ defmodule Pictionary.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "cmd npm install --prefix assets"],
+      setup: ["deps.get"],
       test: ["test"],
       quality: ["format", "sobelow --verbose --skip", "dialyzer", "credo --strict"]
     ]
