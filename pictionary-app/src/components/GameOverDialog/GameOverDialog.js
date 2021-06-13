@@ -22,7 +22,7 @@ const GameOverDialog = () => {
       player.score = state.gamePlay.scores[player.id] || 0;
       return player;
     }));
-  const selfId = useSelector(state => state.userInfo.id);
+  const [soundEnabled, selfId] = useSelector(state => [state.settings.sound, state.userInfo.id]);
   const playWinnerSfx = useAudio(winnerSfx);
   const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ const GameOverDialog = () => {
     const timerRef = setTimeout(() => dispatch(push('/')), 10000);
 
     return () => clearTimeout(timerRef);
-  }, []);
+  }, [soundEnabled]);
 
   const dialogContentClasses = contentStyles();
   const dialogClasses = dialogStyles();

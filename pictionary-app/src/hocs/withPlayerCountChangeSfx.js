@@ -6,7 +6,7 @@ import playerEnterSfx from '../sounds/player_enter.mp3';
 import playerLeaveSfx from '../sounds/player_leave.mp3';
 
 const withPlayerCountChangeSfx = WrappedComponent => (props) => {
-  const playersLength = useSelector(state => state.game.players.length);
+  const [soundEnabled, playersLength] = useSelector(state => [state.settings.sound, state.game.players.length]);
   const playPlayerEnterSfx = useAudio(playerEnterSfx);
   const playPlayerLeaverSfx = useAudio(playerLeaveSfx);
 
@@ -15,7 +15,7 @@ const withPlayerCountChangeSfx = WrappedComponent => (props) => {
   useEffect(() => {
     if (previousUsersCount < playersLength) playPlayerEnterSfx();
     if (previousUsersCount > playersLength) playPlayerLeaverSfx();
-  }, [playersLength]);
+  }, [playersLength, soundEnabled]);
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading

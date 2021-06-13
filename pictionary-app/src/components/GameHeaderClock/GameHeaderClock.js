@@ -5,7 +5,8 @@ import clockTickSfx from '../../sounds/clock_tick.mp3';
 import './GameHeaderClock.scoped.scss';
 
 const GameHeaderClock = ({ elapsedTime }) => {
-  const [drawerId, currentWord, drawTime] = useSelector(state => [
+  const [soundEnabled, drawerId, currentWord, drawTime] = useSelector(state => [
+    state.settings.sound,
     state.gamePlay.drawerId,
     state.gamePlay.currentWord,
     state.game.time - (elapsedTime || 0)
@@ -27,7 +28,7 @@ const GameHeaderClock = ({ elapsedTime }) => {
       return time - 1;
     }), 1000);
     return () => clearInterval(interval);
-  }, [drawerId]);
+  }, [drawerId, soundEnabled]);
 
   let clockColor = 'green';
   if (drawTime / 3 > timer) { clockColor = 'red'; } else if (drawTime / 2 > timer) { clockColor = 'yellow'; }

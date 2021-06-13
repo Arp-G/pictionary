@@ -15,7 +15,12 @@ const contentStyles = makeStyles({ root: { overflow: 'hidden' } });
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const GameWordWasDialog = ({ clearCanvas, clearRevealInterval }) => {
-  const [gameChannel, selfId, players] = useSelector(state => [state.settings.gameChannel, state.userInfo.id, state.game.players]);
+  const [soundEnabled, gameChannel, selfId, players] = useSelector(state => [
+    state.settings.sound,
+    state.settings.gameChannel,
+    state.userInfo.id,
+    state.game.players
+  ]);
   const [wordWas, setWordWasDialog] = useState(null);
   const [correctGuessedPlayers, setCorrectGuessedPlayers] = useState({});
   const dispatch = useDispatch();
@@ -44,7 +49,7 @@ const GameWordWasDialog = ({ clearCanvas, clearRevealInterval }) => {
       gameChannel.off(WS_WORD_WAS);
       if (dialogTimer) clearTimeout(dialogTimer);
     };
-  }, []);
+  }, [soundEnabled]);
 
   return wordWas ? (
     <Dialog
