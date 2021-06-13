@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, makeStyles } from '@material-ui/core';
 import GameHeader from '../../components/GameHeader/GameHeader';
 import GamePlayersList from '../../components/GamePlayersList/GamePlayersList';
 import GameCanvas from '../../components/GameCanvas/GameCanvas';
@@ -16,7 +16,11 @@ import { loadCanvasData } from '../../helpers/helpers';
 import { HANDLE_CANVAS_UPDATE, CLEAR_SOCKET, RESET_GAME_STATE, SAVE_GAME_TO_JOIN_ID } from '../../constants/actionTypes';
 import './game.scoped.scss';
 
+const useStyles = makeStyles(() => ({ greyPaper: { backgroundColor: 'grey' } }));
+
 const Game = () => {
+  const classes = useStyles();
+
   const [gameId, gameOver, isDrawer, voteKickEnabled, gameChannel] = useSelector(state => [
     state.game.id,
     state.gamePlay.gameOver,
@@ -112,7 +116,7 @@ const Game = () => {
       <Grid item xs={8}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Paper>
+            <Paper class={classes.greyPaper}>
               <GameCanvas
                 pushToUndoStack={pushToUndoStack}
                 canvasRef={canvasRef}
