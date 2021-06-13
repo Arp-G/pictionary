@@ -10,7 +10,6 @@ defmodule Pictionary.GameServer do
   ## GenServer callbacks
 
   @too_close_similarity 0.90
-  @max_score 250
   @score_interval 10
   @word_choose_time 10_000
   @inter_round_cooldown 4000
@@ -362,13 +361,16 @@ defmodule Pictionary.GameServer do
          } = game_state,
          guesser_id
        ) do
-    guesser_score = @max_score - map_size(correct_guessed_players) * @score_interval
+    guesser_score = (map_size(players) - map_size(correct_guessed_players)) * @score_interval
+
+    # Just in case
+    guesser_score = if(guesser_score < 0, do: @score_interval, else: guesser_score)
 
     # Update Guesser score
     players = update_player_score(players, guesser_id, guesser_score)
 
     # Update Drawer Score
-    players = update_player_score(players, drawer_id, guesser_score / 2)
+    players = update_player_score(players, drawer_id, @score_interval)
 
     PictionaryWeb.Endpoint.broadcast!("game:#{game_state.game_id}", "score_update", %{
       data: players

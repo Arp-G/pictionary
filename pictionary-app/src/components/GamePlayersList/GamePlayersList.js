@@ -25,9 +25,9 @@ const GamePlayersList = () => {
             dense={true}
             component="div"
           >
-            <div className={index % 2 === 0 ? 'gamePlayerListItem' : 'gamePlayerListItemGrey'}>
+            <div className={`${index % 2 === 0 ? 'gamePlayerListItem' : 'gamePlayerListItemGrey'} ${player.guessed ? 'playerGuessed' : ''}`}>
               <div className="gamePlayerRank">{`#${index + 1}`}</div>
-              <div className={`gamePlayerDetails ${player.guessed ? 'playerGuessed' : ''}`}>
+              <div className="gamePlayerDetails">
                 <div
                   className={`gamePlayerName ${player.id === currentUserId && 'self'}`}
                 >

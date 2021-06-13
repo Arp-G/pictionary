@@ -6,7 +6,6 @@ import { HANDLE_SEND_MESSAGE } from '../../constants/actionTypes';
 import usePrevious from '../../hooks/usePrevious';
 import useAudio from '../../hooks/useAudio';
 import correctGuessSfx from '../../sounds/correct_guess.mp3';
-import newMessageSfx from '../../sounds/new_message.mp3';
 import './GameChat.scoped.scss';
 
 const useStyles = makeStyles({
@@ -23,13 +22,13 @@ const GameChat = () => {
   const classes = useStyles();
   const [currentMessage, setCurrentMessage] = useState('');
   const dispatch = useDispatch();
-  const [messages, userId, userName, playerNames] = useSelector((state) => {
+  const [messages, userId, playerNames] = useSelector((state) => {
     const names = state.game.players.reduce((result, player) => {
       // eslint-disable-next-line no-param-reassign
       result[player.id] = player.name;
       return result;
     }, {});
-    return [state.gamePlay.messages, state.userInfo.id, state.userInfo.name, names];
+    return [state.gamePlay.messages, state.userInfo.id, names];
   });
   const chatListContainerRef = useRef(null);
   const handleSendMessage = (event) => {
@@ -41,7 +40,6 @@ const GameChat = () => {
   };
 
   const playCorrectGuessAudio = useAudio(correctGuessSfx);
-  const playNewMessageAudio = useAudio(newMessageSfx);
   const previousMessagesCount = usePrevious(messages.length);
 
   useEffect(() => {
@@ -49,7 +47,6 @@ const GameChat = () => {
 
     if (messages.length > 0 && previousMessagesCount !== messages.length) {
       if (messages[messages.length - 1].type === 'correct_guess') playCorrectGuessAudio();
-      else playNewMessageAudio();
     }
   });
 
@@ -63,7 +60,7 @@ const GameChat = () => {
 
               if (type === 'correct_guess' && sender_id !== userId) {
                 // eslint-disable-next-line no-param-reassign
-                message = `${userName} has guessed the correct answer!`;
+                message = `${name} has guessed the correct answer!`;
               }
 
               if (type === 'too_close_guess' && sender_id === userId) {

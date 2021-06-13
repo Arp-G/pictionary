@@ -25,16 +25,22 @@
   color: yellow;
 }
 
-.playerGuessed {
-  background-color: lightgreen;
-}
-
 .gamePlayerListItemGrey {
   background-color:	lightgray;
 }
 
+.playerGuessed {
+  background-color: #D0F0C0;
+}
+
 .darkMode .gamePlayerListItemGrey {
   background-color:	#181818;
+}
+
+.darkMode {
+  .playerGuessed {
+    background-color: #9090ee;
+  }
 }
 
 .gamePlayerDetails {
