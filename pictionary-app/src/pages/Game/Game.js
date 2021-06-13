@@ -48,10 +48,13 @@ const Game = () => {
   const [, setRevealInterval] = useState(null);
   const [undoStack, setUndoStack] = useState([]);
   const pushToUndoStack = () => {
-    if (!isDrawer || undoStack.length >= 10 || !canvasRef.current) return;
+    if (!isDrawer || !canvasRef.current) return;
 
     setUndoStack((stack) => {
       stack.push(canvasRef.current.toDataURL());
+
+      // If undo stack gets too big then remove some old items from stack
+      if (stack.length > 20) stack.shift();
       return stack;
     });
   };
@@ -131,6 +134,7 @@ const Game = () => {
                 <GameToolbar
                   popUndoStack={popUndoStack}
                   clearCanvas={clearCanvas}
+                  undoStack={undoStack}
                 />
               </Paper>
             )}

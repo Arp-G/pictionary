@@ -15,7 +15,7 @@ import './GameToolbar.scoped.scss';
 
 const debounce = require('lodash.debounce');
 
-const GameToolbar = ({ popUndoStack, clearCanvas }) => {
+const GameToolbar = ({ popUndoStack, undoStack, clearCanvas }) => {
   const dispatch = useDispatch();
   const [brushRadius, brushColor, eraser, pen, fill] = useSelector(state => [
     state.gamePlay.brushRadius,
@@ -120,18 +120,6 @@ const GameToolbar = ({ popUndoStack, clearCanvas }) => {
       <Grid item>
         <div
           className="color-picker-item hoverable"
-          title="Undo"
-          role="button"
-          tabIndex={0}
-          label="Undo"
-          onClick={popUndoStack}
-        >
-          <img src={UndoSvg} alt="undo" title="Undo" />
-        </div>
-      </Grid>
-      <Grid item>
-        <div
-          className="color-picker-item hoverable"
           title="Clear"
           role="button"
           tabIndex={0}
@@ -140,6 +128,21 @@ const GameToolbar = ({ popUndoStack, clearCanvas }) => {
         >
           <img src={DeleteSvg} alt="clear" title="Clear" />
         </div>
+      </Grid>
+      <Grid item>
+        {undoStack.length > 0
+          && (
+            <div
+              className="color-picker-item hoverable"
+              title="Undo"
+              role="button"
+              tabIndex={0}
+              label="Undo"
+              onClick={popUndoStack}
+            >
+              <img src={UndoSvg} alt="undo" title="Undo" />
+            </div>
+          )}
       </Grid>
     </Grid>
   );
