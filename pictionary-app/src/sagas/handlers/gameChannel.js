@@ -107,9 +107,10 @@ export default (socket, gameId) => {
       gameChannel.onError((e) => {
         console.log('An error occured on game channel ', e);
 
+        // The below code is leading to issues and not allowing channel reconnects
         // This will prevent react unmounted component state update issue and prevent memory leaks
-        emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Some error occured' });
-        emitter(push('/'));
+        // emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Some error occured' });
+        // emitter(push('/'));
       });
 
       gameChannel.onClose((e) => {
