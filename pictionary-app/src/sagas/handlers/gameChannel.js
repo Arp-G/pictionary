@@ -109,7 +109,7 @@ export default (socket, gameId) => {
         // test
 
         // This will prevent react unmounted component state update issue and prevent memory leaks
-        emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Some error occured' });
+        // emitter({ type: ADD_ALERT, alertType: 'error', msg: 'Some error occured' });
         // emitter(push('/'));
       });
 

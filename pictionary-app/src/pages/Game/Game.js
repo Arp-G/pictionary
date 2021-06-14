@@ -119,7 +119,7 @@ const Game = () => {
       <Grid item xs={8}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Paper class={classes.greyPaper}>
+            <Paper classes={classes.greyPaper}>
               <GameCanvas
                 pushToUndoStack={pushToUndoStack}
                 canvasRef={canvasRef}
