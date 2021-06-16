@@ -12,7 +12,7 @@ defmodule PictionaryWeb.Endpoint do
   ]
 
   socket "/socket", PictionaryWeb.UserSocket,
-    websocket: true,
+    websocket: [timeout: :infinity],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
