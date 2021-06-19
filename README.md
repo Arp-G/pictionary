@@ -45,12 +45,18 @@ Few things to know about the technology stack used in the project:
 
 ### Setup using Docker
 
-WIP
+Get the app running easily using docker.
+
+* Install [docker](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/)
+* Clone this project
+* `cd` into the project directory and run `docker-compose up`
+
+Thats it! Access the application at http://localhost:3000/
 
 ### Setup manually
 
 * Make sure you have [elixir](https://elixir-lang.org/install.html) and [npm](https://www.npmjs.com/get-npm) installed
 * Clone this project
 * `cd` into the project directory and install dependencies by running `mix deps.get` and finally start the backend server by running `mix phx.server`
-* Next cd into the `pictionary-app` directory and install dependencies by running `npm install` and start the front end application by running `npm start` 
+* Next cd into the `pictionary-app` directory and install dependencies by running `npm install` and start the front end application by running `npm start`
 * Enjoy!

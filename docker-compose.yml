@@ -1,0 +1,29 @@
+version: '3'
+services:
+  phoenix:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - elixir-deps:/app/deps
+      - elixir-build:/app/_build
+    tty: true
+    stdin_open: true
+    ports:
+      - "4000:4000"
+  react:
+    build:
+      context: ./pictionary-app
+      dockerfile: Dockerfile
+    volumes:
+      - ./pictionary-app:/app
+      - node-modules:/app/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - phoenix
+volumes:
+  elixir-deps:
+  elixir-build:
+  node-modules:
