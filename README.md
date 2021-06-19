@@ -29,10 +29,11 @@ Found a bug or want a new feature?
 Please [create an issue](https://github.com/Arp-G/pictionary/issues/new).
 
 Want to contribute?
-Create a PR and I will be happy to review and merge it
-Tell your friends about the project
+* Create a PR and I will be happy to review and merge it
+* Start this project
+* Tell your friends about the project.
 
-Like my work? Consider [contributing](https://www.paypal.com/paypalme/arprokz) to this project and support me to imrpove it.
+Like my work? Consider [contributing](https://www.paypal.com/paypalme/arprokz) to this project and support me to improve it.
 
 ## Setup and run locally
 
