@@ -35,7 +35,7 @@ defmodule Pictionary.GameServer do
        state
        | players:
            Map.put_new(state.players, player_id, Map.get(state.players_who_left, player_id) || 0),
-         remaining_drawers: state.remaining_drawers ++ [player_id]
+         remaining_drawers: state.remaining_drawers
      }}
   end
 
@@ -380,7 +380,7 @@ defmodule Pictionary.GameServer do
       game_state
       | players: players,
         correct_guessed_players: Map.put(correct_guessed_players, guesser_id, guesser_score),
-        drawer_current_score: drawer_current_score + guesser_score / 2
+        drawer_current_score: drawer_current_score + @score_interval
     }
   end
 
