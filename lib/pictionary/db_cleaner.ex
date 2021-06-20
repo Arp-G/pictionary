@@ -3,7 +3,7 @@ defmodule Pictionary.DBCleaner do
   use GenServer
 
   # 1 month
-  @interval 30 * 24 * 60 * 60
+  @interval 2_629_800_000
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{})
