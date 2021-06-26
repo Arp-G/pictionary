@@ -85,7 +85,7 @@ defmodule Pictionary.Stores.GameStore do
     {:reply, get_game_stats(), state}
   end
 
-  def handle_call({:set, %Game{id: game_id}} = game_data, _from, state) do
+  def handle_call({:set, %Game{id: game_id} = game_data}, _from, state) do
     # Below pattern match ensure genserver faliure and restart in case
     # of ETS insertion faliure
     true = :ets.insert(@table_name, {game_id, game_data})
@@ -208,10 +208,7 @@ defmodule Pictionary.Stores.GameStore do
     Logger.info("Game Store cleanup start")
 
     :ets.tab2list(@table_name)
-    |> Enum.each(fn
-      {_id, {:set, game}} -> remove_stale_records(game)
-      {_id, game} -> remove_stale_records(game)
-    end)
+    |> Enum.each(fn {_id, game} -> remove_stale_records(game) end)
 
     Logger.info("Game Store cleanup end")
     {:noreply, state}
@@ -250,7 +247,6 @@ defmodule Pictionary.Stores.GameStore do
 
   defp fetch_game(game_id) do
     case :ets.lookup(@table_name, game_id) do
-      [{_id, {:set, game}}] -> game
       [{_game_id, game}] -> game
       _ -> nil
     end
@@ -265,14 +261,8 @@ defmodule Pictionary.Stores.GameStore do
 
   defp get_game_stats() do
     :ets.tab2list(@table_name)
-    |> Stream.filter(fn
-      {_id, %Game{public_game: is_public}} -> is_public
-      {_id, {:set, %Game{public_game: is_public}}} -> is_public
-    end)
-    |> Stream.map(fn
-      {_id, %Game{} = game} -> game_data(game)
-      {_id, {:set, %Game{} = game}} -> game_data(game)
-    end)
+    |> Stream.filter(fn {_id, %Game{public_game: is_public}} -> is_public end)
+    |> Stream.map(fn {_id, %Game{} = game} -> game_data(game) end)
     |> Enum.to_list()
   end
 

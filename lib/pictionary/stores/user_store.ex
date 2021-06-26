@@ -56,7 +56,7 @@ defmodule Pictionary.Stores.UserStore do
     {:reply, users, state}
   end
 
-  def handle_call({:set, user_data = %User{id: user_id}}, _from, state) do
+  def handle_call({:set, %User{id: user_id} = user_data}, _from, state) do
     # Below pattern match ensure genserver faliure and restart in case
     # of ETS insertion faliure
     true = :ets.insert(@table_name, {user_id, user_data})
@@ -67,10 +67,7 @@ defmodule Pictionary.Stores.UserStore do
     Logger.info("User Store cleanup start")
 
     :ets.tab2list(@table_name)
-    |> Enum.each(fn
-      {_id, {:set, user}} -> remove_stale_records(user)
-      {_id, user} -> remove_stale_records(user)
-    end)
+    |> Enum.each(fn {_id, user} -> remove_stale_records(user) end)
 
     Logger.info("User Store cleanup end")
     {:noreply, state}
