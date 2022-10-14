@@ -8,8 +8,14 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
 
+# install serve to server build files
+RUN npm install -g serve
+
 # copy source code to app
 COPY . ./
 
-# start the application
-CMD ["npm", "start"]
+# Generate production build
+RUN npm build
+
+# Serve build
+CMD ["serve", "-s", "build", "-l", "3000"]

@@ -4,10 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - .:/app
-      - elixir-deps:/app/deps
-      - elixir-build:/app/_build
+    environment:
+     - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+     - CLIENT_APP_ORIGIN=${CLIENT_APP_ORIGIN}
     tty: true
     stdin_open: true
     ports:
@@ -16,14 +15,14 @@ services:
     build:
       context: ./pictionary-app
       dockerfile: Dockerfile
+    environment:
+     - REACT_APP_SITE_URL=${CLIENT_APP_ORIGIN}
+     - REACT_APP_HOST_URL=${API_HOST}
     volumes:
-      - ./pictionary-app:/app
       - node-modules:/app/node_modules
     ports:
       - 3000:3000
     depends_on:
       - phoenix
 volumes:
-  elixir-deps:
-  elixir-build:
   node-modules:
