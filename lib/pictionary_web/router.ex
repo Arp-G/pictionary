@@ -22,6 +22,13 @@ defmodule PictionaryWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Health check
+  scope "/", PictionaryWeb do
+    pipe_through :api
+
+    get "/health", PageController, :health
+  end
+
   scope "/api", PictionaryWeb do
     pipe_through [:api, :current_user]
 
@@ -36,9 +43,4 @@ defmodule PictionaryWeb.Router do
     post "/games", GamesController, :create
     get "/games/:game_id", GamesController, :show
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", PictionaryWeb do
-  #   pipe_through :api
-  # end
 end
