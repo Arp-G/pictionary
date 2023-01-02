@@ -3,7 +3,8 @@ defmodule PictionaryWeb.TokenAuth do
 
   def init(opts), do: opts
 
-  def call(%Plug.Conn{assigns: %{current_user: %Pictionary.User{id: _id}}} = conn, _opts), do: conn
+  def call(%Plug.Conn{assigns: %{current_user: %Pictionary.User{id: _id}}} = conn, _opts),
+    do: conn
 
   def call(conn, _opts) do
     conn

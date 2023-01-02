@@ -1,5 +1,5 @@
 defmodule Pictionary.Game do
-  defstruct([
+  defstruct(
     id: Nanoid.generate(),
     rounds: 3,
     time: 80,
@@ -12,8 +12,8 @@ defmodule Pictionary.Game do
     started: false,
     creator_id: nil,
     created_at: DateTime.utc_now(),
-    updated_at: DateTime.utc_now(),
-  ])
+    updated_at: DateTime.utc_now()
+  )
 
   @type t :: %__MODULE__{
           id: String.t(),

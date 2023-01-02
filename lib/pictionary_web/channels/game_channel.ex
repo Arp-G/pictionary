@@ -10,29 +10,27 @@ defmodule PictionaryWeb.GameChannel do
         {:error, %{reason: "Game not found"}}
 
       game ->
-        cond do
-          MapSet.size(game.players) >= game.max_players ->
-            {:error, %{reason: "Game Full !"}}
+        if MapSet.size(game.players) >= game.max_players do
+          {:error, %{reason: "Game Full !"}}
+        else
+          send(self(), {:after_join, game_id})
+          socket = assign(socket, :game_id, game_id)
 
-          true ->
-            send(self(), {:after_join, game_id})
-            socket = assign(socket, :game_id, game_id)
+          if GenServer.whereis({:global, "GameServer##{game_id}"}) do
+            try do
+              state =
+                GenServer.call(
+                  {:global, "GameServer##{game_id}"},
+                  {:get_state, socket.assigns.current_user.id}
+                )
 
-            if GenServer.whereis({:global, "GameServer##{game_id}"}) do
-              try do
-                state =
-                  GenServer.call(
-                    {:global, "GameServer##{game_id}"},
-                    {:get_state, socket.assigns.current_user.id}
-                  )
-
-                {:ok, state, socket}
-              catch
-                :exit, _ -> {:ok, socket}
-              end
-            else
-              {:ok, socket}
+              {:ok, state, socket}
+            catch
+              :exit, _ -> {:ok, socket}
             end
+          else
+            {:ok, socket}
+          end
         end
     end
   end

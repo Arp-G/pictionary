@@ -7,7 +7,7 @@ defmodule PictionaryWeb.SessionController do
       if user,
         do: %User{user | name: name, avatar: avatar},
         else: %User{
-          id:  Nanoid.generate(),
+          id: Nanoid.generate(),
           name: name,
           avatar: avatar,
           created_at: DateTime.utc_now(),

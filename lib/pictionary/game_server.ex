@@ -28,7 +28,9 @@ defmodule Pictionary.GameServer do
   def handle_cast(:stop, state), do: {:stop, :normal, state}
 
   def handle_cast({:add_player, player_id}, state) do
-    Logger.info("Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}")
+    Logger.info(
+      "Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}"
+    )
 
     {:noreply,
      %{
@@ -101,7 +103,15 @@ defmodule Pictionary.GameServer do
 
     restored_state =
       state
-      |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds, :canvas_data, :correct_guessed_players])
+      |> Map.take([
+        :drawer_id,
+        :current_round,
+        :current_word,
+        :draw_time,
+        :rounds,
+        :canvas_data,
+        :correct_guessed_players
+      ])
       |> Map.merge(%{players: players, elapsed_time: elapsed_time})
 
     {
@@ -141,18 +151,16 @@ defmodule Pictionary.GameServer do
       sent_at: DateTime.utc_now()
     }
 
+    # If the message sender is not the drawer and has not already guessed the correct answer
     state =
-      cond do
-        # If the message sender is not the drawer and has not already guessed the correct answer
-        sender_id != state.drawer_id && !Map.has_key?(state.correct_guessed_players, sender_id) ->
-          PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
+      if sender_id != state.drawer_id && !Map.has_key?(state.correct_guessed_players, sender_id) do
+        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
 
-          if message_type == :correct_guess,
-            do: handle_correct_answer(state, sender_id),
-            else: state
-
-        true ->
-          state
+        if message_type == :correct_guess,
+          do: handle_correct_answer(state, sender_id),
+          else: state
+      else
+        state
       end
 
     {:reply, :ok, state}

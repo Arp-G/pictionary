@@ -10,13 +10,15 @@ defmodule Pictionary.DBCleaner do
   end
 
   def init(state) do
-    schedule_cleanup() # Schedule work to be performed at some point
+    # Schedule work to be performed at some point
+    schedule_cleanup()
     {:ok, state}
   end
 
   def handle_info(:work, state) do
     # Do the work you desire here
-    schedule_cleanup() # Reschedule once more
+    # Reschedule once more
+    schedule_cleanup()
     {:noreply, state}
   end
 
