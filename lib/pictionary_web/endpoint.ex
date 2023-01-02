@@ -48,7 +48,11 @@ defmodule PictionaryWeb.Endpoint do
 
   plug Corsica,
     max_age: 600,
-    origins: ["http://localhost:3000", "http://localhost:5000", System.get_env("CLIENT_APP_ORIGIN")],
+    origins: [
+      "http://localhost:3000",
+      "http://localhost:5000",
+      System.get_env("CLIENT_APP_ORIGIN")
+    ],
     allow_headers: :all,
     allow_methods: :all
 

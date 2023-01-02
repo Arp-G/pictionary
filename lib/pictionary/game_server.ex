@@ -28,7 +28,9 @@ defmodule Pictionary.GameServer do
   def handle_cast(:stop, state), do: {:stop, :normal, state}
 
   def handle_cast({:add_player, player_id}, state) do
-    Logger.info("Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}")
+    Logger.info(
+      "Restored player #{player_id} score to #{Map.get(state.players_who_left, player_id) || 0}"
+    )
 
     {:noreply,
      %{
@@ -101,7 +103,15 @@ defmodule Pictionary.GameServer do
 
     restored_state =
       state
-      |> Map.take([:drawer_id, :current_round, :current_word, :draw_time, :rounds, :canvas_data, :correct_guessed_players])
+      |> Map.take([
+        :drawer_id,
+        :current_round,
+        :current_word,
+        :draw_time,
+        :rounds,
+        :canvas_data,
+        :correct_guessed_players
+      ])
       |> Map.merge(%{players: players, elapsed_time: elapsed_time})
 
     {

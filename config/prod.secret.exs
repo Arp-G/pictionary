@@ -10,6 +10,7 @@ secret_key_base =
     environment variable SECRET_KEY_BASE is missing.
     You can generate one by calling: mix phx.gen.secret
     """
+
 config :pictionary, PictionaryWeb.Endpoint,
   http: [
     port: String.to_integer(System.get_env("PORT") || "4000"),

@@ -19,6 +19,6 @@ defmodule Pictionary.GameSupervisor do
 
   def remove_game_server(child_pid) do
     DynamicSupervisor.terminate_child(__MODULE__, child_pid)
-    Logger.info("Stopped game server #{inspect child_pid}")
+    Logger.info("Stopped game server #{inspect(child_pid)}")
   end
 end
