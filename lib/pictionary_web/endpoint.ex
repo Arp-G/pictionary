@@ -51,7 +51,7 @@ defmodule PictionaryWeb.Endpoint do
     origins: [
       "http://localhost:3000",
       "http://localhost:5000",
-      System.get_env("CLIENT_APP_ORIGIN")
+      "https://pictionary-game.netlify.app"
     ],
     allow_headers: :all,
     allow_methods: :all

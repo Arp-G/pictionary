@@ -26,6 +26,7 @@ if config_env() == :prod do
   config :pictionary, PictionaryWeb.Endpoint,
     url: [host: "#{app_name}.fly.dev", port: 80],
     server: true,
+    check_origin: ["https://pictionary-game.netlify.app"],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
