@@ -4,7 +4,7 @@ defmodule Pictionary.Stores.GameStore do
   require Logger
 
   @table_name :game_table
-  @custom_word_limit 10000
+  @custom_word_limit 10_000
 
   @permitted_update_params [
     "id",

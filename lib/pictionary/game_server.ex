@@ -151,18 +151,16 @@ defmodule Pictionary.GameServer do
       sent_at: DateTime.utc_now()
     }
 
+    # If the message sender is not the drawer and has not already guessed the correct answer
     state =
-      cond do
-        # If the message sender is not the drawer and has not already guessed the correct answer
-        sender_id != state.drawer_id && !Map.has_key?(state.correct_guessed_players, sender_id) ->
-          PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
+      if sender_id != state.drawer_id && !Map.has_key?(state.correct_guessed_players, sender_id) do
+        PictionaryWeb.Endpoint.broadcast!("game:#{state.game_id}", "new_message", new_message)
 
-          if message_type == :correct_guess,
-            do: handle_correct_answer(state, sender_id),
-            else: state
-
-        true ->
-          state
+        if message_type == :correct_guess,
+          do: handle_correct_answer(state, sender_id),
+          else: state
+      else
+        state
       end
 
     {:reply, :ok, state}
